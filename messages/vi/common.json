@@ -1,0 +1,20 @@
+{
+  "Common": {
+    "appName": "GymX - Nền tảng Quản lý Phòng tập",
+    "welcome": "Chào mừng đến với GymX",
+    "buttons": {
+      "submit": "Xác nhận",
+      "cancel": "Hủy",
+      "save": "Lưu lại",
+      "delete": "Xóa",
+      "logout": "Đăng xuất",
+      "login": "Đăng nhập"
+    },
+    "roles": {
+      "admin": "Quản trị viên",
+      "trainer": "Huấn luyện viên",
+      "receptionist": "Lễ tân",
+      "member": "Hội viên"
+    }
+  }
+}
