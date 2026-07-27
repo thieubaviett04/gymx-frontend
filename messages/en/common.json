@@ -1,0 +1,20 @@
+{
+  "Common": {
+    "appName": "GymX - Fitness Management Platform",
+    "welcome": "Welcome to GymX",
+    "buttons": {
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete",
+      "logout": "Logout",
+      "login": "Login"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "trainer": "Personal Trainer",
+      "receptionist": "Receptionist",
+      "member": "Member"
+    }
+  }
+}
