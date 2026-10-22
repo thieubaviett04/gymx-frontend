@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { AuthTokenData, UserRole } from '@/types/auth';
 
-// Định nghĩa cấu hình tài khoản người dùng trong hệ thống GymX
 export interface User {
   id: string;
   email: string;
   fullName: string;
-  role: 'Admin' | 'Trainer' | 'Receptionist' | 'Member';
-  avatarUrl?: string;
+  roles: UserRole[];
+  avatarUrl?: string | null;
 }
 
 interface AuthState {
@@ -15,37 +15,40 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
-  login: (user: User, accessToken: string, refreshToken: string) => void;
+  login: (data: AuthTokenData) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
+  hasRole: (role: UserRole) => boolean;
 }
 
-// Kho lưu trữ trạng thái đăng nhập, tự động đồng bộ xuống LocalStorage
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
 
-      // Cập nhật toàn bộ thông tin khi người dùng đăng nhập thành công
-      login: (user, accessToken, refreshToken) =>
+      login: (data: AuthTokenData) =>
         set({
-          user,
-          accessToken,
-          refreshToken,
+          user: {
+            id: data.userId,
+            email: data.email,
+            fullName: data.fullName,
+            roles: data.roles,
+            avatarUrl: data.avatarUrl,
+          },
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
           isAuthenticated: true,
         }),
 
-      // Cập nhật lại chuỗi Token mới khi gia hạn thành công
       setTokens: (accessToken, refreshToken) =>
         set({
           accessToken,
           refreshToken,
         }),
 
-      // Xóa sạch dữ liệu trong két sắt khi người dùng đăng xuất
       logout: () =>
         set({
           user: null,
@@ -53,6 +56,11 @@ export const useAuthStore = create<AuthState>()(
           refreshToken: null,
           isAuthenticated: false,
         }),
+
+      hasRole: (role: UserRole) => {
+        const roles = get().user?.roles || [];
+        return roles.includes(role);
+      },
     }),
     {
       name: 'gymx-auth-storage',

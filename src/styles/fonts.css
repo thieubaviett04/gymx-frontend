@@ -1,0 +1,37 @@
+
+:root {
+  --font-family-h1: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-family-h2: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-family-h3: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-family-h4: 'Plus Jakarta Sans', 'Inter', sans-serif;
+
+  --font-family-p: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-subtle: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-detail: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --font-family-mono: 'Fira Code', 'Consolas', monospace;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-h1: 48px;
+  --line-height-h2: 36px;
+  --line-height-h3: 32px;
+  --line-height-h4: 28px;
+  --line-height-p: 28px;
+  --line-height-body: 24px;
+  --line-height-subtle: 20px;
+  --line-height-detail: 20px;
+
+  --letter-spacing-h1: -0.012em;
+  --letter-spacing-h2: -0.0075em;
+  --letter-spacing-h3: -0.006em;
+  --letter-spacing-h4: -0.005em;
+  --letter-spacing-p: 0;
+  --letter-spacing-body: 0;
+  --letter-spacing-subtle: 0;
+  --letter-spacing-detail: 0;
+}
