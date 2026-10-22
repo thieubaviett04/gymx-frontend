@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState, type ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useEffect, useState, type ReactNode } from 'react';
 
 export default function QueryProvider({ children }: { children: ReactNode }) {
-  // Khởi tạo QueryClient với cấu hình cache mặc định 5 phút
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -17,14 +16,19 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
             refetchOnWindowFocus: false,
           },
         },
-      }),
+      })
   );
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {/* Công cụ debug React Query chỉ hiển thị trong môi trường lập trình */}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {mounted && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
   );
 }

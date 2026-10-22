@@ -1,7 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/lib/store/authStore';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5113/api/v1';
 
 // Khởi tạo trạm trung chuyển Axios duy nhất cho toàn ứng dụng
 export const apiClient = axios.create({
@@ -44,7 +44,8 @@ apiClient.interceptors.response.use(
           refreshToken,
         });
 
-        const { accessToken, refreshToken: newRefreshToken } = res.data;
+        const data = res.data?.data || res.data;
+        const { accessToken, refreshToken: newRefreshToken } = data;
 
         // Lưu chìa khóa mới vào kho bảo mật Store
         useAuthStore.getState().setTokens(accessToken, newRefreshToken);
