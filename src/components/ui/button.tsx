@@ -11,9 +11,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-white shadow-[0px_4px_4px_0px_rgba(82,82,82,0.04)] hover:bg-[#FF8833] active:bg-[#CC5500] focus-visible:ring-2 focus-visible:ring-primary/40",
+          "bg-primary text-white shadow-none hover:bg-[#FF8833] active:bg-[#CC5500] focus-visible:ring-2 focus-visible:ring-primary/40",
         primary:
-          "bg-primary text-white shadow-[0px_4px_4px_0px_rgba(82,82,82,0.04)] hover:bg-[#FF8833] active:bg-[#CC5500] focus-visible:ring-2 focus-visible:ring-primary/40",
+          "bg-primary text-white shadow-none hover:bg-[#FF8833] active:bg-[#CC5500] focus-visible:ring-2 focus-visible:ring-primary/40",
         outline:
           "border border-border bg-white text-[#0A0A0A] hover:bg-[#F5F5F5] hover:text-[#0A0A0A] active:bg-[#E5E5E5] focus-visible:ring-2 focus-visible:ring-border",
         ghost:

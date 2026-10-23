@@ -15,14 +15,18 @@ export const authService = {
     return apiClient.post('/auth/login', payload);
   },
 
-  register: async (payload: RegisterRequest): Promise<{ success: boolean; message: string }> => {
-    const res = await apiClient.post<unknown, string | { message?: string }>('/auth/register', payload);
-    const message = typeof res === 'string' ? res : res?.message || 'Success';
-    return { success: true, message };
+  register: async (payload: RegisterRequest): Promise<{ success: boolean; message: string; email?: string }> => {
+    const res = await apiClient.post<unknown, { message?: string; email?: string } | string>('/auth/register', payload);
+    const message = typeof res === 'string' ? res : res?.message || 'Đăng ký thành công. Vui lòng kiểm tra email để nhận mã OTP.';
+    const email = typeof res === 'object' && res?.email ? res.email : payload.email;
+    return { success: true, message, email };
   },
 
   verifyEmail: async (payload: VerifyEmailRequest): Promise<AuthApiResponse<AuthTokenData>> => {
-    return apiClient.post('/auth/verify-email', payload);
+    return apiClient.post('/auth/verify-email', {
+      email: payload.email,
+      otpCode: payload.otpCode || payload.otp,
+    });
   },
 
   googleLogin: async (idToken: string): Promise<AuthApiResponse<AuthTokenData>> => {

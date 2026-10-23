@@ -85,4 +85,18 @@
     letter-spacing: var(--letter-spacing-p);
     line-height: var(--line-height-p);
   }
+
+  /* Override browser autofill light-blue background to stay default white */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+    box-shadow: 0 0 0 1000px #ffffff inset !important;
+    -webkit-text-fill-color: #0A0A0A !important;
+    caret-color: #0A0A0A !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
 }
