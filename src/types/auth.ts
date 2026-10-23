@@ -30,14 +30,15 @@ export interface RegisterRequest {
   email: string;
   password: string;
   fullName: string;
-  phoneNumber?: string;
+  phoneNumber: string;
   gender?: number;
   dateOfBirth?: string;
 }
 
 export interface VerifyEmailRequest {
   email: string;
-  otp: string;
+  otpCode?: string;
+  otp?: string;
 }
 
 export interface ForgotPasswordRequest {

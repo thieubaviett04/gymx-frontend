@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const inputVariants = cva(
-  "w-full rounded-lg bg-white text-[#0A0A0A] placeholder:text-[#525252] text-sm transition-all duration-150 outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[#F5F5F5]",
+  "w-full rounded-lg bg-transparent text-[#0A0A0A] placeholder:text-[#525252] text-sm transition-all duration-150 outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[#F5F5F5]",
   {
     variants: {
       inputSize: {
@@ -14,9 +14,9 @@ const inputVariants = cva(
         lg: "h-12 px-4 py-3 text-base",
       },
       hasError: {
-        true: "border-[1.5px] border-danger focus:border-danger focus:ring-2 focus:ring-danger/20 shadow-[0px_4px_4px_0px_rgba(239,68,68,0.06)]",
+        true: "border-[1.5px] border-danger focus:border-danger focus:ring-1 focus:ring-danger shadow-none",
         false:
-          "border border-border hover:border-[#D4D4D4] focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.04)]",
+          "border border-border hover:border-[#D4D4D4] focus:border-primary focus:ring-1 focus:ring-primary shadow-none",
       },
     },
     defaultVariants: {

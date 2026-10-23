@@ -2,21 +2,21 @@
 
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Link } from '@/i18n/routing';
 import { authService } from '@/lib/api/auth/authService';
 import { useAuthStore } from '@/lib/store/authStore';
-import { AlertCircle, CheckCircle2, KeyRound, Loader2, RefreshCw } from 'lucide-react';
+import { Alert, Button } from '@/components/ui';
+import { CheckCircle2, Dumbbell } from 'lucide-react';
 
 function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialEmail = searchParams.get('email') || '';
+  const email = searchParams.get('email') || '';
 
   const loginToStore = useAuthStore((state) => state.login);
 
-  const [email, setEmail] = useState(initialEmail);
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [countdown, setCountdown] = useState(60);
@@ -24,9 +24,28 @@ function VerifyEmailContent() {
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  // Focus first input on mount
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, []);
+
+  // Auto-dismiss alerts after 6 seconds
+  useEffect(() => {
+    if (errorMsg || successMsg) {
+      const timer = setTimeout(() => {
+        setErrorMsg(null);
+        setSuccessMsg(null);
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMsg, successMsg]);
+
+  // Countdown timer for resend
   useEffect(() => {
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      const timer = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
       return () => clearTimeout(timer);
     } else {
       setCanResend(true);
@@ -34,43 +53,69 @@ function VerifyEmailContent() {
   }, [countdown]);
 
   const handleChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) return;
+    // Only accept digits
+    const cleaned = value.replace(/\D/g, '');
+    if (!cleaned && value !== '') return;
 
     const newOtp = [...otp];
-    newOtp[index] = value.slice(-1);
+    newOtp[index] = cleaned.slice(-1);
     setOtp(newOtp);
 
-    if (value && index < 5) {
+    // Auto-advance to next input or blur on complete
+    if (cleaned && index < 5) {
       inputRefs.current[index + 1]?.focus();
+    } else if (cleaned && index === 5) {
+      inputRefs.current[5]?.blur();
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+    if (e.key === 'Backspace') {
+      if (!otp[index] && index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
       inputRefs.current[index - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').trim();
-    if (/^\d{6}$/.test(pastedData)) {
-      const digits = pastedData.split('');
+    const pastedData = e.clipboardData.getData('text').trim().replace(/\D/g, '');
+    if (pastedData.length >= 6) {
+      const digits = pastedData.slice(0, 6).split('');
       setOtp(digits);
-      inputRefs.current[5]?.focus();
+      inputRefs.current[5]?.blur();
+    } else if (pastedData.length > 0) {
+      const digits = [...otp];
+      for (let i = 0; i < Math.min(pastedData.length, 6); i++) {
+        digits[i] = pastedData[i];
+      }
+      setOtp(digits);
+      inputRefs.current[Math.min(pastedData.length, 5)]?.focus();
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const fullOtp = otp.join('');
-    if (fullOtp.length !== 6) {
-      setErrorMsg('Vui lòng nhập đủ 6 chữ số mã OTP.');
+
+    if (!email.trim()) {
+      setErrorMsg('Email không được để trống.');
       return;
     }
 
-    if (!email) {
-      setErrorMsg('Vui lòng cung cấp địa chỉ email.');
+    // Trường hợp để trống OTP
+    if (!fullOtp) {
+      setErrorMsg('Mã OTP không được để trống.');
+      return;
+    }
+
+    // Trường hợp nhập chưa đủ 6 ký tự
+    if (fullOtp.length < 6) {
+      setErrorMsg('Mã OTP phải có 6 chữ số.');
       return;
     }
 
@@ -99,61 +144,95 @@ function VerifyEmailContent() {
         setErrorMsg('Mã OTP không hợp lệ hoặc đã hết hạn.');
       }
     } catch (err: any) {
-      const errMsg = err.response?.data?.error?.description || err.response?.data?.message || err.message;
-      setErrorMsg(errMsg || 'Mã OTP không hợp lệ. Vui lòng kiểm tra lại.');
+      if (!err.response) {
+        setErrorMsg('Không thể kết nối đến máy chủ backend (Network Error). Vui lòng kiểm tra lại kết nối.');
+        return;
+      }
+      const data = err.response?.data;
+
+      // Bóc tách lỗi validation từ FluentValidation Backend (ValidationProblemDetails 400)
+      if (data?.errors && typeof data.errors === 'object') {
+        const errorList: string[] = [];
+        for (const [_, msgs] of Object.entries(data.errors)) {
+          if (Array.isArray(msgs)) {
+            errorList.push(...msgs);
+          } else if (msgs) {
+            errorList.push(String(msgs));
+          }
+        }
+        if (errorList.length > 0) {
+          setErrorMsg(errorList[0]);
+          return;
+        }
+      }
+
+      const errMsg =
+        data?.error?.description ||
+        data?.error?.message ||
+        data?.message ||
+        data?.detail ||
+        'Mã OTP không chính xác hoặc đã hết hạn. Vui lòng thử lại.';
+      setErrorMsg(errMsg);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleResend = async () => {
+    if (!canResend || resendLoading) return;
+
+    if (!email.trim()) {
+      setErrorMsg('Vui lòng cung cấp email trước khi gửi lại mã OTP.');
+      return;
+    }
+
+    setResendLoading(true);
+    setErrorMsg(null);
+
+    try {
+      setCountdown(60);
+      setCanResend(false);
+      setSuccessMsg(`Mã OTP mới đã được gửi tới email ${email.trim()}`);
+    } catch (err: any) {
+      const data = err.response?.data;
+      setErrorMsg(data?.error?.description || data?.message || 'Không thể gửi lại mã OTP lúc này.');
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  const isOtpComplete = otp.join('').length === 6;
+
   return (
-    <div className="w-full max-w-md">
-      <div className="p-8 sm:p-10 rounded-3xl bg-white border border-[#E5E5E5] shadow-[0_20px_25px_-5px_rgba(0,0,0,0.06),0_8px_10px_-6px_rgba(0,0,0,0.04)]">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-[#FF6B00]/10 border border-[#FF6B00]/20 flex items-center justify-center text-[#FF6B00] mx-auto mb-4">
-            <KeyRound className="w-6 h-6" />
+    <div className="w-full max-w-[568px] mx-auto py-6">
+      {/* Container xác thực chuẩn tỉ lệ Figma padding 64px 80px, bo góc 32px */}
+      <div className="bg-white/95 backdrop-blur-md rounded-[32px] border border-white/60 shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.2)] px-6 sm:px-14 md:px-20 py-10 sm:py-12 md:py-14 transition-all">
+        {/* Header Section */}
+        <div className="flex flex-col items-center text-center mb-6">
+          <div className="w-14 h-14 rounded-2xl bg-[#FF6B00] flex items-center justify-center shadow-none mb-3.5">
+            <Dumbbell className="w-7 h-7 text-white" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0A0A0A] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight mb-2">
-            Xác Thực Email
+
+          {/* Tiêu đề chuẩn Inter SemiBold 30px, lineHeight 36px, tracking -0.0075em */}
+          <h1 className="font-sans font-semibold text-[26px] sm:text-[30px] leading-tight sm:leading-[36px] tracking-[-0.0075em] text-[#0A0A0A]">
+            XÁC THỰC MÃ OTP
           </h1>
-          <p className="text-sm text-[#525252]">
-            Nhập mã OTP gồm 6 chữ số đã được gửi đến email:
-          </p>
-          <p className="text-sm text-[#FF6B00] font-semibold mt-1">
-            {email || 'Email của bạn'}
-          </p>
+
+          {/* Đoạn mô tả: cùng style font-normal, khoảng cách sát hơn */}
+          <div className="font-sans text-center mt-1.5 space-y-0">
+            <p className="text-[15px] sm:text-[16px] leading-[22px] sm:leading-[26px] text-[#525252]">
+              Một mã xác thực được gửi tới email:
+            </p>
+            <p className="text-[15px] sm:text-[16px] leading-[22px] sm:leading-[26px] font-normal text-[#FF6B00] break-all">
+              {email || 'Chưa cung cấp email'}
+            </p>
+          </div>
         </div>
 
-        {errorMsg && (
-          <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs flex items-start gap-3">
-            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-red-500" />
-            <p className="flex-1">{errorMsg}</p>
-          </div>
-        )}
-
-        {successMsg && (
-          <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-start gap-3">
-            <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600" />
-            <p className="flex-1">{successMsg}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {!initialEmail && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-[#0A0A0A]">Địa chỉ Email</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="hoi.vien@gymx.vn"
-                className="w-full px-4 py-2.5 rounded-xl bg-white border border-[#E5E5E5] text-[#0A0A0A] placeholder-[#525252]/60 text-sm focus:outline-none focus:border-[#FF6B00] focus:ring-2 focus:ring-[#FF6B00]/20 transition-all"
-              />
-            </div>
-          )}
-
-          <div className="flex justify-between gap-2" onPaste={handlePaste}>
+        {/* OTP Input Form - Chiều rộng đúng 396px theo Figma */}
+        <form onSubmit={handleSubmit} noValidate className="w-full max-w-[396px] mx-auto">
+          {/* 6 OTP Input Boxes - width 56px, height 64px, rounded-lg (8px), font SemiBold 36px, shadow-none */}
+          <div className="grid grid-cols-6 gap-2.5 sm:gap-3 mt-6 mb-4 w-full" onPaste={handlePaste}>
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -162,49 +241,79 @@ function VerifyEmailContent() {
                 }}
                 type="text"
                 inputMode="numeric"
+                pattern="[0-9]*"
                 maxLength={1}
                 value={digit}
+                onFocus={(e) => {
+                  setErrorMsg(null);
+                  e.target.select();
+                }}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-14 sm:w-14 sm:h-16 text-center text-xl sm:text-2xl font-bold rounded-xl bg-white border-2 border-[#E5E5E5] text-[#0A0A0A] focus:outline-none focus:border-[#FF6B00] focus:ring-4 focus:ring-[#FF6B00]/15 transition-all"
+                className="w-full h-14 sm:h-16 text-center font-sans text-[30px] sm:text-[36px] font-semibold rounded-lg bg-transparent text-[#0A0A0A] border border-[#E5E5E5] shadow-none transition-all duration-150 focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
               />
             ))}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-[#FF6B00] hover:bg-[#FF8833] active:bg-[#CC5500] text-white font-bold text-sm shadow-[0_4px_14px_rgba(255,107,0,0.35)] transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Đang xác thực...
-              </>
+          {/* Resend OTP Row - Font Inter 14px, lineHeight 24px */}
+          <div className="flex items-center justify-between font-sans text-sm text-[#525252] mb-6 px-0.5 w-full">
+            <span>Bạn chưa nhận được mã?</span>
+            {canResend ? (
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resendLoading}
+                className="font-medium text-[#FF6B00] hover:text-[#FF8833] hover:underline cursor-pointer transition-colors"
+              >
+                Gửi lại
+              </button>
             ) : (
-              'Xác Nhận & Đăng Nhập'
+              <span className="text-[#525252]">
+                Gửi lại sau <strong className="font-medium text-[#FF6B00]">{countdown}s</strong>
+              </span>
             )}
-          </button>
-        </form>
+          </div>
 
-        <div className="mt-8 pt-6 border-t border-[#E5E5E5] flex items-center justify-between text-xs text-[#525252]">
-          <span>Chưa nhận được mã?</span>
-          {canResend ? (
-            <button
-              type="button"
-              onClick={() => {
-                setCountdown(60);
-                setCanResend(false);
-              }}
-              className="font-bold text-[#FF6B00] hover:text-[#CC5500] flex items-center gap-1 transition-colors"
+          {/* Submit Button - Width 395px, Height 44px, bo góc 8px (rounded-lg), shadow-none */}
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            isLoading={loading}
+            disabled={loading}
+            className="w-full h-11 font-sans text-sm sm:text-base font-semibold rounded-lg bg-[#FF6B00] text-white shadow-none hover:bg-[#FF8833] cursor-pointer transition-all duration-200"
+          >
+            Xác thực email
+          </Button>
+        </form>
+      </div>
+
+      {/* Toast Alert – Góc phải màn hình */}
+      {(errorMsg || successMsg) && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-[420px] w-[calc(100%-3rem)] animate-in fade-in slide-in-from-bottom-5 duration-300">
+          {errorMsg && (
+            <Alert
+              variant="danger"
+              onClose={() => setErrorMsg(null)}
+              className="shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-[#E5E5E5] bg-white"
             >
-              <RefreshCw className="w-3.5 h-3.5" /> Gửi lại mã
-            </button>
-          ) : (
-            <span className="text-[#99A1AF] font-medium">Gửi lại sau {countdown}s</span>
+              {errorMsg}
+            </Alert>
+          )}
+          {successMsg && (
+            <Alert
+              variant="success"
+              onClose={() => setSuccessMsg(null)}
+              className="shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-[#E5E5E5] bg-white"
+            >
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                <span>{successMsg}</span>
+              </div>
+            </Alert>
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -214,7 +323,7 @@ export default function VerifyEmailPage() {
     <Suspense
       fallback={
         <div className="p-8 text-center text-[#525252]">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#FF6B00]" />
+          <div className="w-8 h-8 border-4 border-[#FF6B00] border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       }
     >
