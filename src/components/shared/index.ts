@@ -6,3 +6,5 @@ export { default as EmptyState } from './EmptyState';
 export * from './EmptyState';
 export { default as NotificationBell } from './NotificationBell';
 export * from './NotificationBell';
+export { default as AuthGuard } from './AuthGuard';
+export * from './AuthGuard';

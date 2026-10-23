@@ -1,32 +1,32 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/lib/store/authStore';
+import { ENDPOINTS } from '@/lib/api/endpoints';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5113/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5113/api';
 
-// Khởi tạo trạm trung chuyển Axios duy nhất cho toàn ứng dụng
+// Axios instance duy nhất cho toàn ứng dụng
 export const apiClient = axios.create({
   baseURL: BASE_URL,
   timeout: 15000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Request Interceptor: Tự động đính kèm Token bảo mật trước khi gửi lên Server
+// ─── Request Interceptor ──────────────────────────────────────────────────────
+// Tự động đính kèm Bearer Token trước mỗi request
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().accessToken;
-
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
-// Response Interceptor: Tự động xin cấp lại Token mới khi gặp lỗi 401 hết hạn
+// ─── Response Interceptor ─────────────────────────────────────────────────────
+// 1. Unwrap response.data tự động (trả về data, không phải AxiosResponse)
+// 2. Nếu nhận lỗi 401, thử Refresh Token một lần; nếu fail thì logout
 apiClient.interceptors.response.use(
   (response) => response.data,
   async (error: AxiosError) => {
@@ -39,15 +39,10 @@ apiClient.interceptors.response.use(
         const refreshToken = useAuthStore.getState().refreshToken;
         if (!refreshToken) throw new Error('No refresh token');
 
-        // Gọi API làm mới Access Token từ Backend
-        const res = await axios.post(`${BASE_URL}/auth/refresh-token`, {
-          refreshToken,
-        });
+        // Gọi trực tiếp axios (không qua apiClient) để tránh vòng lặp interceptor
+        const res = await axios.post(`${BASE_URL}${ENDPOINTS.auth.refreshToken}`, { refreshToken });
+        const { accessToken, refreshToken: newRefreshToken } = res.data?.data ?? res.data;
 
-        const data = res.data?.data || res.data;
-        const { accessToken, refreshToken: newRefreshToken } = data;
-
-        // Lưu chìa khóa mới vào kho bảo mật Store
         useAuthStore.getState().setTokens(accessToken, newRefreshToken);
 
         if (originalRequest.headers) {
@@ -55,20 +50,18 @@ apiClient.interceptors.response.use(
         }
 
         return apiClient(originalRequest);
-      } catch (refreshError) {
-        // Đăng xuất và đá về trang Login nếu Refresh Token cũng hết hạn
+      } catch {
+        // Refresh Token cũng hết hạn → đăng xuất
         useAuthStore.getState().logout();
-
         if (typeof window !== 'undefined') {
           window.location.href = '/login';
         }
-
-        return Promise.reject(refreshError);
+        return Promise.reject(error);
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

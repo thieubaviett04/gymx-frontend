@@ -1,24 +1,22 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { AuthTokenData, UserRole } from '@/types/auth';
-
-export interface User {
-  id: string;
-  email: string;
-  fullName: string;
-  roles: UserRole[];
-  avatarUrl?: string | null;
-}
+import type { AuthTokenData, UserRole } from '@/types/auth';
+import type { AuthUser } from '@/types/user';
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
+
+  // Actions
   login: (data: AuthTokenData) => void;
   setTokens: (accessToken: string, refreshToken: string) => void;
   logout: () => void;
+
+  // Helpers
   hasRole: (role: UserRole) => boolean;
+  primaryRole: () => UserRole | null;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -44,10 +42,7 @@ export const useAuthStore = create<AuthState>()(
         }),
 
       setTokens: (accessToken, refreshToken) =>
-        set({
-          accessToken,
-          refreshToken,
-        }),
+        set({ accessToken, refreshToken }),
 
       logout: () =>
         set({
@@ -57,14 +52,18 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
         }),
 
-      hasRole: (role: UserRole) => {
-        const roles = get().user?.roles || [];
-        return roles.includes(role);
+      hasRole: (role) => get().user?.roles.includes(role) ?? false,
+
+      /** Trả về role ưu tiên cao nhất (ADMIN > RECEPTIONIST > TRAINER > MEMBER) */
+      primaryRole: () => {
+        const roles = get().user?.roles ?? [];
+        const priority: UserRole[] = ['ADMIN', 'RECEPTIONIST', 'TRAINER', 'MEMBER'];
+        return priority.find((r) => roles.includes(r)) ?? null;
       },
     }),
     {
       name: 'gymx-auth-storage',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 );
