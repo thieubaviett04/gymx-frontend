@@ -1,3 +1,4 @@
+import axios from 'axios';
 import apiClient from '@/lib/api/core/client';
 import { ENDPOINTS } from '@/lib/api/endpoints';
 import type {
@@ -14,8 +15,11 @@ import type {
 } from '@/types/auth';
 
 export const authService = {
-  login: (payload: LoginRequest) =>
-    apiClient.post<unknown, AuthApiResponse<AuthTokenData>>(ENDPOINTS.auth.login, payload),
+  // Đăng nhập qua Route Handler BFF để set HttpOnly Cookie cho refreshToken
+  login: async (payload: LoginRequest): Promise<AuthApiResponse<AuthTokenData>> => {
+    const res = await axios.post<AuthApiResponse<AuthTokenData>>('/api/auth/login', payload);
+    return res.data;
+  },
 
   register: async (payload: RegisterRequest): Promise<{ success: boolean; message: string; email: string }> => {
     const res = await apiClient.post<unknown, { message?: string; email?: string } | string>(
@@ -45,14 +49,18 @@ export const authService = {
   resetPassword: (payload: ResetPasswordRequest) =>
     apiClient.post<unknown, string>(ENDPOINTS.auth.resetPassword, payload),
 
-  refreshToken: (payload: RefreshTokenRequest) =>
-    apiClient.post<unknown, RefreshTokenResponse>(ENDPOINTS.auth.refreshToken, payload),
+  refreshToken: async (_payload?: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
+    const res = await axios.post<{ success: boolean; data: RefreshTokenResponse }>('/api/auth/refresh');
+    return res.data.data;
+  },
 
   googleLogin: (idToken: string) =>
     apiClient.post<unknown, AuthApiResponse<AuthTokenData>>(ENDPOINTS.auth.googleLogin, { idToken }),
 
-  logout: (refreshToken: string) =>
-    apiClient.post<unknown, { message: string }>(ENDPOINTS.auth.logout, { refreshToken }),
+  logout: async (_refreshToken?: string): Promise<{ message: string }> => {
+    const res = await axios.post<{ success: boolean; message?: string }>('/api/auth/logout');
+    return { message: res.data.message || 'Đăng xuất thành công' };
+  },
 };
 
 export default authService;

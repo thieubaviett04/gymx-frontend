@@ -6,13 +6,15 @@ import type { AuthUser } from '@/types/user';
 interface AuthState {
   user: AuthUser | null;
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
+  _hasHydrated: boolean;
 
   // Actions
   login: (data: AuthTokenData) => void;
-  setTokens: (accessToken: string, refreshToken: string) => void;
+  setAccessToken: (token: string | null) => void;
+  setTokens: (accessToken: string, _refreshToken?: string) => void;
   logout: () => void;
+  setHasHydrated: (state: boolean) => void;
 
   // Helpers
   hasRole: (role: UserRole) => boolean;
@@ -24,8 +26,8 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
+      _hasHydrated: false,
 
       login: (data: AuthTokenData) =>
         set({
@@ -37,20 +39,24 @@ export const useAuthStore = create<AuthState>()(
             avatarUrl: data.avatarUrl,
           },
           accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
           isAuthenticated: true,
         }),
 
-      setTokens: (accessToken, refreshToken) =>
-        set({ accessToken, refreshToken }),
+      setAccessToken: (token) =>
+        set({ accessToken: token }),
+
+      setTokens: (accessToken) =>
+        set({ accessToken }),
 
       logout: () =>
         set({
           user: null,
           accessToken: null,
-          refreshToken: null,
           isAuthenticated: false,
         }),
+
+      setHasHydrated: (state) =>
+        set({ _hasHydrated: state }),
 
       hasRole: (role) => get().user?.roles.includes(role) ?? false,
 
@@ -64,6 +70,14 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'gymx-auth-storage',
       storage: createJSONStorage(() => localStorage),
+      // Chỉ lưu thông tin không nhạy cảm vào localStorage — triệt tiêu rủi ro lộ refreshToken qua XSS
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );

@@ -13,6 +13,9 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useLogout } from '@/lib/hooks';
+import { ConfirmDialog } from '@/components/ui';
 
 interface AdminSidebarProps {
   isOpen?: boolean;
@@ -31,6 +34,10 @@ const navItems = [
 ];
 
 export function AdminSidebar({ isOpen, onClose, activePath = '/admin/dashboard' }: AdminSidebarProps) {
+  const { user } = useAuthStore();
+  const { isLogoutOpen, setIsLogoutOpen, isLoggingOut, handleLogout } = useLogout();
+
+
   return (
     <>
       {/* Mobile backdrop */}
@@ -109,23 +116,33 @@ export function AdminSidebar({ isOpen, onClose, activePath = '/admin/dashboard' 
         <div className="p-4 border-t border-[#F3F4F6] space-y-3">
           <div className="flex items-center gap-3 p-2 rounded-xl bg-[#F9FAFB]">
             <div className="w-9 h-9 rounded-xl bg-[#101828] text-white flex items-center justify-center font-bold text-xs">
-              AD
+              {user?.fullName?.slice(0, 2).toUpperCase() || 'AD'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-[#101828] truncate">Admin Quản Trị</p>
-              <p className="text-[11px] text-[#99A1AF] truncate">admin@gymmax.vn</p>
+              <p className="text-xs font-bold text-[#101828] truncate">{user?.fullName || 'Admin Quản Trị'}</p>
+              <p className="text-[11px] text-[#99A1AF] truncate">{user?.email || 'admin@gymx.vn'}</p>
             </div>
           </div>
 
-          <Link
-            href="/login"
-            className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
+          <button
+            type="button"
+            onClick={() => setIsLogoutOpen(true)}
+            className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Đăng xuất</span>
-          </Link>
+          </button>
         </div>
       </aside>
+
+      {/* Pop Up xác nhận đăng xuất chuẩn Figma 51:401 */}
+      <ConfirmDialog
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        onConfirm={handleLogout}
+        state="logout"
+        isLoading={isLoggingOut}
+      />
     </>
   );
 }

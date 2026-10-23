@@ -76,8 +76,15 @@ export function parseAuthBackendError(err: any): FormErrors {
     return { general: errDesc || 'Hệ thống đang gặp sự cố khi gửi email xác thực. Vui lòng thử lại sau.' };
   } else if (errCode === 'Auth.InvalidCredentials') {
     return { general: errDesc || 'Email hoặc mật khẩu không chính xác.' };
-  } else if (errCode === 'Auth.EmailNotConfirmed') {
-    return { general: errDesc || 'Email chưa được xác thực. Vui lòng kiểm tra hòm thư.' };
+  } else if (errCode === 'Auth.EmailNotConfirmed' || errCode === 'Auth.UnverifiedEmail') {
+    return {
+      general: errDesc || 'Tài khoản chưa xác thực email. Vui lòng nhập mã OTP đã gửi đến email của bạn.',
+      unverifiedEmail: true,
+    };
+  } else if (errCode === 'Auth.AccountLocked') {
+    return { general: errDesc || 'Tài khoản của bạn tạm thời bị khóa. Vui lòng liên hệ quản trị viên.' };
+  } else if (errCode === 'Auth.AccountInactive') {
+    return { general: errDesc || 'Tài khoản chưa được kích hoạt. Vui lòng liên hệ quản trị viên.' };
   }
 
   return { general: errDesc || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.' };
