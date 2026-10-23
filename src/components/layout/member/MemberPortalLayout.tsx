@@ -11,7 +11,11 @@ import {
   QrCode,
   User,
 } from 'lucide-react';
+import { useRouter } from '@/i18n/routing';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useLogout } from '@/lib/hooks';
 import { NotificationBell } from '@/components/shared';
+import { ConfirmDialog } from '@/components/ui';
 
 interface MemberPortalLayoutProps {
   children: React.ReactNode;
@@ -30,6 +34,9 @@ export function MemberPortalLayout({
   children,
   activePath = '/member/dashboard',
 }: MemberPortalLayoutProps) {
+  const { user } = useAuthStore();
+  const { isLogoutOpen, setIsLogoutOpen, isLoggingOut, handleLogout } = useLogout();
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-[#101828] flex flex-col">
       {/* Top Navbar */}
@@ -72,16 +79,26 @@ export function MemberPortalLayout({
             <div className="w-8 h-8 rounded-full bg-[#FF6B00] text-white flex items-center justify-center text-xs font-bold">
               HV
             </div>
-            <Link
-              href="/login"
-              className="text-xs text-[#6A7282] hover:text-red-600 p-1 rounded-lg"
+            <button
+              type="button"
+              onClick={() => setIsLogoutOpen(true)}
+              className="text-xs text-[#6A7282] hover:text-red-600 p-1 rounded-lg cursor-pointer transition-colors"
               title="Đăng xuất"
             >
               <LogOut className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
+
+      {/* Pop Up xác nhận đăng xuất chuẩn Figma 51:401 */}
+      <ConfirmDialog
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        onConfirm={handleLogout}
+        state="logout"
+        isLoading={isLoggingOut}
+      />
 
       {/* Main Content */}
       <main className="flex-1 max-w-[1280px] w-full mx-auto p-6 md:p-8">

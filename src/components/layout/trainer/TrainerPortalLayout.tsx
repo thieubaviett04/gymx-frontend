@@ -10,7 +10,10 @@ import {
   LogOut,
   Users,
 } from 'lucide-react';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useLogout } from '@/lib/hooks';
 import { NotificationBell } from '@/components/shared';
+import { ConfirmDialog } from '@/components/ui';
 
 interface TrainerPortalLayoutProps {
   children: React.ReactNode;
@@ -28,6 +31,9 @@ export function TrainerPortalLayout({
   children,
   activePath = '/trainer/schedule',
 }: TrainerPortalLayoutProps) {
+  const { user } = useAuthStore();
+  const { isLogoutOpen, setIsLogoutOpen, isLoggingOut, handleLogout } = useLogout();
+
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-[#101828] flex flex-col">
       <header className="sticky top-0 z-40 bg-white border-b border-[#E5E7EB] px-6 h-16 flex items-center justify-between">
@@ -74,16 +80,26 @@ export function TrainerPortalLayout({
             <div className="w-8 h-8 rounded-full bg-[#101828] text-white flex items-center justify-center text-xs font-bold">
               PT
             </div>
-            <Link
-              href="/login"
-              className="text-xs text-[#6A7282] hover:text-red-600 p-1 rounded-lg"
+            <button
+              type="button"
+              onClick={() => setIsLogoutOpen(true)}
+              className="text-xs text-[#6A7282] hover:text-red-600 p-1 rounded-lg cursor-pointer"
               title="Đăng xuất"
             >
               <LogOut className="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </header>
+
+      {/* Pop Up xác nhận đăng xuất chuẩn Figma 51:401 */}
+      <ConfirmDialog
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        onConfirm={handleLogout}
+        state="logout"
+        isLoading={isLoggingOut}
+      />
 
       <main className="flex-1 max-w-[1280px] w-full mx-auto p-6 md:p-8">
         {children}

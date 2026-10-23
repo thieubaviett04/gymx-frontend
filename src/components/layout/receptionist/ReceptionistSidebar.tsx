@@ -11,6 +11,8 @@ import {
   Users,
   X,
 } from 'lucide-react';
+import { useLogout } from '@/lib/hooks';
+import { ConfirmDialog } from '@/components/ui';
 
 interface ReceptionistSidebarProps {
   isOpen?: boolean;
@@ -26,6 +28,8 @@ const navItems = [
 ];
 
 export function ReceptionistSidebar({ isOpen, onClose, activePath = '/receptionist' }: ReceptionistSidebarProps) {
+  const { isLogoutOpen, setIsLogoutOpen, isLoggingOut, handleLogout } = useLogout();
+
   return (
     <>
       {isOpen && (
@@ -91,15 +95,25 @@ export function ReceptionistSidebar({ isOpen, onClose, activePath = '/receptioni
         </div>
 
         <div className="p-4 border-t border-[#F3F4F6]">
-          <Link
-            href="/login"
-            className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
+          <button
+            type="button"
+            onClick={() => setIsLogoutOpen(true)}
+            className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Đăng xuất</span>
-          </Link>
+          </button>
         </div>
       </aside>
+
+      {/* Pop Up xác nhận đăng xuất chuẩn Figma 51:401 */}
+      <ConfirmDialog
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        onConfirm={handleLogout}
+        state="logout"
+        isLoading={isLoggingOut}
+      />
     </>
   );
 }

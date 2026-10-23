@@ -7,7 +7,10 @@ import { Dumbbell, ArrowLeft } from 'lucide-react';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAuthBg = pathname?.includes('/register') || pathname?.includes('/verify-email');
+  const isAuthBg =
+    pathname?.includes('/register') ||
+    pathname?.includes('/verify-email') ||
+    pathname?.includes('/login');
 
   return (
     <div className="min-h-screen bg-[#F9FAFB] text-[#0A0A0A] font-['Inter',sans-serif] flex flex-col justify-between selection:bg-[#FF6B00] selection:text-white relative overflow-hidden">

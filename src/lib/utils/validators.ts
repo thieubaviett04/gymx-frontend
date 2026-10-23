@@ -12,7 +12,9 @@ export type LoginFormData = {
   password: string;
 };
 
-export type FormErrors = Partial<Record<keyof RegisterFormData | 'general', string>>;
+export type FormErrors = Partial<Record<keyof RegisterFormData | 'general', string>> & {
+  unverifiedEmail?: boolean;
+};
 
 /**
  * Validate Họ và tên
