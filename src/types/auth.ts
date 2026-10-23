@@ -45,13 +45,14 @@ export interface ForgotPasswordRequest {
 
 export interface VerifyOtpRequest {
   email: string;
-  otp: string;
+  otp?: string;
+  otpCode?: string;
 }
 
 export interface ResetPasswordRequest {
-  email: string;
   token: string;
   newPassword: string;
+  email?: string;
 }
 
 export interface RefreshTokenRequest {

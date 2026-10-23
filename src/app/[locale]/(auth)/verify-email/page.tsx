@@ -1,9 +1,12 @@
 'use client';
 
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
+import { useSearchParams } from 'next/navigation';
 import { authService } from '@/lib/api/auth/authService';
 import { useAuthStore } from '@/lib/store/authStore';
+import { useGuestGuard } from '@/lib/hooks';
+import { saveResetSession } from '@/lib/utils';
 import { Alert, Button } from '@/components/ui';
 import { CheckCircle2, Dumbbell } from 'lucide-react';
 
@@ -11,8 +14,14 @@ function VerifyEmailContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get('email') || '';
+  const flow = searchParams.get('flow') || '';
+
+  // Chặn truy cập ngược nếu người dùng đã đăng nhập
+  const { isCheckingAuth } = useGuestGuard();
 
   const loginToStore = useAuthStore((state) => state.login);
+
+  const isResetPasswordFlow = flow === 'reset-password';
 
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
@@ -123,25 +132,48 @@ function VerifyEmailContent() {
     setErrorMsg(null);
 
     try {
-      const res = await authService.verifyEmail({
-        email: email.trim(),
-        otp: fullOtp,
-      });
+      if (isResetPasswordFlow) {
+        // Luồng Quên mật khẩu: Xác thực OTP để lấy resetToken
+        const res = await authService.verifyOtp({
+          email: email.trim(),
+          otp: fullOtp,
+        });
 
-      if (res.success && res.data) {
-        loginToStore(res.data);
-        setSuccessMsg('Xác thực email thành công! Đang chuyển hướng...');
+        const resetToken = (res as any)?.token || (res as any)?.Token || '';
+        if (!resetToken) {
+          setErrorMsg('Không tìm thấy token hợp lệ từ hệ thống.');
+          return;
+        }
+
+        // Lưu tạm resetToken vào sessionStorage để chống mất trạng thái F5 / reload
+        saveResetSession(resetToken, email.trim());
+        setSuccessMsg('Xác thực OTP thành công! Đang chuyển tiếp...');
 
         setTimeout(() => {
-          const roles = res.data.roles || [];
-          if (roles.includes('ADMIN')) {
-            router.push('/admin');
-          } else {
-            router.push('/member');
-          }
-        }, 1200);
+          router.push(`/reset-password?token=${encodeURIComponent(resetToken)}`);
+        }, 1000);
       } else {
-        setErrorMsg('Mã OTP không hợp lệ hoặc đã hết hạn.');
+        // Luồng Đăng ký tài khoản: Xác thực Email và tự động đăng nhập
+        const res = await authService.verifyEmail({
+          email: email.trim(),
+          otp: fullOtp,
+        });
+
+        if (res.success && res.data) {
+          loginToStore(res.data);
+          setSuccessMsg('Xác thực email thành công! Đang chuyển hướng...');
+
+          setTimeout(() => {
+            const roles = res.data.roles || [];
+            if (roles.includes('ADMIN')) {
+              router.push('/admin');
+            } else {
+              router.push('/member');
+            }
+          }, 1200);
+        } else {
+          setErrorMsg('Mã OTP không hợp lệ hoặc đã hết hạn.');
+        }
       }
     } catch (err: any) {
       if (!err.response) {
@@ -190,6 +222,9 @@ function VerifyEmailContent() {
     setErrorMsg(null);
 
     try {
+      if (isResetPasswordFlow) {
+        await authService.forgotPassword({ email: email.trim() });
+      }
       setCountdown(60);
       setCanResend(false);
       setSuccessMsg(`Mã OTP mới đã được gửi tới email ${email.trim()}`);
@@ -200,6 +235,10 @@ function VerifyEmailContent() {
       setResendLoading(false);
     }
   };
+
+  if (isCheckingAuth) {
+    return null;
+  }
 
   const isOtpComplete = otp.join('').length === 6;
 
@@ -215,7 +254,7 @@ function VerifyEmailContent() {
 
           {/* Tiêu đề chuẩn Inter SemiBold 30px, lineHeight 36px, tracking -0.0075em */}
           <h1 className="font-sans font-semibold text-[26px] sm:text-[30px] leading-tight sm:leading-[36px] tracking-[-0.0075em] text-[#0A0A0A]">
-            XÁC THỰC MÃ OTP
+            {isResetPasswordFlow ? 'XÁC THỰC MÃ OTP' : 'XÁC THỰC EMAIL'}
           </h1>
 
           {/* Đoạn mô tả: cùng style font-normal, khoảng cách sát hơn */}
@@ -280,11 +319,28 @@ function VerifyEmailContent() {
             variant="primary"
             size="lg"
             isLoading={loading}
-            disabled={loading}
+            disabled={loading || !isOtpComplete}
             className="w-full h-11 font-sans text-sm sm:text-base font-semibold rounded-lg bg-[#FF6B00] text-white shadow-none hover:bg-[#FF8833] cursor-pointer transition-all duration-200"
           >
-            Xác thực email
+            {isResetPasswordFlow ? 'Xác thực mã' : 'Xác thực email'}
           </Button>
+
+          {/* Nút quay lại */}
+          <div className="text-center mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (isResetPasswordFlow) {
+                  router.push('/forgot-password');
+                } else {
+                  router.push('/login');
+                }
+              }}
+              className="text-sm font-medium text-[#737373] hover:text-[#0A0A0A] hover:underline cursor-pointer transition-colors"
+            >
+              Quay lại {isResetPasswordFlow ? 'nhập email' : 'đăng nhập'}
+            </button>
+          </div>
         </form>
       </div>
 

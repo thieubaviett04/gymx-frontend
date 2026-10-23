@@ -44,10 +44,16 @@ export const authService = {
     apiClient.post<unknown, { message: string }>(ENDPOINTS.auth.forgotPassword, payload),
 
   verifyOtp: (payload: VerifyOtpRequest) =>
-    apiClient.post<unknown, { token: string; expiresAt: string }>(ENDPOINTS.auth.verifyOtp, payload),
+    apiClient.post<unknown, { token: string; expiresAt?: string }>(ENDPOINTS.auth.verifyOtp, {
+      email: payload.email,
+      otpCode: payload.otpCode ?? payload.otp,
+    }),
 
   resetPassword: (payload: ResetPasswordRequest) =>
-    apiClient.post<unknown, string>(ENDPOINTS.auth.resetPassword, payload),
+    apiClient.post<unknown, { email?: string; message?: string } | string>(ENDPOINTS.auth.resetPassword, {
+      token: payload.token,
+      newPassword: payload.newPassword,
+    }),
 
   refreshToken: async (_payload?: RefreshTokenRequest): Promise<RefreshTokenResponse> => {
     const res = await axios.post<{ success: boolean; data: RefreshTokenResponse }>('/api/auth/refresh');
