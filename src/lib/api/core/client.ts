@@ -2,7 +2,10 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/lib/store/authStore';
 import { ENDPOINTS } from '@/lib/api/endpoints';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5113/api';
+// Chuẩn hóa BASE_URL: loại bỏ dấu gạch chéo cuối và tránh trùng lặp /v1 khi ENDPOINTS đã có /v1
+const rawBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5113/api';
+const cleanBaseUrl = rawBaseUrl.replace(/\/+$/, '').replace(/\/v1$/, '');
+const BASE_URL = cleanBaseUrl.endsWith('/api') ? cleanBaseUrl : `${cleanBaseUrl}/api`;
 
 // Axios instance duy nhất cho toàn ứng dụng
 export const apiClient = axios.create({
