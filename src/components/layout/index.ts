@@ -4,6 +4,11 @@ export { default as AdminHeader } from './admin/AdminHeader';
 export { default as AdminSidebar } from './admin/AdminSidebar';
 export { default as AdminFooter } from './admin/AdminFooter';
 
+// Receptionist Layout
+export { default as ReceptionistDashboardLayout } from './receptionist/ReceptionistDashboardLayout';
+export { default as ReceptionistSidebar } from './receptionist/ReceptionistSidebar';
+export { default as ReceptionistHeader } from './receptionist/ReceptionistHeader';
+
 // Member Layout
 export { default as MemberPortalLayout } from './member/MemberPortalLayout';
 

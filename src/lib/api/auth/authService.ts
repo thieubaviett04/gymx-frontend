@@ -1,9 +1,12 @@
 import apiClient from '@/lib/api/core/client';
-import {
+import { ENDPOINTS } from '@/lib/api/endpoints';
+import type {
   AuthApiResponse,
   AuthTokenData,
   ForgotPasswordRequest,
   LoginRequest,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
   RegisterRequest,
   ResetPasswordRequest,
   VerifyEmailRequest,
@@ -11,43 +14,45 @@ import {
 } from '@/types/auth';
 
 export const authService = {
-  login: async (payload: LoginRequest): Promise<AuthApiResponse<AuthTokenData>> => {
-    return apiClient.post('/auth/login', payload);
-  },
+  login: (payload: LoginRequest) =>
+    apiClient.post<unknown, AuthApiResponse<AuthTokenData>>(ENDPOINTS.auth.login, payload),
 
-  register: async (payload: RegisterRequest): Promise<{ success: boolean; message: string; email?: string }> => {
-    const res = await apiClient.post<unknown, { message?: string; email?: string } | string>('/auth/register', payload);
-    const message = typeof res === 'string' ? res : res?.message || 'Đăng ký thành công. Vui lòng kiểm tra email để nhận mã OTP.';
+  register: async (payload: RegisterRequest): Promise<{ success: boolean; message: string; email: string }> => {
+    const res = await apiClient.post<unknown, { message?: string; email?: string } | string>(
+      ENDPOINTS.auth.register,
+      payload,
+    );
+    const message =
+      typeof res === 'string'
+        ? res
+        : res?.message || 'Đăng ký thành công. Vui lòng kiểm tra email để nhận mã OTP.';
     const email = typeof res === 'object' && res?.email ? res.email : payload.email;
     return { success: true, message, email };
   },
 
-  verifyEmail: async (payload: VerifyEmailRequest): Promise<AuthApiResponse<AuthTokenData>> => {
-    return apiClient.post('/auth/verify-email', {
+  verifyEmail: (payload: VerifyEmailRequest) =>
+    apiClient.post<unknown, AuthApiResponse<AuthTokenData>>(ENDPOINTS.auth.verifyEmail, {
       email: payload.email,
-      otpCode: payload.otpCode || payload.otp,
-    });
-  },
+      otpCode: payload.otpCode ?? payload.otp,
+    }),
 
-  googleLogin: async (idToken: string): Promise<AuthApiResponse<AuthTokenData>> => {
-    return apiClient.post('/auth/google-login', { idToken });
-  },
+  forgotPassword: (payload: ForgotPasswordRequest) =>
+    apiClient.post<unknown, { message: string }>(ENDPOINTS.auth.forgotPassword, payload),
 
-  forgotPassword: async (payload: ForgotPasswordRequest): Promise<{ message: string }> => {
-    return apiClient.post('/auth/forgot-password', payload);
-  },
+  verifyOtp: (payload: VerifyOtpRequest) =>
+    apiClient.post<unknown, { token: string; expiresAt: string }>(ENDPOINTS.auth.verifyOtp, payload),
 
-  verifyOtp: async (payload: VerifyOtpRequest): Promise<{ token: string; expiresAt: string }> => {
-    return apiClient.post('/auth/verify-otp', payload);
-  },
+  resetPassword: (payload: ResetPasswordRequest) =>
+    apiClient.post<unknown, string>(ENDPOINTS.auth.resetPassword, payload),
 
-  resetPassword: async (payload: ResetPasswordRequest): Promise<string> => {
-    return apiClient.post('/auth/reset-password', payload);
-  },
+  refreshToken: (payload: RefreshTokenRequest) =>
+    apiClient.post<unknown, RefreshTokenResponse>(ENDPOINTS.auth.refreshToken, payload),
 
-  logout: async (refreshToken: string): Promise<{ message: string }> => {
-    return apiClient.post('/auth/logout', { refreshToken });
-  },
+  googleLogin: (idToken: string) =>
+    apiClient.post<unknown, AuthApiResponse<AuthTokenData>>(ENDPOINTS.auth.googleLogin, { idToken }),
+
+  logout: (refreshToken: string) =>
+    apiClient.post<unknown, { message: string }>(ENDPOINTS.auth.logout, { refreshToken }),
 };
 
 export default authService;

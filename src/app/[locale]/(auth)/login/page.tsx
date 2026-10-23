@@ -8,24 +8,7 @@ import { useAuthStore } from '@/lib/store/authStore';
 import { Alert, Button, Input } from '@/components/ui';
 import { ArrowRight } from 'lucide-react';
 
-type FormErrors = {
-  email?: string;
-  password?: string;
-};
-
-function validateField(name: string, value: string): string | undefined {
-  switch (name) {
-    case 'email':
-      if (!value.trim()) return 'Email không được để trống.';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) return 'Email không đúng định dạng.';
-      return undefined;
-    case 'password':
-      if (!value) return 'Mật khẩu không được để trống.';
-      return undefined;
-    default:
-      return undefined;
-  }
-}
+import { validateAuthField, validateLoginForm, type FormErrors } from '@/lib/utils';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -59,7 +42,7 @@ export default function LoginPage() {
 
   const handleBlur = (field: string, value: string) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    const err = validateField(field, value);
+    const err = validateAuthField(field, value);
     if (err) {
       setErrors((prev) => ({ ...prev, [field]: err }));
     }
@@ -67,18 +50,12 @@ export default function LoginPage() {
 
   const handleChange = (field: string, value: string) => {
     if (errors[field as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [field]: validateField(field, value) }));
+      setErrors((prev) => ({ ...prev, [field]: validateAuthField(field, value) }));
     }
   };
 
   const validateAll = (): boolean => {
-    const newErrors: FormErrors = {
-      email: validateField('email', email),
-      password: validateField('password', password),
-    };
-    (Object.keys(newErrors) as (keyof FormErrors)[]).forEach((k) => {
-      if (newErrors[k] === undefined) delete newErrors[k];
-    });
+    const newErrors = validateLoginForm({ email: email.trim(), password });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -100,16 +77,15 @@ export default function LoginPage() {
       if (res.success && res.data) {
         loginToStore(res.data);
 
-        const roles = res.data.roles || [];
-        if (roles.includes('ADMIN')) {
-          router.push('/admin');
-        } else if (roles.includes('TRAINER')) {
-          router.push('/trainer');
-        } else if (roles.includes('RECEPTIONIST')) {
-          router.push('/receptionist');
-        } else {
-          router.push('/member');
-        }
+        const dashboardMap: Record<string, string> = {
+          ADMIN:        '/admin',
+          RECEPTIONIST: '/receptionist',
+          TRAINER:      '/trainer',
+          MEMBER:       '/member',
+        };
+
+        const primaryRole = useAuthStore.getState().primaryRole();
+        router.push(primaryRole ? (dashboardMap[primaryRole] ?? '/') : '/');
       } else {
         setErrorMsg('Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.');
       }

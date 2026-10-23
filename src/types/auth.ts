@@ -1,5 +1,9 @@
+import { ApiResponse } from './api';
+
+// ─── Roles ───────────────────────────────────────────────────────────────────
 export type UserRole = 'ADMIN' | 'RECEPTIONIST' | 'TRAINER' | 'MEMBER';
 
+// ─── Auth Token ──────────────────────────────────────────────────────────────
 export interface AuthTokenData {
   accessToken: string;
   refreshToken: string;
@@ -11,16 +15,10 @@ export interface AuthTokenData {
   avatarUrl?: string | null;
 }
 
-export interface AuthApiResponse<T = AuthTokenData> {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
+// ─── Auth API Response shortcuts ─────────────────────────────────────────────
+export type AuthApiResponse<T = AuthTokenData> = ApiResponse<T>;
 
+// ─── Request Payloads ────────────────────────────────────────────────────────
 export interface LoginRequest {
   email: string;
   password: string;
@@ -54,4 +52,13 @@ export interface ResetPasswordRequest {
   email: string;
   token: string;
   newPassword: string;
+}
+
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
 }

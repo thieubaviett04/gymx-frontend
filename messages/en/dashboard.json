@@ -1,0 +1,13 @@
+{
+  "Dashboard": {
+    "welcome": "Welcome back",
+    "overview": "Overview",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Sign out",
+    "admin": "Admin Dashboard",
+    "trainer": "Trainer Portal",
+    "receptionist": "Reception & Check-in",
+    "member": "Member Portal"
+  }
+}

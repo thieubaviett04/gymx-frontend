@@ -6,12 +6,12 @@ import { authService } from '@/lib/api/auth/authService';
 import { Alert, Button, Input } from '@/components/ui';
 import { Dumbbell } from 'lucide-react';
 import {
-  RegisterFormData,
-  FormErrors,
+  type RegisterFormData,
+  type FormErrors,
   validateAuthField,
   validateRegisterForm,
   parseAuthBackendError,
-} from '@/lib/validators/authValidators';
+} from '@/lib/utils';
 
 const INITIAL_FORM_DATA: RegisterFormData = {
   fullName: '',

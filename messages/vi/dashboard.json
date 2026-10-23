@@ -1,0 +1,13 @@
+{
+  "Dashboard": {
+    "welcome": "Chào mừng quay trở lại",
+    "overview": "Tổng quan",
+    "profile": "Hồ sơ cá nhân",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất",
+    "admin": "Quản trị hệ thống",
+    "trainer": "Bảng điều khiển HLV",
+    "receptionist": "Lễ tân & Điểm danh",
+    "member": "Cổng thông tin hội viên"
+  }
+}
