@@ -1,62 +1,83 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-// Định nghĩa cấu hình tài khoản người dùng trong hệ thống GymX
-export interface User {
-  id: string;
-  email: string;
-  fullName: string;
-  role: 'Admin' | 'Trainer' | 'Receptionist' | 'Member';
-  avatarUrl?: string;
-}
+import type { AuthTokenData, UserRole } from '@/types/auth';
+import type { AuthUser } from '@/types/user';
 
 interface AuthState {
-  user: User | null;
+  user: AuthUser | null;
   accessToken: string | null;
-  refreshToken: string | null;
   isAuthenticated: boolean;
-  login: (user: User, accessToken: string, refreshToken: string) => void;
-  setTokens: (accessToken: string, refreshToken: string) => void;
+  _hasHydrated: boolean;
+
+  // Actions
+  login: (data: AuthTokenData) => void;
+  setAccessToken: (token: string | null) => void;
+  setTokens: (accessToken: string, _refreshToken?: string) => void;
   logout: () => void;
+  setHasHydrated: (state: boolean) => void;
+
+  // Helpers
+  hasRole: (role: UserRole) => boolean;
+  primaryRole: () => UserRole | null;
 }
 
-// Kho lưu trữ trạng thái đăng nhập, tự động đồng bộ xuống LocalStorage
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       accessToken: null,
-      refreshToken: null,
       isAuthenticated: false,
+      _hasHydrated: false,
 
-      // Cập nhật toàn bộ thông tin khi người dùng đăng nhập thành công
-      login: (user, accessToken, refreshToken) =>
+      login: (data: AuthTokenData) =>
         set({
-          user,
-          accessToken,
-          refreshToken,
+          user: {
+            id: data.userId,
+            email: data.email,
+            fullName: data.fullName,
+            roles: data.roles,
+            avatarUrl: data.avatarUrl,
+          },
+          accessToken: data.accessToken,
           isAuthenticated: true,
         }),
 
-      // Cập nhật lại chuỗi Token mới khi gia hạn thành công
-      setTokens: (accessToken, refreshToken) =>
-        set({
-          accessToken,
-          refreshToken,
-        }),
+      setAccessToken: (token) =>
+        set({ accessToken: token }),
 
-      // Xóa sạch dữ liệu trong két sắt khi người dùng đăng xuất
+      setTokens: (accessToken) =>
+        set({ accessToken }),
+
       logout: () =>
         set({
           user: null,
           accessToken: null,
-          refreshToken: null,
           isAuthenticated: false,
         }),
+
+      setHasHydrated: (state) =>
+        set({ _hasHydrated: state }),
+
+      hasRole: (role) => get().user?.roles.includes(role) ?? false,
+
+      /** Trả về role ưu tiên cao nhất (ADMIN > RECEPTIONIST > TRAINER > MEMBER) */
+      primaryRole: () => {
+        const roles = get().user?.roles ?? [];
+        const priority: UserRole[] = ['ADMIN', 'RECEPTIONIST', 'TRAINER', 'MEMBER'];
+        return priority.find((r) => roles.includes(r)) ?? null;
+      },
     }),
     {
       name: 'gymx-auth-storage',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+      // Chỉ lưu thông tin không nhạy cảm vào localStorage — triệt tiêu rủi ro lộ refreshToken qua XSS
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
+    },
+  ),
 );

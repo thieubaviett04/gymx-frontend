@@ -1,0 +1,99 @@
+:root {
+  /* =========================================================
+     COLOR PALETTE - Fitvive Lime & Fitvive Deep Teal
+     ========================================================= */
+
+  /* Primary Colors - Fitvive Lime */
+  --primary: #BAFD00;
+  --primary-light: #D8FF5C;
+  --primary-hover: #9DD200;
+  --primary-dark: #7AA900;
+  --fv-primary-900: #3A5A00;
+  --primary-foreground: #011010;
+
+  /* Secondary Colors - Fitvive Deep Teal */
+  --secondary: #064343;
+  --secondary-light: #71E1E1;
+  --secondary-dark: #011010;
+  --secondary-foreground: #FFFFFF;
+
+  /* Status Colors */
+  --success: #22C55E;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  /* Member Status Colors (CRM Specific) */
+  --status-active: #10B981;
+  --status-warning: #F59E0B;
+  --status-expired: #DC2626;
+
+  /* Neutral Colors */
+  --background: #FFFFFF;
+  --foreground: #011010;
+  --muted: #F5F5F5;
+  --muted-foreground: #525252;
+  --border: #E5E5E5;
+  --card: #FFFFFF;
+  --card-foreground: #011010;
+  --popover: #FFFFFF;
+  --popover-foreground: #011010;
+  --input: #E5E5E5;
+  --ring: #BAFD00;
+
+  /* =========================================================
+     SPACING SYSTEM (4px Base Unit - shadcn/ui)
+     ========================================================= */
+  --spacing-0: 0px;
+  --spacing-px: 1px;
+  --spacing-0_5: 2px;
+  --spacing-1: 4px;
+  --spacing-1_5: 6px;
+  --spacing-2: 8px;
+  --spacing-2_5: 10px;
+  --spacing-3: 12px;
+  --spacing-3_5: 14px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-7: 28px;
+  --spacing-8: 32px;
+  --spacing-9: 36px;
+  --spacing-10: 40px;
+  --spacing-11: 44px;
+  --spacing-12: 48px;
+  --spacing-14: 56px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+  --spacing-24: 96px;
+  --spacing-28: 112px;
+  --spacing-32: 128px;
+
+  /* =========================================================
+     BORDER RADIUS SCALE (shadcn/ui)
+     ========================================================= */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+  --radius: 8px;
+
+  /* =========================================================
+     SHADOW SYSTEM
+     ========================================================= */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.12);
+
+  /* =========================================================
+     CHART COLORS
+     ========================================================= */
+  --chart-1: #BAFD00;  /* Fitvive Lime - Primary metric */
+  --chart-2: #22C55E;  /* Success Green - Growth/positive */
+  --chart-3: #FFB800;  /* Vibrant Yellow - Highlight metric */
+  --chart-4: #F59E0B;  /* Warning Amber - Attention metric */
+  --chart-5: #8B5CF6;  /* Purple - Secondary metric */
+}
