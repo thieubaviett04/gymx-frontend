@@ -11,10 +11,8 @@ import {
   saveResetSession,
 } from '@/lib/utils';
 import { Alert, Button, Input } from '@/components/ui';
-import { PasswordChecklist, isPasswordValid } from '@/components/shared';
 import {
   AlertCircle,
-  ArrowLeft,
   CheckCircle2,
   KeyRound,
   ShieldAlert,
@@ -99,8 +97,14 @@ function ResetPasswordContent() {
       return;
     }
 
-    if (!isPasswordValid(newPassword)) {
-      setErrorMsg('Mật khẩu mới chưa thỏa mãn đầy đủ các tiêu chuẩn bảo mật.');
+    const isValidPassword =
+      newPassword.length >= 6 &&
+      /[A-Z]/.test(newPassword) &&
+      /[a-z]/.test(newPassword) &&
+      /[0-9]/.test(newPassword);
+
+    if (!isValidPassword) {
+      setErrorMsg('Mật khẩu mới tối thiểu 6 ký tự gồm chữ hoa, chữ thường và chữ số.');
       return;
     }
 
@@ -170,31 +174,33 @@ function ResetPasswordContent() {
   // Trường hợp không có token (truy cập bất hợp lệ hoặc token đã hết hạn)
   if (!token && !isSuccess) {
     return (
-      <div className="w-full max-w-[560px] mx-auto py-6">
-        <div className="bg-white/95 backdrop-blur-md rounded-[32px] border border-white/60 shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.2)] px-8 sm:px-12 md:px-14 py-10 sm:py-12 text-center transition-all">
+      <div className="w-full max-w-[540px] mx-auto">
+        <div className="bg-white rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.22)] p-8 sm:px-12 sm:pt-10 sm:pb-12 text-center transition-all">
           <div className="w-16 h-16 rounded-full bg-red-50 border border-red-200 flex items-center justify-center mx-auto mb-4 text-red-600">
             <ShieldAlert className="w-8 h-8" />
           </div>
-          <h1 className="font-sans font-semibold text-[22px] sm:text-[24px] text-[#0A0A0A] mb-2">
+          <h1 className="font-heading font-bold text-2xl sm:text-[26px] text-[#0A0A0A] mb-2 text-center">
             Phiên làm việc không hợp lệ
           </h1>
-          <p className="font-sans text-[14px] sm:text-[15px] leading-[22px] text-[#525252] mb-6">
+          <p className="font-sans text-xs sm:text-sm leading-relaxed text-[#525252] mb-6 text-center">
             Không tìm thấy mã phiên đặt lại mật khẩu hoặc phiên đã hết hạn. Vui lòng thực hiện lại từ đầu.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Button
               type="button"
-              variant="primary"
+              variant="auth"
+              size="lg"
               onClick={() => router.push('/forgot-password')}
-              className="w-full sm:w-auto h-11 px-6 font-sans text-sm font-semibold rounded-lg bg-[#FF6B00] text-white hover:bg-[#FF8833] shadow-none"
+              className="w-full sm:w-auto h-12 px-5 text-[14px] !font-normal rounded-lg !text-white active:scale-[0.99] transition-none cursor-pointer shadow-sm"
             >
-              Yêu cầu mã mới
+              <span className="text-white font-normal">Yêu cầu mã mới</span>
             </Button>
             <Button
               type="button"
               variant="outline"
+              size="lg"
               onClick={handleExitFlow}
-              className="w-full sm:w-auto h-11 px-6 font-sans text-sm font-semibold rounded-lg border-[#E5E5E5] text-[#0A0A0A] hover:bg-neutral-50 shadow-none"
+              className="w-full sm:w-auto h-12 px-5 text-[14px] !font-normal rounded-lg border-[#E5E5E5] text-[#0A0A0A] hover:bg-neutral-50 shadow-none cursor-pointer"
             >
               Quay lại đăng nhập
             </Button>
@@ -204,36 +210,33 @@ function ResetPasswordContent() {
     );
   }
 
-  // TRẠNG THÁI 2: ĐỔI MẬT KHẨU THÀNH CÔNG (Figma 172:1501 / 172:1503)
+  // TRẠNG THÁI 2: ĐỔI MẬT KHẨU THÀNH CÔNG (Chuẩn Figma Node 1329:15427)
   if (isSuccess) {
     return (
-      <div className="w-full max-w-[560px] mx-auto py-6">
-        <div className="bg-white/95 backdrop-blur-md rounded-[32px] border border-white/60 shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.2)] px-8 sm:px-12 md:px-14 py-10 sm:py-12 transition-all">
+      <div className="w-full max-w-[540px] mx-auto">
+        <div className="bg-white rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.22)] p-8 sm:px-12 sm:pt-12 sm:pb-14 text-center transition-all">
           <div className="flex flex-col items-center text-center">
-            {/* ShieldCheck Icon 108x108px đúng tỷ lệ Figma 172:1507 */}
-            <div className="w-[108px] h-[108px] rounded-full bg-[#FFF4EC] border border-[#FFD8BF] flex items-center justify-center mb-6 shadow-[0_12px_32px_rgba(255,107,0,0.12)]">
-              <ShieldCheck className="w-[68px] h-[68px] text-[#FF6B00] stroke-[1.8]" />
+            {/* Vuesax Bold Shield-Tick Icon chuẩn Figma */}
+            <div className="flex justify-center mb-6">
+              <svg width="88" height="88" viewBox="0 0 108 108" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M83.4296 18.54L58.6796 9.27003C56.1146 8.32503 51.9296 8.32503 49.3646 9.27003L24.6146 18.54C19.8446 20.34 15.9746 25.92 15.9746 31.005V67.455C15.9746 71.1 18.3596 75.915 21.2846 78.075L46.0346 96.57C50.3996 99.855 57.5546 99.855 61.9196 96.57L86.6696 78.075C89.5946 75.87 91.9796 71.1 91.9796 67.455V31.005C92.0246 25.92 88.1546 20.34 83.4296 18.54ZM69.6596 43.74L50.3096 63.09C49.6346 63.765 48.7796 64.08 47.9246 64.08C47.0696 64.08 46.2146 63.765 45.5396 63.09L38.3396 55.8C37.0346 54.495 37.0346 52.335 38.3396 51.03C39.6446 49.725 41.8046 49.725 43.1096 51.03L47.9696 55.89L64.9346 38.925C66.2396 37.62 68.3996 37.62 69.7046 38.925C71.0096 40.23 71.0096 42.435 69.6596 43.74Z" fill="#22C55E"/>
+              </svg>
             </div>
 
-            {/* Tiêu đề Inter SemiBold 24px (h3) theo Figma 172:1509 */}
-            <h1 className="font-sans font-semibold text-[24px] sm:text-[26px] leading-[32px] tracking-[-0.006em] text-[#0A0A0A] mb-2.5">
+            {/* Tiêu đề */}
+            <h1 className="font-heading font-bold text-2xl sm:text-[26px] leading-tight text-[#0A0A0A] mb-8 text-center">
               Đổi mật khẩu thành công
             </h1>
 
-            {/* Mô tả phụ */}
-            <p className="font-sans text-[14px] sm:text-[15px] leading-[22px] sm:leading-[24px] text-[#525252] max-w-[380px] mb-8">
-              Mật khẩu tài khoản của bạn đã được cập nhật thành công. Vui lòng đăng nhập lại để tiếp tục sử dụng hệ thống.
-            </p>
-
-            {/* Nút Đăng nhập 213px x 44px theo Figma 172:1511 */}
+            {/* Nút Đăng nhập */}
             <Button
               type="button"
-              variant="primary"
+              variant="auth"
               size="lg"
               onClick={() => router.push('/login')}
-              className="w-[213px] h-11 font-sans text-sm sm:text-base font-semibold rounded-lg bg-[#FF6B00] text-white shadow-none hover:bg-[#FF8833] cursor-pointer transition-all duration-200"
+              className="w-full max-w-[286px] mx-auto h-12 text-[14px] !font-normal rounded-lg !text-white active:scale-[0.99] transition-none cursor-pointer shadow-sm flex items-center justify-center"
             >
-              Đăng nhập
+              <span className="text-white font-normal">Đăng nhập</span>
             </Button>
           </div>
         </div>
@@ -241,34 +244,25 @@ function ResetPasswordContent() {
     );
   }
 
-  const isFormValid =
-    isPasswordValid(newPassword) &&
-    confirmPassword.length > 0 &&
-    newPassword === confirmPassword;
+  const isFormFilled = newPassword.length > 0 && confirmPassword.length > 0;
 
-  // TRẠNG THÁI 1: FORM THIẾT LẬP MẬT KHẨU (Figma 172:1474)
+  // TRẠNG THÁI 1: FORM THIẾT LẬP MẬT KHẨU
   return (
-    <div className="w-full max-w-[560px] mx-auto py-6">
-      <div className="bg-white/95 backdrop-blur-md rounded-[32px] border border-white/60 shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.2)] px-8 sm:px-12 md:px-14 py-8 sm:py-10 transition-all">
+    <div className="w-full max-w-[540px] mx-auto">
+      <div className="bg-white rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.22)] p-8 sm:px-12 sm:pt-9 sm:pb-12 transition-all">
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-[#FF6B00] flex items-center justify-center shadow-none mb-3.5">
-            <KeyRound className="w-7 h-7 text-white" />
+        <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
+          <div className="w-16 h-16 rounded-full bg-[#064343] flex items-center justify-center mb-3.5 mx-auto">
+            <KeyRound className="w-8 h-8 text-white" />
           </div>
 
-          <h1 className="font-sans font-semibold text-[26px] sm:text-[28px] leading-tight sm:leading-[34px] tracking-[-0.0075em] text-[#0A0A0A]">
+          <h1 className="font-heading font-bold text-2xl sm:text-[26px] leading-tight text-[#0A0A0A] text-center tracking-tight">
             THIẾT LẬP MẬT KHẨU
           </h1>
 
-          <p className="font-sans text-[14px] sm:text-[15px] leading-[22px] sm:leading-[24px] text-[#525252] text-center mt-1.5 max-w-[420px]">
-            {email ? (
-              <>
-                Đặt lại mật khẩu cho tài khoản{' '}
-                <strong className="text-[#0A0A0A] font-medium">{email}</strong>
-              </>
-            ) : (
-              'Vui lòng nhập mật khẩu mới đạt tiêu chuẩn bảo mật cho tài khoản của bạn.'
-            )}
+          {/* Mô tả phụ - Chuẩn Design System 14px */}
+          <p className="font-sans text-xs sm:text-sm leading-relaxed text-muted-foreground text-center mt-2 max-w-[440px]">
+            Mật khẩu mới tối thiểu 6 ký tự gồm chữ hoa, chữ thường và chữ số.
           </p>
         </div>
 
@@ -286,11 +280,8 @@ function ResetPasswordContent() {
               showPasswordToggle
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="bg-transparent focus:bg-transparent"
+              className="h-[46px] bg-[#F4F5F6] border border-transparent hover:border-transparent focus:border-[#064343] focus:ring-1 focus:ring-[#064343] focus:bg-white rounded-lg text-sm placeholder:text-[#A3A3A3] placeholder:font-normal transition-all duration-150 outline-none"
             />
-
-            {/* Checklist động kiểm tra tiêu chuẩn mật khẩu thời gian thực */}
-            <PasswordChecklist password={newPassword} className="mt-2" />
           </div>
 
           {/* Ô nhập lại mật khẩu mới */}
@@ -306,34 +297,28 @@ function ResetPasswordContent() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               error={confirmError || undefined}
-              className="bg-transparent focus:bg-transparent"
+              className={`h-[46px] bg-[#F4F5F6] rounded-lg text-sm placeholder:text-[#A3A3A3] placeholder:font-normal transition-all duration-150 outline-none ${
+                !confirmError
+                  ? 'border border-transparent hover:border-transparent focus:border-[#064343] focus:ring-1 focus:ring-[#064343] focus:bg-white'
+                  : ''
+              }`}
             />
           </div>
 
-          {/* Nút submit: "Lưu mật khẩu" (Figma 172:1500) */}
+          {/* Nút submit: "Lưu mật khẩu" - hoàn toàn không có hover */}
           <div className="pt-2">
             <Button
               type="submit"
-              variant="primary"
+              variant="auth"
               size="lg"
               isLoading={loading}
-              disabled={loading || !isFormValid}
-              className="w-full h-11 font-sans text-sm sm:text-base font-semibold rounded-lg bg-[#FF6B00] text-white shadow-none hover:bg-[#FF8833] cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading}
+              className={`w-full h-12 text-[14px] !font-normal rounded-lg !text-white active:scale-[0.99] transition-none cursor-pointer shadow-sm ${
+                isFormFilled ? 'opacity-100 shadow-md' : 'opacity-60'
+              }`}
             >
-              Lưu mật khẩu
+              <span className="text-white font-normal">Lưu mật khẩu</span>
             </Button>
-          </div>
-
-          {/* Nút quay lại đăng nhập / hủy bỏ quy trình */}
-          <div className="text-center pt-2">
-            <button
-              type="button"
-              onClick={handleExitFlow}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-[#737373] hover:text-[#0A0A0A] cursor-pointer transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Quay lại đăng nhập</span>
-            </button>
           </div>
         </form>
       </div>
@@ -358,8 +343,8 @@ export default function ResetPasswordPage() {
   return (
     <Suspense
       fallback={
-        <div className="p-8 text-center text-[#525252]">
-          <div className="w-8 h-8 border-4 border-[#FF6B00] border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="p-8 text-center text-muted-foreground">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       }
     >

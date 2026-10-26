@@ -11,28 +11,28 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5E7EB]">
       <div className="max-w-[1280px] mx-auto px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-[#FF6B00] flex items-center justify-center shadow-[0_4px_10px_rgba(255,107,0,0.3)]">
-            <Dumbbell className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center shadow-[0_4px_10px_rgba(186,253,0,0.3)]">
+            <Dumbbell className="w-5 h-5 text-primary-foreground" />
           </div>
-          <span className="text-2xl font-black tracking-tight text-[#101828] font-['Plus_Jakarta_Sans',sans-serif]">
-            GYM<span className="text-[#FF6B00]">MAX</span>
+          <span className="text-2xl font-black tracking-tight text-foreground font-heading">
+            GYM<span className="text-secondary">MAX</span>
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1 text-sm font-medium text-[#4A5565]">
-          <a href="#pricing" className="px-3.5 py-2 rounded-lg hover:text-[#FF6B00] hover:bg-[#F9FAFB] transition-colors">
+        <div className="hidden md:flex items-center gap-1 text-sm font-semibold text-[#1F2937]">
+          <a href="#pricing" className="px-3.5 py-2 rounded-lg hover:text-secondary hover:bg-secondary/5 transition-colors">
             Gói tập
           </a>
-          <a href="#trainers" className="px-3.5 py-2 rounded-lg hover:text-[#FF6B00] hover:bg-[#F9FAFB] transition-colors">
+          <a href="#trainers" className="px-3.5 py-2 rounded-lg hover:text-secondary hover:bg-secondary/5 transition-colors">
             Huấn luyện viên
           </a>
-          <a href="#amenities" className="px-3.5 py-2 rounded-lg hover:text-[#FF6B00] hover:bg-[#F9FAFB] transition-colors">
+          <a href="#amenities" className="px-3.5 py-2 rounded-lg hover:text-secondary hover:bg-secondary/5 transition-colors">
             Tiện ích
           </a>
-          <a href="#testimonials" className="px-3.5 py-2 rounded-lg hover:text-[#FF6B00] hover:bg-[#F9FAFB] transition-colors">
+          <a href="#testimonials" className="px-3.5 py-2 rounded-lg hover:text-secondary hover:bg-secondary/5 transition-colors">
             Đánh giá
           </a>
-          <a href="#footer" className="px-3.5 py-2 rounded-lg hover:text-[#FF6B00] hover:bg-[#F9FAFB] transition-colors">
+          <a href="#footer" className="px-3.5 py-2 rounded-lg hover:text-secondary hover:bg-secondary/5 transition-colors">
             Liên hệ
           </a>
         </div>
@@ -40,13 +40,13 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/login"
-            className="px-4 py-2 text-sm font-medium text-[#4A5565] hover:text-[#101828] transition-colors"
+            className="px-4 py-2 text-sm font-bold text-foreground hover:text-secondary hover:bg-secondary/5 rounded-xl transition-all"
           >
             Đăng nhập
           </Link>
           <Link
             href="/register"
-            className="px-5 py-2.5 text-sm font-bold text-white bg-[#FF6B00] hover:bg-[#E05E00] rounded-xl shadow-[0_4px_12px_rgba(255,107,0,0.25)] transition-all"
+            className="px-5 py-2.5 text-sm font-bold text-[#011010] bg-primary hover:bg-primary-hover rounded-xl shadow-[0_4px_14px_rgba(186,253,0,0.35)] ring-1 ring-black/10 transition-all"
           >
             Đăng ký thành viên
           </Link>
@@ -95,7 +95,7 @@ export default function Navbar() {
             <Link href="/login" className="w-full text-center py-2 text-sm font-semibold border rounded-xl">
               Đăng nhập
             </Link>
-            <Link href="/register" className="w-full text-center py-2.5 text-sm font-bold bg-[#FF6B00] text-white rounded-xl">
+            <Link href="/register" className="w-full text-center py-2.5 text-sm font-semibold bg-primary text-primary-foreground rounded-xl">
               Đăng ký thành viên
             </Link>
           </div>

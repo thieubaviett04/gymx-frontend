@@ -7,8 +7,8 @@ export default function TestimonialsSection() {
     <section id="testimonials" className="bg-white py-28 px-6">
       <div className="max-w-[1280px] mx-auto space-y-16">
         <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="text-sm font-bold uppercase tracking-wider text-[#FF6B00]">Thành viên nói gì</span>
-          <h2 className="text-3xl sm:text-5xl font-black text-[#101828] font-['Plus_Jakarta_Sans',sans-serif] tracking-tight">
+          <span className="text-sm font-bold uppercase tracking-wider text-secondary">Thành viên nói gì</span>
+          <h2 className="text-3xl sm:text-5xl font-black text-foreground font-heading tracking-tight">
             12,000+ người đã thay đổi
           </h2>
         </div>
@@ -20,7 +20,7 @@ export default function TestimonialsSection() {
               className="p-7 rounded-3xl bg-[#F9FAFB] border border-[#E5E7EB] flex flex-col justify-between space-y-6"
             >
               <div className="space-y-4">
-                <span className="inline-block px-3 py-1.5 rounded-full bg-[#FFF7ED] border border-[#FFEDD4] text-[#FF6B00] text-xs font-bold">
+                <span className="inline-block px-3 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold">
                   {item.pill}
                 </span>
 
@@ -30,7 +30,7 @@ export default function TestimonialsSection() {
                   ))}
                 </div>
 
-                <p className="text-base text-[#4A5565] leading-relaxed italic">{item.quote}</p>
+                <p className="text-base text-[#1F2937] leading-relaxed italic">{item.quote}</p>
               </div>
 
               <div className="flex items-center gap-3 pt-4 border-t border-[#E5E7EB]">

@@ -1,22 +1,41 @@
+/* Google Fonts: Plus Jakarta Sans & Inter are loaded via next/font in layout */
 
 :root {
+  /* =========================================================
+     FONT FAMILIES
+     ========================================================= */
+  --font-plus-jakarta: 'Plus Jakarta Sans', sans-serif;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Fira Code', 'Consolas', monospace;
+
+  /* Headings (h1-h6) */
   --font-family-h1: 'Plus Jakarta Sans', 'Inter', sans-serif;
   --font-family-h2: 'Plus Jakarta Sans', 'Inter', sans-serif;
   --font-family-h3: 'Plus Jakarta Sans', 'Inter', sans-serif;
   --font-family-h4: 'Plus Jakarta Sans', 'Inter', sans-serif;
 
+  /* Body & UI */
   --font-family-p: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-family-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-family-subtle: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-family-detail: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  --font-family-mono: 'Fira Code', 'Consolas', monospace;
+  /* Backward Compatibility Variables for Existing Templates */
+  --font-sf-pro: var(--font-family-h1);
+  --font-inder: var(--font-family-p);
 
+  /* =========================================================
+     FONT WEIGHT SCALE
+     ========================================================= */
   --font-weight-normal: 400;
+  --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
+  /* =========================================================
+     LINE HEIGHT SCALE (shadcn/ui)
+     ========================================================= */
   --line-height-h1: 48px;
   --line-height-h2: 36px;
   --line-height-h3: 32px;
@@ -26,6 +45,9 @@
   --line-height-subtle: 20px;
   --line-height-detail: 20px;
 
+  /* =========================================================
+     LETTER SPACING SCALE (shadcn/ui)
+     ========================================================= */
   --letter-spacing-h1: -0.012em;
   --letter-spacing-h2: -0.0075em;
   --letter-spacing-h3: -0.006em;
@@ -34,4 +56,361 @@
   --letter-spacing-body: 0;
   --letter-spacing-subtle: 0;
   --letter-spacing-detail: 0;
+
+  /* =========================================================
+     TYPOGRAPHY SCALE TOKENS
+     ========================================================= */
+  /* Display / H1: 48px, Bold 700, Leading 48px, Tracking -0.012em */
+  --type-h1-font: var(--font-family-h1);
+  --type-h1-size: 48px;
+  --type-h1-weight: 700;
+  --type-h1-leading: 48px;
+  --type-h1-tracking: -0.012em;
+
+  /* Heading 2: 30px, Semibold 600, Leading 36px, Tracking -0.0075em */
+  --type-h2-font: var(--font-family-h2);
+  --type-h2-size: 30px;
+  --type-h2-weight: 600;
+  --type-h2-leading: 36px;
+  --type-h2-tracking: -0.0075em;
+
+  /* Heading 3: 24px, Semibold 600, Leading 32px, Tracking -0.006em */
+  --type-h3-font: var(--font-family-h3);
+  --type-h3-size: 24px;
+  --type-h3-weight: 600;
+  --type-h3-leading: 32px;
+  --type-h3-tracking: -0.006em;
+
+  /* Heading 4: 20px, Semibold 600, Leading 28px, Tracking -0.005em */
+  --type-h4-font: var(--font-family-h4);
+  --type-h4-size: 20px;
+  --type-h4-weight: 600;
+  --type-h4-leading: 28px;
+  --type-h4-tracking: -0.005em;
+
+  /* Paragraph: 16px, Regular 400, Leading 28px, Tracking 0 */
+  --type-p-font: var(--font-family-p);
+  --type-p-size: 16px;
+  --type-p-weight: 400;
+  --type-p-leading: 28px;
+  --type-p-tracking: 0;
+
+  /* Body: 14px, Regular 400, Leading 24px, Tracking 0 */
+  --type-body-font: var(--font-family-body);
+  --type-body-size: 14px;
+  --type-body-weight: 400;
+  --type-body-leading: 24px;
+  --type-body-tracking: 0;
+
+  /* Label / Subtle: 14px, Medium 500, Leading 20px, Tracking 0 */
+  --type-label-font: var(--font-family-subtle);
+  --type-label-size: 14px;
+  --type-label-weight: 500;
+  --type-label-leading: 20px;
+  --type-label-tracking: 0;
+
+  /* Detail: 12px, Medium 500, Leading 20px, Tracking 0 */
+  --type-detail-font: var(--font-family-detail);
+  --type-detail-size: 12px;
+  --type-detail-weight: 500;
+  --type-detail-leading: 20px;
+  --type-detail-tracking: 0;
+
+  /* Button Tokens */
+  --type-btn-default-font: var(--font-family-body);
+  --type-btn-default-weight: 600;
+  --type-btn-default-size: 16px;
+  --type-btn-default-leading: 24px;
+  --type-btn-default-tracking: 0;
+
+  --type-btn-small-font: var(--font-family-body);
+  --type-btn-small-weight: 500;
+  --type-btn-small-size: 14px;
+  --type-btn-small-leading: 20px;
+  --type-btn-small-tracking: 0;
+
+  /* Compatibility mappings */
+  --type-hero-1-font: var(--type-h1-font);
+  --type-hero-1-weight: var(--type-h1-weight);
+  --type-hero-1-size: var(--type-h1-size);
+  --type-hero-1-leading: var(--type-h1-leading);
+  --type-hero-1-tracking: var(--type-h1-tracking);
+
+  --type-headline-1-font: var(--type-h1-font);
+  --type-headline-1-weight: var(--type-h1-weight);
+  --type-headline-1-size: var(--type-h1-size);
+  --type-headline-1-leading: var(--type-h1-leading);
+  --type-headline-1-tracking: var(--type-h1-tracking);
+
+  --type-headline-2-font: var(--type-h2-font);
+  --type-headline-2-weight: var(--type-h2-weight);
+  --type-headline-2-size: var(--type-h2-size);
+  --type-headline-2-leading: var(--type-h2-leading);
+  --type-headline-2-tracking: var(--type-h2-tracking);
+
+  --type-headline-3-font: var(--type-h3-font);
+  --type-headline-3-weight: var(--type-h3-weight);
+  --type-headline-3-size: var(--type-h3-size);
+  --type-headline-3-leading: var(--type-h3-leading);
+  --type-headline-3-tracking: var(--type-h3-tracking);
+
+  --type-headline-4-font: var(--type-h4-font);
+  --type-headline-4-weight: var(--type-h4-weight);
+  --type-headline-4-size: var(--type-h4-size);
+  --type-headline-4-leading: var(--type-h4-leading);
+  --type-headline-4-tracking: var(--type-h4-tracking);
+
+  --type-body-1-font: var(--type-p-font);
+  --type-body-1-weight: var(--type-p-weight);
+  --type-body-1-size: var(--type-p-size);
+  --type-body-1-leading: var(--type-p-leading);
+  --type-body-1-tracking: var(--type-p-tracking);
+
+  --type-body-2-font: var(--type-p-font);
+  --type-body-2-weight: var(--font-weight-semibold);
+  --type-body-2-size: var(--type-p-size);
+  --type-body-2-leading: var(--type-p-leading);
+  --type-body-2-tracking: var(--type-p-tracking);
+
+  --type-body-3-font: var(--type-body-font);
+  --type-body-3-weight: var(--type-body-weight);
+  --type-body-3-size: var(--type-body-size);
+  --type-body-3-leading: var(--type-body-leading);
+  --type-body-3-tracking: var(--type-body-tracking);
+
+  --type-body-4-font: var(--type-label-font);
+  --type-body-4-weight: var(--type-label-weight);
+  --type-body-4-size: var(--type-label-size);
+  --type-body-4-leading: var(--type-label-leading);
+  --type-body-4-tracking: var(--type-label-tracking);
+
+  --type-caption-1-font: var(--type-body-font);
+  --type-caption-1-weight: var(--type-body-weight);
+  --type-caption-1-size: var(--type-body-size);
+  --type-caption-1-leading: var(--type-body-leading);
+  --type-caption-1-tracking: var(--type-body-tracking);
+
+  --type-caption-2-font: var(--type-label-font);
+  --type-caption-2-weight: var(--font-weight-semibold);
+  --type-caption-2-size: var(--type-label-size);
+  --type-caption-2-leading: var(--type-label-leading);
+  --type-caption-2-tracking: var(--type-label-tracking);
+
+  --type-caption-3-font: var(--type-detail-font);
+  --type-caption-3-weight: var(--font-weight-normal);
+  --type-caption-3-size: var(--type-detail-size);
+  --type-caption-3-leading: var(--type-detail-leading);
+  --type-caption-3-tracking: var(--type-detail-tracking);
+
+  --type-caption-4-font: var(--type-detail-font);
+  --type-caption-4-weight: var(--font-weight-semibold);
+  --type-caption-4-size: var(--type-detail-size);
+  --type-caption-4-leading: var(--type-detail-leading);
+  --type-caption-4-tracking: var(--type-detail-tracking);
+}
+
+/* =========================================================
+   TYPOGRAPHY SCALE UTILITY CLASSES
+   ========================================================= */
+
+.text-h1, .token-h1, .text-display-h1 {
+  font-family: var(--type-h1-font);
+  font-weight: var(--type-h1-weight);
+  font-size: var(--type-h1-size);
+  line-height: var(--line-height-h1);
+  letter-spacing: var(--letter-spacing-h1);
+}
+
+.text-h2, .token-h2 {
+  font-family: var(--type-h2-font);
+  font-weight: var(--type-h2-weight);
+  font-size: var(--type-h2-size);
+  line-height: var(--line-height-h2);
+  letter-spacing: var(--letter-spacing-h2);
+}
+
+.text-h3, .token-h3 {
+  font-family: var(--type-h3-font);
+  font-weight: var(--type-h3-weight);
+  font-size: var(--type-h3-size);
+  line-height: var(--line-height-h3);
+  letter-spacing: var(--letter-spacing-h3);
+}
+
+.text-h4, .token-h4 {
+  font-family: var(--type-h4-font);
+  font-weight: var(--type-h4-weight);
+  font-size: var(--type-h4-size);
+  line-height: var(--line-height-h4);
+  letter-spacing: var(--letter-spacing-h4);
+}
+
+.text-p, .token-p {
+  font-family: var(--type-p-font);
+  font-weight: var(--type-p-weight);
+  font-size: var(--type-p-size);
+  line-height: var(--line-height-p);
+  letter-spacing: var(--letter-spacing-p);
+}
+
+.text-body, .token-body {
+  font-family: var(--type-body-font);
+  font-weight: var(--type-body-weight);
+  font-size: var(--type-body-size);
+  line-height: var(--line-height-body);
+  letter-spacing: var(--letter-spacing-body);
+}
+
+.text-label, .token-label {
+  font-family: var(--type-label-font);
+  font-weight: var(--type-label-weight);
+  font-size: var(--type-label-size);
+  line-height: var(--line-height-subtle);
+  letter-spacing: var(--letter-spacing-subtle);
+}
+
+.text-detail, .token-detail {
+  font-family: var(--type-detail-font);
+  font-weight: var(--type-detail-weight);
+  font-size: var(--type-detail-size);
+  line-height: var(--line-height-detail);
+  letter-spacing: var(--letter-spacing-detail);
+}
+
+/* Legacy Utility Classes */
+.text-hero-1, .token-hero-1 {
+  font-family: var(--type-hero-1-font);
+  font-weight: var(--type-hero-1-weight);
+  font-size: var(--type-hero-1-size);
+  line-height: var(--type-hero-1-leading);
+  letter-spacing: var(--type-hero-1-tracking);
+}
+
+.text-headline-1, .token-headline-1 {
+  font-family: var(--type-headline-1-font);
+  font-weight: var(--type-headline-1-weight);
+  font-size: var(--type-headline-1-size);
+  line-height: var(--type-headline-1-leading);
+  letter-spacing: var(--type-headline-1-tracking);
+}
+
+.text-headline-2, .token-headline-2 {
+  font-family: var(--type-headline-2-font);
+  font-weight: var(--type-headline-2-weight);
+  font-size: var(--type-headline-2-size);
+  line-height: var(--type-headline-2-leading);
+  letter-spacing: var(--type-headline-2-tracking);
+}
+
+.text-headline-3, .token-headline-3 {
+  font-family: var(--type-headline-3-font);
+  font-weight: var(--type-headline-3-weight);
+  font-size: var(--type-headline-3-size);
+  line-height: var(--type-headline-3-leading);
+  letter-spacing: var(--type-headline-3-tracking);
+}
+
+.text-headline-4, .token-headline-4 {
+  font-family: var(--type-headline-4-font);
+  font-weight: var(--type-headline-4-weight);
+  font-size: var(--type-headline-4-size);
+  line-height: var(--type-headline-4-leading);
+  letter-spacing: var(--type-headline-4-tracking);
+}
+
+.text-body-1, .token-body-1 {
+  font-family: var(--type-body-1-font);
+  font-weight: var(--type-body-1-weight);
+  font-size: var(--type-body-1-size);
+  line-height: var(--type-body-1-leading);
+  letter-spacing: var(--type-body-1-tracking);
+}
+
+.text-body-2, .token-body-2 {
+  font-family: var(--type-body-2-font);
+  font-weight: var(--type-body-2-weight);
+  font-size: var(--type-body-2-size);
+  line-height: var(--type-body-2-leading);
+  letter-spacing: var(--type-body-2-tracking);
+}
+
+.text-body-3, .token-body-3 {
+  font-family: var(--type-body-3-font);
+  font-weight: var(--type-body-3-weight);
+  font-size: var(--type-body-3-size);
+  line-height: var(--type-body-3-leading);
+  letter-spacing: var(--type-body-3-tracking);
+}
+
+.text-body-4, .token-body-4 {
+  font-family: var(--type-body-4-font);
+  font-weight: var(--type-body-4-weight);
+  font-size: var(--type-body-4-size);
+  line-height: var(--type-body-4-leading);
+  letter-spacing: var(--type-body-4-tracking);
+}
+
+.text-caption-1, .token-caption-1 {
+  font-family: var(--type-caption-1-font);
+  font-weight: var(--type-caption-1-weight);
+  font-size: var(--type-caption-1-size);
+  line-height: var(--type-caption-1-leading);
+  letter-spacing: var(--type-caption-1-tracking);
+}
+
+.text-caption-2, .token-caption-2 {
+  font-family: var(--type-caption-2-font);
+  font-weight: var(--type-caption-2-weight);
+  font-size: var(--type-caption-2-size);
+  line-height: var(--type-caption-2-leading);
+  letter-spacing: var(--type-caption-2-tracking);
+}
+
+.text-caption-3, .token-caption-3 {
+  font-family: var(--type-caption-3-font);
+  font-weight: var(--type-caption-3-weight);
+  font-size: var(--type-caption-3-size);
+  line-height: var(--type-caption-3-leading);
+  letter-spacing: var(--type-caption-3-tracking);
+}
+
+.text-caption-4, .token-caption-4 {
+  font-family: var(--type-caption-4-font);
+  font-weight: var(--type-caption-4-weight);
+  font-size: var(--type-caption-4-size);
+  line-height: var(--type-caption-4-leading);
+  letter-spacing: var(--type-caption-4-tracking);
+}
+
+.text-btn-default, .token-btn-default {
+  font-family: var(--type-btn-default-font);
+  font-weight: var(--type-btn-default-weight);
+  font-size: var(--type-btn-default-size);
+  line-height: var(--type-btn-default-leading);
+  letter-spacing: var(--type-btn-default-tracking);
+}
+
+.text-btn-small, .token-btn-small {
+  font-family: var(--type-btn-small-font);
+  font-weight: var(--type-btn-small-weight);
+  font-size: var(--type-btn-small-size);
+  line-height: var(--type-btn-small-leading);
+  letter-spacing: var(--type-btn-small-tracking);
+}
+
+/* Convenient font classes */
+.font-jakarta, .font-heading {
+  font-family: var(--font-family-h1);
+}
+
+.font-inter, .font-sans {
+  font-family: var(--font-family-body);
+}
+
+.font-sf {
+  font-family: var(--font-family-h1);
+}
+
+.font-inder {
+  font-family: var(--font-family-body);
 }

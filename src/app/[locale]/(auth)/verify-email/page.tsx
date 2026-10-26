@@ -243,35 +243,32 @@ function VerifyEmailContent() {
   const isOtpComplete = otp.join('').length === 6;
 
   return (
-    <div className="w-full max-w-[568px] mx-auto py-6">
-      {/* Container xác thực chuẩn tỉ lệ Figma padding 64px 80px, bo góc 32px */}
-      <div className="bg-white/95 backdrop-blur-md rounded-[32px] border border-white/60 shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.2)] px-6 sm:px-14 md:px-20 py-10 sm:py-12 md:py-14 transition-all">
+    <div className="w-full max-w-[540px] mx-auto">
+      {/* Khung thẻ trắng bo góc chuẩn Figma với padding thoáng và kích thước cân đối */}
+      <div className="bg-white rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.22)] p-8 sm:px-12 sm:pt-9 sm:pb-11 transition-all">
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-[#FF6B00] flex items-center justify-center shadow-none mb-3.5">
-            <Dumbbell className="w-7 h-7 text-white" />
+        <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
+          {/* Logo Badge hình tròn nền xanh đậm #064343 phẳng (không shadow) */}
+          <div className="w-16 h-16 rounded-full bg-[#064343] flex items-center justify-center mb-3.5 mx-auto">
+            <Dumbbell className="w-8 h-8 text-white" />
           </div>
 
-          {/* Tiêu đề chuẩn Inter SemiBold 30px, lineHeight 36px, tracking -0.0075em */}
-          <h1 className="font-sans font-semibold text-[26px] sm:text-[30px] leading-tight sm:leading-[36px] tracking-[-0.0075em] text-[#0A0A0A]">
+          {/* Tiêu đề font-heading Bold đậm nét text-2xl */}
+          <h1 className="font-heading font-bold text-2xl sm:text-[26px] leading-tight text-[#0A0A0A] text-center tracking-tight">
             {isResetPasswordFlow ? 'XÁC THỰC MÃ OTP' : 'XÁC THỰC EMAIL'}
           </h1>
 
-          {/* Đoạn mô tả: cùng style font-normal, khoảng cách sát hơn */}
-          <div className="font-sans text-center mt-1.5 space-y-0">
-            <p className="text-[15px] sm:text-[16px] leading-[22px] sm:leading-[26px] text-[#525252]">
-              Một mã xác thực được gửi tới email:
-            </p>
-            <p className="text-[15px] sm:text-[16px] leading-[22px] sm:leading-[26px] font-normal text-[#FF6B00] break-all">
-              {email || 'Chưa cung cấp email'}
-            </p>
-          </div>
+          {/* Đoạn mô tả - Chuẩn Design System 14px */}
+          <p className="font-sans text-xs sm:text-sm leading-relaxed text-muted-foreground text-center mt-2 max-w-[440px]">
+            Mã xác thực đã được gửi tới email:{' '}
+            <strong className="font-semibold text-[#064343]">{email || 'của bạn'}</strong>
+          </p>
         </div>
 
-        {/* OTP Input Form - Chiều rộng đúng 396px theo Figma */}
-        <form onSubmit={handleSubmit} noValidate className="w-full max-w-[396px] mx-auto">
-          {/* 6 OTP Input Boxes - width 56px, height 64px, rounded-lg (8px), font SemiBold 36px, shadow-none */}
-          <div className="grid grid-cols-6 gap-2.5 sm:gap-3 mt-6 mb-4 w-full" onPaste={handlePaste}>
+        {/* OTP Input Form */}
+        <form onSubmit={handleSubmit} noValidate className="w-full max-w-[316px] sm:max-w-[396px] mx-auto">
+          {/* 6 OTP Input Boxes chuẩn Figma (56x64, border-2 #94A3B8, bg-white, text #29303C) */}
+          <div className="flex items-center justify-between sm:gap-3 mb-5 w-full" onPaste={handlePaste}>
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -289,58 +286,45 @@ function VerifyEmailContent() {
                 }}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-full h-14 sm:h-16 text-center font-sans text-[30px] sm:text-[36px] font-semibold rounded-lg bg-transparent text-[#0A0A0A] border border-[#E5E5E5] shadow-none transition-all duration-150 focus:outline-none focus:border-[#FF6B00] focus:ring-1 focus:ring-[#FF6B00]"
+                className="w-[46px] h-[54px] sm:w-[56px] sm:h-[64px] shrink-0 text-center font-sans text-2xl sm:text-[32px] font-semibold rounded-lg bg-white text-[#29303C] border-2 border-[#94A3B8] hover:border-[#64748B] focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343] transition-all duration-150"
               />
             ))}
           </div>
 
-          {/* Resend OTP Row - Font Inter 14px, lineHeight 24px */}
-          <div className="flex items-center justify-between font-sans text-sm text-[#525252] mb-6 px-0.5 w-full">
+          {/* Resend OTP Row */}
+          <div className="flex items-center justify-between font-sans text-xs sm:text-sm text-muted-foreground mb-5 px-0.5 w-full">
             <span>Bạn chưa nhận được mã?</span>
             {canResend ? (
               <button
                 type="button"
                 onClick={handleResend}
                 disabled={resendLoading}
-                className="font-medium text-[#FF6B00] hover:text-[#FF8833] hover:underline cursor-pointer transition-colors"
+                className="font-semibold text-[#064343] hover:underline cursor-pointer transition-colors"
               >
                 Gửi lại
               </button>
             ) : (
-              <span className="text-[#525252]">
-                Gửi lại sau <strong className="font-medium text-[#FF6B00]">{countdown}s</strong>
+              <span className="text-muted-foreground">
+                Gửi lại sau <strong className="font-semibold text-[#064343]">{countdown}s</strong>
               </span>
             )}
           </div>
 
-          {/* Submit Button - Width 395px, Height 44px, bo góc 8px (rounded-lg), shadow-none */}
+          {/* Submit Button - Khớp chính xác 100% chiều rộng hàng ô OTP (396px trên desktop, 316px trên mobile) */}
           <Button
             type="submit"
-            variant="primary"
+            variant="auth"
             size="lg"
             isLoading={loading}
-            disabled={loading || !isOtpComplete}
-            className="w-full h-11 font-sans text-sm sm:text-base font-semibold rounded-lg bg-[#FF6B00] text-white shadow-none hover:bg-[#FF8833] cursor-pointer transition-all duration-200"
+            disabled={loading}
+            className={`w-full h-12 text-[14px] !font-normal rounded-lg !text-white active:scale-[0.99] transition-none cursor-pointer shadow-sm ${
+              isOtpComplete ? 'opacity-100 shadow-md' : 'opacity-60'
+            }`}
           >
-            {isResetPasswordFlow ? 'Xác thực mã' : 'Xác thực email'}
+            <span className="text-white font-normal">
+              {isResetPasswordFlow ? 'Xác thực mã' : 'Xác thực email'}
+            </span>
           </Button>
-
-          {/* Nút quay lại */}
-          <div className="text-center mt-4">
-            <button
-              type="button"
-              onClick={() => {
-                if (isResetPasswordFlow) {
-                  router.push('/forgot-password');
-                } else {
-                  router.push('/login');
-                }
-              }}
-              className="text-sm font-medium text-[#737373] hover:text-[#0A0A0A] hover:underline cursor-pointer transition-colors"
-            >
-              Quay lại {isResetPasswordFlow ? 'nhập email' : 'đăng nhập'}
-            </button>
-          </div>
         </form>
       </div>
 
@@ -378,8 +362,8 @@ export default function VerifyEmailPage() {
   return (
     <Suspense
       fallback={
-        <div className="p-8 text-center text-[#525252]">
-          <div className="w-8 h-8 border-4 border-[#FF6B00] border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="p-8 text-center text-muted-foreground">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       }
     >

@@ -1,16 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist } from 'next/font/google';
+import { plusJakartaSans, inter } from '@/lib/fonts';
 import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import QueryProvider from '@/lib/providers/QueryProvider';
 import '../globals.css';
-
-const geist = Geist({
-  subsets: ['latin'],
-  variable: '--font-geist',
-  preload: false, // Tắt tự động preload font không dùng đến, khắc phục triệt để warning font woff2
-});
 
 export const metadata: Metadata = {
   title: 'GymX Platform - Hệ thống quản lý phòng tập hiện đại',
@@ -31,7 +25,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geist.variable} font-sans antialiased bg-background text-foreground min-h-screen`}
+        className={`${plusJakartaSans.variable} ${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen`}
       >
         <Script
           id="suppress-extension-noise"

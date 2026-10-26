@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -6,45 +6,60 @@
 @import "../styles/theme.css";
 
 @theme inline {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-heading: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --font-sans: var(--font-inter, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  --font-heading: var(--font-plus-jakarta, 'Plus Jakarta Sans', 'Inter', sans-serif);
+  --font-jakarta: var(--font-plus-jakarta, 'Plus Jakarta Sans', sans-serif);
+  --font-inter: var(--font-inter, 'Inter', sans-serif);
+  --font-sf: var(--font-plus-jakarta, 'Plus Jakarta Sans', sans-serif);
+  --font-inder: var(--font-inter, 'Inter', sans-serif);
   --font-mono: 'Fira Code', 'Consolas', monospace;
 
-  --color-primary: #FF6B00;
-  --color-primary-light: #FF8833;
-  --color-primary-dark: #CC5500;
-  --color-primary-foreground: #FFFFFF;
+  /* Primary Colors - Fitvive Lime */
+  --color-primary: #BAFD00;
+  --color-primary-light: #D8FF5C;
+  --color-primary-hover: #9DD200;
+  --color-primary-dark: #7AA900;
+  --color-fv-primary-900: #3A5A00;
+  --color-primary-foreground: #011010;
 
-  --color-accent: #FFB800;
-  --color-accent-foreground: #0A0A0A;
+  /* Secondary Colors - Fitvive Deep Teal */
+  --color-secondary: #064343;
+  --color-secondary-light: #71E1E1;
+  --color-secondary-dark: #011010;
+  --color-secondary-foreground: #FFFFFF;
 
+  /* Status Colors */
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
 
+  /* Member Status Colors (CRM Specific) */
   --color-status-active: #10B981;
   --color-status-warning: #F59E0B;
   --color-status-expired: #DC2626;
 
+  /* Neutral Colors */
   --color-background: #FFFFFF;
-  --color-foreground: #0A0A0A;
+  --color-foreground: #011010;
   --color-card: #FFFFFF;
-  --color-card-foreground: #0A0A0A;
+  --color-card-foreground: #011010;
   --color-popover: #FFFFFF;
-  --color-popover-foreground: #0A0A0A;
+  --color-popover-foreground: #011010;
 
   --color-muted: #F5F5F5;
   --color-muted-foreground: #525252;
   --color-border: #E5E5E5;
   --color-input: #E5E5E5;
-  --color-ring: #FF6B00;
+  --color-ring: #BAFD00;
 
-  --color-chart-1: #FF6B00;
+  /* Chart Colors */
+  --color-chart-1: #BAFD00;
   --color-chart-2: #22C55E;
   --color-chart-3: #FFB800;
   --color-chart-4: #F59E0B;
   --color-chart-5: #8B5CF6;
 
+  /* Border Radius Scale */
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
@@ -59,31 +74,42 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    font-family: var(--font-family-body, var(--font-inter, 'Inter', sans-serif));
   }
   h1 {
     font-family: var(--font-family-h1);
-    letter-spacing: var(--letter-spacing-h1);
-    line-height: var(--line-height-h1);
+    font-size: 48px;
+    line-height: var(--line-height-h1, 48px);
+    letter-spacing: var(--letter-spacing-h1, -0.012em);
+    font-weight: var(--font-weight-bold, 700);
   }
   h2 {
     font-family: var(--font-family-h2);
-    letter-spacing: var(--letter-spacing-h2);
-    line-height: var(--line-height-h2);
+    font-size: 30px;
+    line-height: var(--line-height-h2, 36px);
+    letter-spacing: var(--letter-spacing-h2, -0.0075em);
+    font-weight: var(--font-weight-semibold, 600);
   }
   h3 {
     font-family: var(--font-family-h3);
-    letter-spacing: var(--letter-spacing-h3);
-    line-height: var(--line-height-h3);
+    font-size: 24px;
+    line-height: var(--line-height-h3, 32px);
+    letter-spacing: var(--letter-spacing-h3, -0.006em);
+    font-weight: var(--font-weight-semibold, 600);
   }
   h4 {
     font-family: var(--font-family-h4);
-    letter-spacing: var(--letter-spacing-h4);
-    line-height: var(--line-height-h4);
+    font-size: 20px;
+    line-height: var(--line-height-h4, 28px);
+    letter-spacing: var(--letter-spacing-h4, -0.005em);
+    font-weight: var(--font-weight-semibold, 600);
   }
   p {
     font-family: var(--font-family-p);
-    letter-spacing: var(--letter-spacing-p);
-    line-height: var(--line-height-p);
+    font-size: 16px;
+    line-height: var(--line-height-p, 28px);
+    letter-spacing: var(--letter-spacing-p, 0);
+    font-weight: var(--font-weight-normal, 400);
   }
 
   /* Override browser autofill light-blue background to stay default white */
@@ -95,8 +121,14 @@
   select:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
     box-shadow: 0 0 0 1000px #ffffff inset !important;
-    -webkit-text-fill-color: #0A0A0A !important;
-    caret-color: #0A0A0A !important;
+    -webkit-text-fill-color: #011010 !important;
+    caret-color: #011010 !important;
     transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Placeholder style is always regular (font-weight 400) */
+  input::placeholder,
+  textarea::placeholder {
+    font-weight: 400 !important;
   }
 }

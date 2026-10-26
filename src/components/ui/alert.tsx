@@ -24,12 +24,12 @@ const alertVariants = cva(
 )
 
 const iconBgVariants: Record<string, string> = {
-  danger: "bg-[#EF4444]",
-  error: "bg-[#EF4444]",
-  deleted: "bg-[#EF4444]",
-  success: "bg-[#22C55E]",
-  warning: "bg-[#FFB800]",
-  info: "bg-[#3B82F6]",
+  danger: "bg-danger",
+  error: "bg-danger",
+  deleted: "bg-danger",
+  success: "bg-success",
+  warning: "bg-warning",
+  info: "bg-secondary",
 }
 
 export interface AlertProps
@@ -93,11 +93,11 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         {/* Center Content / Message */}
         <div className="flex-1 min-w-0 py-1.5 flex flex-col justify-center">
           {title && (
-            <p className="text-sm font-semibold text-[#0A0A0A] leading-tight mb-0.5">
+            <p className="text-sm font-semibold text-foreground leading-tight mb-0.5">
               {title}
             </p>
           )}
-          <div className="text-sm font-normal text-[#0A0A0A] leading-snug break-words">
+          <div className="text-sm font-normal text-foreground leading-snug break-words">
             {children}
           </div>
         </div>
@@ -108,7 +108,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             type="button"
             onClick={onClose}
             aria-label="Đóng thông báo"
-            className="p-1.5 rounded-full text-[#737373] hover:text-[#0A0A0A] hover:bg-[#F5F5F5] transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-[#F5F5F5] transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
           >
             <X className="w-5 h-5" />
           </button>
