@@ -22,21 +22,21 @@ export function ReceptionistHeader({ onToggleSidebar, title = 'Quầy lễ tân'
             <Menu className="w-5 h-5" />
           </button>
         )}
-        <h1 className="text-lg font-bold text-[#101828] font-['Plus_Jakarta_Sans',sans-serif]">
+        <h1 className="text-lg font-bold text-foreground font-heading">
           {title}
         </h1>
       </div>
 
       <div className="flex items-center gap-3">
         {/* Quick Check-in Button */}
-        <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FF6B00] hover:bg-[#E05E00] text-white text-xs font-bold shadow-sm transition-all">
+        <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-sm transition-all">
           <QrCode className="w-3.5 h-3.5" />
           <span>Check-in nhanh</span>
         </button>
 
         <NotificationBell />
 
-        <div className="w-8 h-8 rounded-full bg-[#101828] text-white flex items-center justify-center font-bold text-xs ring-2 ring-[#FF6B00]/20 cursor-pointer">
+        <div className="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center font-bold text-xs ring-2 ring-primary/40 cursor-pointer">
           LT
         </div>
       </div>

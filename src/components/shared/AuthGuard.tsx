@@ -54,10 +54,10 @@ export default function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#F9FAFB]">
         <div className="flex flex-col items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#FF6B00] flex items-center justify-center shadow-[0_10px_25px_rgba(255,107,0,0.3)] animate-pulse">
-            <Dumbbell className="w-7 h-7 text-white" />
+          <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center shadow-[0_10px_25px_rgba(186,253,0,0.3)] animate-pulse">
+            <Dumbbell className="w-7 h-7 text-primary-foreground" />
           </div>
-          <div className="w-8 h-8 border-3 border-[#FF6B00] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
       </div>
     );

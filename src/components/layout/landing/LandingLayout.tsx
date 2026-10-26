@@ -12,7 +12,7 @@ export function LandingLayout({ children }: LandingLayoutProps) {
   return (
     <div
       suppressHydrationWarning
-      className="min-h-screen bg-white text-[#101828] font-['Inter',sans-serif] selection:bg-[#FF6B00] selection:text-white flex flex-col"
+      className="min-h-screen bg-white text-foreground font-sans selection:bg-primary selection:text-primary-foreground flex flex-col"
     >
       <Navbar />
       <main className="flex-1">{children}</main>

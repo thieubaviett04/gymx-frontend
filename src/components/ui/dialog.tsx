@@ -62,8 +62,8 @@ export function Dialog({
       <div
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          'w-full bg-white rounded-xl border border-[#E5E5E5]',
-          'shadow-[0px_4px_10px_0px_rgba(255,136,51,0.08),0_20px_25px_-5px_rgba(0,0,0,0.1)]',
+          'w-full bg-white rounded-xl border border-border',
+          'shadow-xl',
           'flex flex-col overflow-hidden transition-all duration-200 transform animate-in zoom-in-95',
           sizeClasses[size],
           className
@@ -230,7 +230,7 @@ export function ConfirmDialog({
       (highlightText ? (
         <>
           Bạn có chắc chắn muốn xóa hội viên{' '}
-          <span className="text-[#FF6B00] font-semibold">{highlightText}</span> không?
+          <span className="text-[#3A5A00] font-semibold">{highlightText}</span> không?
         </>
       ) : (
         'Bạn có chắc chắn muốn xóa hội viên này không?'
@@ -291,9 +291,9 @@ export function ConfirmDialog({
     }
 
     return (
-      <div className="w-[72px] h-[72px] rounded-full bg-[#FFF4EC] border border-[#FFD8BF] flex items-center justify-center text-[#FF6B00] shadow-none">
-        <div className="w-12 h-12 rounded-full bg-[#FFE7D6] flex items-center justify-center">
-          <HelpCircle className="w-6 h-6 text-[#FF6B00]" />
+      <div className="w-[72px] h-[72px] rounded-full bg-[#F4FFD0] border border-[#D8FF5C] flex items-center justify-center text-[#3A5A00] shadow-none">
+        <div className="w-12 h-12 rounded-full bg-[#EAFDC0] flex items-center justify-center">
+          <HelpCircle className="w-6 h-6 text-[#3A5A00]" />
         </div>
       </div>
     );
@@ -301,15 +301,15 @@ export function ConfirmDialog({
 
   const getConfirmButtonClasses = () => {
     if (resolvedType === 'danger') {
-      return 'bg-[#EF4444] hover:bg-red-600 text-white border-transparent';
+      return 'bg-[#EF4444] hover:bg-red-600 text-white font-bold border-transparent shadow-sm';
     }
     if (resolvedType === 'success') {
-      return 'bg-[#22C55E] hover:bg-green-600 text-white border-transparent';
+      return 'bg-[#22C55E] hover:bg-green-600 text-white font-bold border-transparent shadow-sm';
     }
     if (resolvedType === 'warning') {
-      return 'bg-[#F59E0B] hover:bg-amber-600 text-white border-transparent';
+      return 'bg-[#F59E0B] hover:bg-amber-600 text-white font-bold border-transparent shadow-sm';
     }
-    return 'bg-[#FF6B00] hover:bg-[#FF8833] text-white border-transparent';
+    return 'bg-primary hover:bg-primary-hover text-[#011010] border-transparent font-bold shadow-sm';
   };
 
   return (
@@ -336,7 +336,7 @@ export function ConfirmDialog({
           type="button"
           disabled={isLoading}
           onClick={onClose}
-          className="min-w-[80px] h-10 px-4 rounded-lg border border-[#E5E5E5] bg-white text-sm font-normal text-[#525252] hover:bg-[#F5F5F5] hover:text-[#0A0A0A] transition-all cursor-pointer disabled:opacity-50"
+          className="min-w-[80px] h-10 px-4 rounded-lg border-2 border-slate-300 bg-white text-sm font-bold text-[#1F2937] hover:bg-slate-50 hover:border-slate-400 hover:text-black transition-all cursor-pointer disabled:opacity-50 shadow-2xs"
         >
           {cancelText}
         </button>
@@ -347,7 +347,7 @@ export function ConfirmDialog({
           disabled={isLoading}
           onClick={onConfirm}
           className={cn(
-            'min-w-[110px] h-10 px-4 rounded-lg text-sm font-medium shadow-none cursor-pointer transition-all',
+            'min-w-[110px] h-10 px-4 rounded-lg text-sm font-bold shadow-sm cursor-pointer transition-all',
             getConfirmButtonClasses()
           )}
         >

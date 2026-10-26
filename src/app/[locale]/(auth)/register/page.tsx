@@ -102,24 +102,34 @@ export default function RegisterPage() {
     }
   };
 
+  const isFormFilled = Boolean(
+    formData.fullName.trim() &&
+    formData.email.trim() &&
+    formData.phoneNumber.trim() &&
+    formData.password
+  );
+
   return (
-    <div className="w-full max-w-[560px] mx-auto py-6">
-      <div className="bg-white/95 backdrop-blur-md rounded-[32px] border border-white/60 shadow-[0_25px_70px_rgba(0,0,0,0.35),0_10px_25px_rgba(0,0,0,0.2)] px-8 sm:px-12 md:px-14 py-8 sm:py-10 transition-all">
+    <div className="w-full max-w-[540px] mx-auto">
+      {/* Khung thẻ trắng bo góc chuẩn Figma với padding thoáng và kích thước cân đối */}
+      <div className="bg-white rounded-[28px] shadow-[0_8px_32px_rgba(0,0,0,0.22)] p-8 sm:px-12 sm:pt-9 sm:pb-11 transition-all">
         {/* Header Section */}
-        <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-[#FF6B00] flex items-center justify-center shadow-none mb-3.5">
-            <Dumbbell className="w-7 h-7 text-white" />
+        <div className="flex flex-col items-center text-center mb-6 sm:mb-8">
+          {/* Logo Badge hình tròn nền xanh đậm #064343 phẳng (không shadow) */}
+          <div className="w-16 h-16 rounded-full bg-[#064343] flex items-center justify-center mb-3.5 mx-auto">
+            <Dumbbell className="w-8 h-8 text-white" />
           </div>
 
-          <h1 className="font-sans font-semibold text-[26px] sm:text-[28px] leading-tight sm:leading-[34px] tracking-[-0.0075em] text-[#0A0A0A]">
+          {/* Tiêu đề font-heading Bold đậm nét text-2xl */}
+          <h1 className="font-heading font-bold text-2xl sm:text-[26px] leading-tight text-[#0A0A0A] text-center tracking-tight">
             ĐĂNG KÝ TÀI KHOẢN
           </h1>
-          <p className="font-sans text-[14px] sm:text-[15px] leading-[22px] sm:leading-[24px] text-[#525252] text-center mt-1.5">
+          <p className="font-sans text-xs sm:text-sm leading-relaxed text-muted-foreground text-center mt-2 max-w-[440px]">
             Chào mừng bạn đến với GymX, đăng ký ngay để bắt đầu
           </p>
         </div>
 
-        {/* Form Fields */}
+        {/* Form Fields – default không stroke, khi nhập stroke trùng màu logo #064343, khi có lỗi hiện viền đỏ */}
         <form onSubmit={handleSubmit} noValidate autoComplete="off" className="space-y-4">
           {/* Full Name */}
           <Input
@@ -133,7 +143,11 @@ export default function RegisterPage() {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.fullName}
-            className="bg-transparent focus:bg-transparent"
+            className={`h-[46px] bg-[#F4F5F6] rounded-lg text-sm placeholder:text-[#A3A3A3] placeholder:font-normal transition-all duration-150 outline-none ${
+              !errors.fullName
+                ? 'border border-transparent hover:border-transparent focus:border-[#064343] focus:ring-1 focus:ring-[#064343] focus:bg-white'
+                : ''
+            }`}
           />
 
           {/* Email */}
@@ -148,7 +162,11 @@ export default function RegisterPage() {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.email}
-            className="bg-transparent focus:bg-transparent"
+            className={`h-[46px] bg-[#F4F5F6] rounded-lg text-sm placeholder:text-[#A3A3A3] placeholder:font-normal transition-all duration-150 outline-none ${
+              !errors.email
+                ? 'border border-transparent hover:border-transparent focus:border-[#064343] focus:ring-1 focus:ring-[#064343] focus:bg-white'
+                : ''
+            }`}
           />
 
           {/* Phone Number */}
@@ -163,7 +181,11 @@ export default function RegisterPage() {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.phoneNumber}
-            className="bg-transparent focus:bg-transparent"
+            className={`h-[46px] bg-[#F4F5F6] rounded-lg text-sm placeholder:text-[#A3A3A3] placeholder:font-normal transition-all duration-150 outline-none ${
+              !errors.phoneNumber
+                ? 'border border-transparent hover:border-transparent focus:border-[#064343] focus:ring-1 focus:ring-[#064343] focus:bg-white'
+                : ''
+            }`}
           />
 
           {/* Password */}
@@ -180,29 +202,36 @@ export default function RegisterPage() {
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors.password}
-            className="bg-transparent focus:bg-transparent"
+            className={`h-[46px] bg-[#F4F5F6] rounded-lg text-sm placeholder:text-[#A3A3A3] placeholder:font-normal transition-all duration-150 outline-none ${
+              !errors.password
+                ? 'border border-transparent hover:border-transparent focus:border-[#064343] focus:ring-1 focus:ring-[#064343] focus:bg-white'
+                : ''
+            }`}
           />
 
-          {/* Submit Button – dạng Active theo chuẩn Figma 21:2, không icon */}
+          {/* Submit Button - Chữ trắng tinh !text-white, style regular, hoàn toàn không có hover */}
           <div className="pt-2">
             <Button
               type="submit"
-              variant="primary"
+              variant="auth"
               size="lg"
               isLoading={loading}
-              className="w-full h-11 text-sm sm:text-base font-semibold rounded-lg bg-[#FF6B00] text-white hover:bg-[#FF8833] cursor-pointer shadow-none transition-all duration-200"
+              disabled={loading}
+              className={`w-full h-12 text-[14px] !font-normal rounded-lg !text-white active:scale-[0.99] transition-none cursor-pointer shadow-sm ${
+                isFormFilled ? 'opacity-100 shadow-md' : 'opacity-60'
+              }`}
             >
-              Đăng ký
+              <span className="text-white font-normal">Đăng ký</span>
             </Button>
           </div>
         </form>
 
-        {/* Footer Navigation */}
-        <div className="mt-5 pt-4 border-t border-[#E5E5E5] text-center font-sans text-xs sm:text-sm text-[#525252]">
+        {/* Footer Navigation - không gạch ngang */}
+        <div className="mt-5 text-center font-sans text-xs sm:text-sm text-muted-foreground">
           Bạn đã có tài khoản?{' '}
           <Link
             href="/login"
-            className="font-semibold text-[#FF6B00] hover:text-[#FF8833] hover:underline transition-colors ml-1"
+            className="font-semibold text-[#064343] hover:underline transition-colors ml-1"
           >
             Đăng nhập
           </Link>
@@ -215,7 +244,7 @@ export default function RegisterPage() {
           <Alert
             variant="danger"
             onClose={() => setErrors((prev) => ({ ...prev, general: undefined }))}
-            className="shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-[#E5E5E5] bg-white"
+            className="shadow-[0_10px_30px_rgba(0,0,0,0.12)] border border-border bg-white"
           >
             {errors.general}
           </Alert>

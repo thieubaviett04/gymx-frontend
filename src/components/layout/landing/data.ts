@@ -102,8 +102,8 @@ export const pricingCards: PricingCardItem[] = [
     period: '/tháng',
     popular: false,
     buttonText: 'Chọn Basic',
-    buttonClass: 'bg-[#101828] hover:bg-[#1f2937] text-white',
-    borderClass: 'border-[#E5E7EB]',
+    buttonClass: 'border-2 border-slate-300 hover:border-slate-800 bg-white hover:bg-slate-50 text-[#011010] font-bold shadow-2xs',
+    borderClass: 'border-2 border-slate-200 hover:border-slate-300',
     features: [
       'Tập tự do toàn bộ thiết bị',
       'Phòng tắm & tủ đồ',
@@ -118,8 +118,8 @@ export const pricingCards: PricingCardItem[] = [
     period: '/tháng',
     popular: true,
     buttonText: 'Bắt đầu ngay',
-    buttonClass: 'bg-[#FF6B00] hover:bg-[#E05E00] text-white shadow-[0_10px_25px_-5px_rgba(255,107,0,0.4)]',
-    borderClass: 'border-2 border-[#FF6B00] shadow-[0px_25px_50px_-12px_rgba(255,237,212,0.8)]',
+    buttonClass: 'bg-primary hover:bg-primary-hover text-[#011010] font-bold shadow-[0_10px_25px_-5px_rgba(186,253,0,0.45)] ring-1 ring-black/10',
+    borderClass: 'border-2 border-primary shadow-[0px_25px_50px_-12px_rgba(186,253,0,0.3)] ring-1 ring-primary/30',
     features: [
       'Toàn bộ quyền lợi Basic',
       '8 buổi PT / tháng',
@@ -135,8 +135,8 @@ export const pricingCards: PricingCardItem[] = [
     period: '/tháng',
     popular: false,
     buttonText: 'Trải nghiệm Elite',
-    buttonClass: 'bg-[#FFB800] hover:bg-[#e6a600] text-[#101828]',
-    borderClass: 'border-[#E5E7EB]',
+    buttonClass: 'bg-secondary hover:bg-[#043333] text-white font-bold shadow-md',
+    borderClass: 'border-2 border-slate-200 hover:border-slate-300',
     features: [
       'Toàn bộ quyền lợi Pro',
       'PT không giới hạn',
@@ -165,7 +165,7 @@ export const trainers: TrainerItem[] = [
     rating: '4.9',
     sessions: '1,240 buổi',
     tag: 'Top Trainer',
-    tagBg: 'bg-[#FF6B00]',
+    tagBg: 'bg-primary text-primary-foreground',
     image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
   },
   {
@@ -217,8 +217,8 @@ export interface AmenityItem {
 export const amenities: AmenityItem[] = [
   {
     icon: Dumbbell,
-    iconBg: 'bg-[rgba(255,107,0,0.08)]',
-    iconColor: 'text-[#FF6B00]',
+    iconBg: 'bg-primary/20',
+    iconColor: 'text-[#3A5A00]',
     title: '300+ thiết bị cao cấp',
     desc: 'Máy móc từ các thương hiệu hàng đầu thế giới — luôn được bảo trì định kỳ.',
   },

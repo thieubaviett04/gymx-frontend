@@ -10,13 +10,13 @@ export default function StatsSection() {
             const Icon = stat.icon;
             return (
               <div key={i} className="flex flex-col items-center text-center space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#FFF7ED] flex items-center justify-center text-[#FF6B00]">
+                <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
                   <Icon className="w-5 h-5" />
                 </div>
-                <div className="text-3xl sm:text-4xl font-extrabold text-[#101828] font-['Plus_Jakarta_Sans',sans-serif]">
+                <div className="text-3xl sm:text-4xl font-extrabold text-foreground font-heading">
                   {stat.value}
                 </div>
-                <div className="text-sm font-medium text-[#6A7282]">{stat.label}</div>
+                <div className="text-sm font-medium text-muted-foreground">{stat.label}</div>
               </div>
             );
           })}

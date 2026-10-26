@@ -19,22 +19,22 @@ export function StatCard({
   change,
   trend = 'up',
   description,
-  iconColor = 'text-[#FF6B00]',
-  iconBg = 'bg-[#FFF7ED]',
+  iconColor = 'text-primary-foreground',
+  iconBg = 'bg-primary',
 }: StatCardProps) {
   return (
-    <div className="p-6 rounded-2xl bg-white border border-[#E5E7EB] shadow-sm hover:shadow-md transition-shadow">
+    <div className="p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#99A1AF]">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {title}
         </span>
-        <div className={`w-10 h-10 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center`}>
+        <div className={`w-10 h-10 rounded-xl ${iconBg} ${iconColor} flex items-center justify-center shadow-sm`}>
           <Icon className="w-5 h-5" />
         </div>
       </div>
 
       <div className="mt-3">
-        <div className="text-3xl font-black text-[#101828] font-['Plus_Jakarta_Sans',sans-serif]">
+        <div className="text-3xl font-bold text-foreground font-heading">
           {value}
         </div>
 

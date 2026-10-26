@@ -8,3 +8,5 @@ export { default as NotificationBell } from './NotificationBell';
 export * from './NotificationBell';
 export { default as AuthGuard } from './AuthGuard';
 export * from './AuthGuard';
+export { default as PasswordChecklist } from './PasswordChecklist';
+export * from './PasswordChecklist';

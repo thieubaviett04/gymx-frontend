@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const inputVariants = cva(
-  "w-full rounded-lg bg-transparent text-[#0A0A0A] placeholder:text-[#525252] text-sm transition-all duration-150 outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-[#F5F5F5]",
+  "w-full rounded-lg bg-transparent text-foreground placeholder:text-muted-foreground placeholder:font-normal font-normal text-sm transition-all duration-150 outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-muted",
   {
     variants: {
       inputSize: {
@@ -14,7 +14,7 @@ const inputVariants = cva(
         lg: "h-12 px-4 py-3 text-base",
       },
       hasError: {
-        true: "border-[1.5px] border-danger focus:border-danger focus:ring-1 focus:ring-danger shadow-none",
+        true: "!border-[1.5px] !border-danger focus:!border-danger focus:!ring-1 focus:!ring-danger shadow-none",
         false:
           "border border-border hover:border-[#D4D4D4] focus:border-primary focus:ring-1 focus:ring-primary shadow-none",
       },
@@ -75,7 +75,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             htmlFor={inputId}
             className={cn(
               "text-sm font-medium leading-none select-none transition-colors",
-              error ? "text-danger" : "text-[#0A0A0A]",
+              error ? "text-danger" : "text-foreground",
               labelClassName
             )}
           >
@@ -86,7 +86,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center w-full">
           {leftIcon && (
-            <div className="absolute left-3.5 flex items-center pointer-events-none text-[#525252] [&_svg]:size-4">
+            <div className="absolute left-3.5 flex items-center pointer-events-none text-muted-foreground [&_svg]:size-4">
               {leftIcon}
             </div>
           )}
@@ -112,7 +112,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               tabIndex={-1}
               onClick={() => setPasswordVisible((prev) => !prev)}
               aria-label={passwordVisible ? "Hide password" : "Show password"}
-              className="absolute right-3.5 p-0.5 text-[#525252] hover:text-[#0A0A0A] transition-colors focus:outline-none"
+              className="absolute right-3.5 p-0.5 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
             >
               {passwordVisible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
             </button>

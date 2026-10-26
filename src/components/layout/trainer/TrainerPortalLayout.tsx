@@ -39,14 +39,14 @@ export function TrainerPortalLayout({
       <header className="sticky top-0 z-40 bg-white border-b border-[#E5E7EB] px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/trainer/schedule" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#FFB800] flex items-center justify-center shadow-md">
-              <Dumbbell className="w-4 h-4 text-[#101828]" />
+            <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shadow-md">
+              <Dumbbell className="w-4 h-4 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-[#101828] font-['Plus_Jakarta_Sans',sans-serif] leading-tight">
-                GYM<span className="text-[#FF6B00]">MAX</span>
+              <span className="text-lg font-black tracking-tight text-foreground font-heading leading-tight">
+                GYM<span className="text-secondary">MAX</span>
               </span>
-              <span className="text-[10px] font-bold text-[#FFB800] uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-secondary uppercase tracking-wider">
                 Trainer Portal
               </span>
             </div>
@@ -62,11 +62,11 @@ export function TrainerPortalLayout({
                   href={item.href}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                     isActive
-                      ? 'bg-[#FFF7ED] text-[#FF6B00]'
-                      : 'text-[#4A5565] hover:text-[#101828] hover:bg-[#F9FAFB]'
+                      ? 'bg-secondary text-white shadow-sm'
+                      : 'text-[#1F2937] hover:text-black hover:bg-slate-100'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-[#4B5563]'}`} />
                   <span>{item.label}</span>
                 </Link>
               );
