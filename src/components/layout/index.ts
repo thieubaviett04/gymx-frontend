@@ -2,6 +2,7 @@
 export { default as AdminDashboardLayout } from './admin/AdminDashboardLayout';
 export { default as AdminHeader } from './admin/AdminHeader';
 export { default as AdminSidebar } from './admin/AdminSidebar';
+export { default as AdminNav, ADMIN_NAV_ITEMS } from './admin/AdminNav';
 export { default as AdminFooter } from './admin/AdminFooter';
 
 // Receptionist Layout
