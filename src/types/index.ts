@@ -7,3 +7,4 @@ export type * from './member';
 export type * from './trainer';
 export type * from './package';
 export type * from './attendance';
+export type * from './employee';
