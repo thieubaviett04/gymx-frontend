@@ -77,4 +77,13 @@ export const ENDPOINTS = {
     stats:          `${V1}/admin/stats`,
     revenue:        `${V1}/admin/revenue`,
   },
+
+  employees: {
+    list:           `${V1}/admin/employees`,
+    byId:           (id: string) => `${V1}/admin/employees/${id}`,
+    create:         `${V1}/admin/employees`,
+    update:         (id: string) => `${V1}/admin/employees/${id}`,
+    delete:         (id: string) => `${V1}/admin/employees/${id}`,
+    me:             `${V1}/employees/me`,
+  },
 } as const;

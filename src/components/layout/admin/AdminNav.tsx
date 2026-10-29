@@ -29,7 +29,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
   },
   {
     label: 'Quản lý nhân viên',
-    href: '/admin/staff',
+    href: '/admin/employees',
     icon: Users,
   },
   {
