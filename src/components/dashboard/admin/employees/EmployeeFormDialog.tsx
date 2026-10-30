@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { X, AlertCircle, Loader2, User, Briefcase, Award } from 'lucide-react';
-import { Button } from '@/components/ui';
+import React, { useState, useEffect } from "react";
+import { X, AlertCircle, Loader2, User, Briefcase, Award } from "lucide-react";
+import { Button } from "@/components/ui";
 import type {
   CreateEmployeePayload,
   EmployeeDetail,
   UpdateEmployeePayload,
-} from '@/types/employee';
-import { EMPLOYEE_POSITIONS, EMPLOYEE_STATUSES } from '@/types/employee';
+} from "@/types/employee";
+import { EMPLOYEE_POSITIONS, EMPLOYEE_STATUSES } from "@/types/employee";
 
 interface EmployeeFormDialogProps {
   isOpen: boolean;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
   employee?: EmployeeDetail | null;
   isLoading?: boolean;
   onClose: () => void;
@@ -22,12 +22,21 @@ interface EmployeeFormDialogProps {
 
 // Danh sách chuyên môn HLV phổ biến
 const SPECIALIZATION_OPTIONS = [
-  { id: '11111111-1111-1111-1111-111111111111', name: 'Gym & Thể hình (Bodybuilding)' },
-  { id: '22222222-2222-2222-2222-222222222222', name: 'Yoga & Thiền định' },
-  { id: '33333333-3333-3333-3333-333333333333', name: 'Pilates' },
-  { id: '44444444-4444-4444-4444-444444444444', name: 'Cardio & Giảm mỡ (HIIT)' },
-  { id: '55555555-5555-5555-5555-555555555555', name: 'Kickboxing / Võ thuật' },
-  { id: '66666666-6666-6666-6666-666666666666', name: 'Phục hồi chức năng & Chấn thương' },
+  {
+    id: "11111111-1111-1111-1111-111111111111",
+    name: "Gym & Thể hình (Bodybuilding)",
+  },
+  { id: "22222222-2222-2222-2222-222222222222", name: "Yoga & Thiền định" },
+  { id: "33333333-3333-3333-3333-333333333333", name: "Pilates" },
+  {
+    id: "44444444-4444-4444-4444-444444444444",
+    name: "Cardio & Giảm mỡ (HIIT)",
+  },
+  { id: "55555555-5555-5555-5555-555555555555", name: "Kickboxing / Võ thuật" },
+  {
+    id: "66666666-6666-6666-6666-666666666666",
+    name: "Phục hồi chức năng & Chấn thương",
+  },
 ];
 
 export function EmployeeFormDialog({
@@ -40,23 +49,25 @@ export function EmployeeFormDialog({
   onSubmitUpdate,
 }: EmployeeFormDialogProps) {
   // Form state
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [nationalId, setNationalId] = useState('');
-  const [gender, setGender] = useState('NAM');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [address, setAddress] = useState('');
-  const [position, setPosition] = useState('TRAINER');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [nationalId, setNationalId] = useState("");
+  const [gender, setGender] = useState("NAM");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [address, setAddress] = useState("");
+  const [position, setPosition] = useState("TRAINER");
   const [baseSalaryRate, setBaseSalaryRate] = useState<number>(8000000);
-  const [hiredAt, setHiredAt] = useState('');
-  const [employmentStatus, setEmploymentStatus] = useState('ACTIVE');
+  const [hiredAt, setHiredAt] = useState("");
+  const [employmentStatus, setEmploymentStatus] = useState("ACTIVE");
 
   // HLV specific fields
-  const [specializationId, setSpecializationId] = useState(SPECIALIZATION_OPTIONS[0].id);
+  const [specializationId, setSpecializationId] = useState(
+    SPECIALIZATION_OPTIONS[0].id,
+  );
   const [experienceYears, setExperienceYears] = useState<number>(2);
   const [salaryCoefficient, setSalaryCoefficient] = useState<number>(1.2);
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
 
   // Validation errors
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -64,42 +75,46 @@ export function EmployeeFormDialog({
 
   // Điền dữ liệu khi mở ở chế độ Edit
   useEffect(() => {
-    if (mode === 'edit' && employee) {
-      setFullName(employee.fullName || '');
-      setEmail(employee.email || '');
-      setPhoneNumber(employee.phoneNumber || '');
-      setNationalId(employee.nationalId || '');
-      setGender(employee.gender || 'NAM');
-      setDateOfBirth(employee.dateOfBirth || '');
-      setAddress(employee.address || '');
-      setPosition((employee.position || 'TRAINER').toUpperCase());
+    if (mode === "edit" && employee) {
+      setFullName(employee.fullName || "");
+      setEmail(employee.email || "");
+      setPhoneNumber(employee.phoneNumber || "");
+      setNationalId(employee.nationalId || "");
+      setGender(employee.gender || "NAM");
+      setDateOfBirth(employee.dateOfBirth || "");
+      setAddress(employee.address || "");
+      setPosition((employee.position || "TRAINER").toUpperCase());
       setBaseSalaryRate(employee.baseSalaryRate || 0);
-      setEmploymentStatus((employee.employmentStatus || 'ACTIVE').toUpperCase());
-      setHiredAt(employee.hiredAt || '');
+      setEmploymentStatus(
+        (employee.employmentStatus || "ACTIVE").toUpperCase(),
+      );
+      setHiredAt(employee.hiredAt || "");
 
       if (employee.trainerInfo) {
-        setSpecializationId(employee.trainerInfo.specializationId || SPECIALIZATION_OPTIONS[0].id);
+        setSpecializationId(
+          employee.trainerInfo.specializationId || SPECIALIZATION_OPTIONS[0].id,
+        );
         setExperienceYears(employee.trainerInfo.experienceYears ?? 1);
         setSalaryCoefficient(employee.trainerInfo.salaryCoefficient ?? 1.0);
-        setDescription(employee.trainerInfo.description || '');
+        setDescription(employee.trainerInfo.description || "");
       }
     } else {
       // Reset form default create
-      setFullName('');
-      setEmail('');
-      setPhoneNumber('');
-      setNationalId('');
-      setGender('NAM');
-      setDateOfBirth('');
-      setAddress('');
-      setPosition('TRAINER');
+      setFullName("");
+      setEmail("");
+      setPhoneNumber("");
+      setNationalId("");
+      setGender("NAM");
+      setDateOfBirth("");
+      setAddress("");
+      setPosition("TRAINER");
       setBaseSalaryRate(8000000);
-      setHiredAt(new Date().toISOString().split('T')[0]);
-      setEmploymentStatus('ACTIVE');
+      setHiredAt(new Date().toISOString().split("T")[0]);
+      setEmploymentStatus("ACTIVE");
       setSpecializationId(SPECIALIZATION_OPTIONS[0].id);
       setExperienceYears(2);
       setSalaryCoefficient(1.2);
-      setDescription('');
+      setDescription("");
     }
     setErrors({});
     setServerError(null);
@@ -110,28 +125,31 @@ export function EmployeeFormDialog({
   const validate = (): boolean => {
     const err: Record<string, string> = {};
 
-    if (!fullName.trim()) err.fullName = 'Vui lòng nhập họ và tên.';
+    if (!fullName.trim()) err.fullName = "Vui lòng nhập họ và tên.";
     if (!email.trim()) {
-      err.email = 'Vui lòng nhập địa chỉ email.';
+      err.email = "Vui lòng nhập địa chỉ email.";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      err.email = 'Email không đúng định dạng.';
+      err.email = "Email không đúng định dạng.";
     }
 
-    if (mode === 'create') {
+    if (mode === "create") {
       if (!nationalId.trim()) {
-        err.nationalId = 'Vui lòng nhập số CCCD.';
+        err.nationalId = "Vui lòng nhập số CCCD.";
       } else if (!/^\d{9,12}$/.test(nationalId.trim())) {
-        err.nationalId = 'Số CCCD phải gồm 9 đến 12 chữ số.';
+        err.nationalId = "Số CCCD phải gồm 9 đến 12 chữ số.";
       }
     }
 
-    if (phoneNumber && !/^(0|\+84)[0-9]{9,10}$/.test(phoneNumber.replace(/\s/g, ''))) {
-      err.phoneNumber = 'Số điện thoại không hợp lệ (10 chữ số).';
+    if (
+      phoneNumber &&
+      !/^(0|\+84)[0-9]{9,10}$/.test(phoneNumber.replace(/\s/g, ""))
+    ) {
+      err.phoneNumber = "Số điện thoại không hợp lệ (10 chữ số).";
     }
 
-    if (!position) err.position = 'Vui lòng chọn vai trò làm việc.';
+    if (!position) err.position = "Vui lòng chọn vai trò làm việc.";
     if (baseSalaryRate <= 0 || isNaN(baseSalaryRate)) {
-      err.baseSalaryRate = 'Mức lương cơ bản phải lớn hơn 0 VNĐ.';
+      err.baseSalaryRate = "Mức lương cơ bản phải lớn hơn 0 VNĐ.";
     }
 
     setErrors(err);
@@ -145,7 +163,7 @@ export function EmployeeFormDialog({
     if (!validate()) return;
 
     try {
-      if (mode === 'create') {
+      if (mode === "create") {
         const payload: CreateEmployeePayload = {
           fullName: fullName.trim(),
           email: email.trim(),
@@ -159,7 +177,7 @@ export function EmployeeFormDialog({
           hiredAt: hiredAt || undefined,
         };
 
-        if (position === 'TRAINER') {
+        if (position === "TRAINER") {
           payload.specializationId = specializationId;
           payload.experienceYears = Number(experienceYears);
           payload.salaryCoefficient = Number(salaryCoefficient);
@@ -167,7 +185,7 @@ export function EmployeeFormDialog({
         }
 
         await onSubmitCreate(payload);
-      } else if (mode === 'edit' && employee) {
+      } else if (mode === "edit" && employee) {
         const payload: UpdateEmployeePayload = {
           fullName: fullName.trim(),
           email: email.trim(),
@@ -180,7 +198,7 @@ export function EmployeeFormDialog({
           address: address.trim() || undefined,
         };
 
-        if (position === 'TRAINER') {
+        if (position === "TRAINER") {
           payload.specializationId = specializationId;
           payload.experienceYears = Number(experienceYears);
           payload.salaryCoefficient = Number(salaryCoefficient);
@@ -195,12 +213,12 @@ export function EmployeeFormDialog({
         err?.response?.data?.error?.description ||
         err?.response?.data?.error?.message ||
         err?.message ||
-        'Có lỗi xảy ra khi lưu thông tin nhân viên.';
+        "Có lỗi xảy ra khi lưu thông tin nhân viên.";
       setServerError(message);
     }
   };
 
-  const isTrainer = position === 'TRAINER';
+  const isTrainer = position === "TRAINER";
 
   return (
     <div
@@ -217,12 +235,14 @@ export function EmployeeFormDialog({
         <div className="px-6 py-5 border-b border-[#F1F5F9] flex items-center justify-between shrink-0">
           <div>
             <h3 className="text-lg font-bold text-[#0F172A]">
-              {mode === 'create' ? 'Thêm nhân viên mới' : 'Cập nhật thông tin nhân viên'}
+              {mode === "create"
+                ? "Thêm nhân viên mới"
+                : "Cập nhật thông tin nhân viên"}
             </h3>
             <p className="text-xs text-[#64748B] mt-0.5">
-              {mode === 'create'
-                ? 'Hệ thống sẽ tự động tạo tài khoản và gửi email mật khẩu tạm thời.'
-                : 'Chỉnh sửa thông tin hành chính, mức lương và trạng thái của nhân viên.'}
+              {mode === "create"
+                ? "Hệ thống sẽ tự động tạo tài khoản và gửi email mật khẩu tạm thời."
+                : "Chỉnh sửa thông tin hành chính, mức lương và trạng thái của nhân viên."}
             </p>
           </div>
           <button
@@ -236,7 +256,10 @@ export function EmployeeFormDialog({
         </div>
 
         {/* Form Body with scroll */}
-        <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col flex-1 overflow-hidden"
+        >
           <div className="p-6 overflow-y-auto max-h-[calc(85vh-130px)] space-y-5">
             {/* Server Error Alert */}
             {serverError && (
@@ -266,12 +289,14 @@ export function EmployeeFormDialog({
                     placeholder="Ví dụ: Trần Minh Khoa"
                     className={`w-full h-10 px-3 rounded-lg border text-sm text-[#0F172A] transition-colors focus:outline-none focus:ring-1 ${
                       errors.fullName
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                        : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]'
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : "border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]"
                     }`}
                   />
                   {errors.fullName && (
-                    <p className="text-[11px] text-red-500 mt-1">{errors.fullName}</p>
+                    <p className="text-[11px] text-red-500 mt-1">
+                      {errors.fullName}
+                    </p>
                   )}
                 </div>
 
@@ -287,12 +312,14 @@ export function EmployeeFormDialog({
                     placeholder="khoa.tm@gymx.vn"
                     className={`w-full h-10 px-3 rounded-lg border text-sm text-[#0F172A] transition-colors focus:outline-none focus:ring-1 ${
                       errors.email
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                        : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]'
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : "border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]"
                     }`}
                   />
                   {errors.email && (
-                    <p className="text-[11px] text-red-500 mt-1">{errors.email}</p>
+                    <p className="text-[11px] text-red-500 mt-1">
+                      {errors.email}
+                    </p>
                   )}
                 </div>
 
@@ -308,12 +335,14 @@ export function EmployeeFormDialog({
                     placeholder="0901 234 567"
                     className={`w-full h-10 px-3 rounded-lg border text-sm text-[#0F172A] transition-colors focus:outline-none focus:ring-1 ${
                       errors.phoneNumber
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                        : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]'
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : "border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]"
                     }`}
                   />
                   {errors.phoneNumber && (
-                    <p className="text-[11px] text-red-500 mt-1">{errors.phoneNumber}</p>
+                    <p className="text-[11px] text-red-500 mt-1">
+                      {errors.phoneNumber}
+                    </p>
                   )}
                 </div>
 
@@ -324,18 +353,20 @@ export function EmployeeFormDialog({
                   </label>
                   <input
                     type="text"
-                    disabled={mode === 'edit'}
+                    disabled={mode === "edit"}
                     value={nationalId}
                     onChange={(e) => setNationalId(e.target.value)}
                     placeholder="001201000123"
                     className={`w-full h-10 px-3 rounded-lg border text-sm text-[#0F172A] transition-colors focus:outline-none focus:ring-1 disabled:bg-slate-50 disabled:text-slate-500 ${
                       errors.nationalId
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                        : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]'
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : "border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]"
                     }`}
                   />
                   {errors.nationalId && (
-                    <p className="text-[11px] text-red-500 mt-1">{errors.nationalId}</p>
+                    <p className="text-[11px] text-red-500 mt-1">
+                      {errors.nationalId}
+                    </p>
                   )}
                 </div>
 
@@ -423,17 +454,19 @@ export function EmployeeFormDialog({
                     onChange={(e) => setBaseSalaryRate(Number(e.target.value))}
                     className={`w-full h-10 px-3 rounded-lg border text-sm text-[#0F172A] transition-colors focus:outline-none focus:ring-1 ${
                       errors.baseSalaryRate
-                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                        : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]'
+                        ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+                        : "border-[#E2E8F0] focus:border-[#064343] focus:ring-[#064343]"
                     }`}
                   />
                   {errors.baseSalaryRate && (
-                    <p className="text-[11px] text-red-500 mt-1">{errors.baseSalaryRate}</p>
+                    <p className="text-[11px] text-red-500 mt-1">
+                      {errors.baseSalaryRate}
+                    </p>
                   )}
                 </div>
 
                 {/* Ngày vào làm (Create mode) */}
-                {mode === 'create' && (
+                {mode === "create" && (
                   <div>
                     <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
                       Ngày vào làm
@@ -448,10 +481,11 @@ export function EmployeeFormDialog({
                 )}
 
                 {/* Trạng thái làm việc (Edit mode) */}
-                {mode === 'edit' && (
+                {mode === "edit" && (
                   <div>
                     <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
-                      Trạng thái làm việc <span className="text-red-500">*</span>
+                      Trạng thái làm việc{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <select
                       value={employmentStatus}
@@ -506,7 +540,9 @@ export function EmployeeFormDialog({
                       min="0"
                       max="40"
                       value={experienceYears}
-                      onChange={(e) => setExperienceYears(Number(e.target.value))}
+                      onChange={(e) =>
+                        setExperienceYears(Number(e.target.value))
+                      }
                       className="w-full h-10 px-3 rounded-lg border border-[#E2E8F0] text-sm text-[#0F172A] focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343]"
                     />
                   </div>
@@ -522,7 +558,9 @@ export function EmployeeFormDialog({
                       min="1.0"
                       max="5.0"
                       value={salaryCoefficient}
-                      onChange={(e) => setSalaryCoefficient(Number(e.target.value))}
+                      onChange={(e) =>
+                        setSalaryCoefficient(Number(e.target.value))
+                      }
                       className="w-full h-10 px-3 rounded-lg border border-[#E2E8F0] text-sm text-[#0F172A] focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343]"
                     />
                   </div>
@@ -561,7 +599,9 @@ export function EmployeeFormDialog({
               className="min-w-[120px] h-10 px-5 bg-[#064343] hover:bg-[#053737] text-white text-sm font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all"
             >
               {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              <span>{mode === 'create' ? 'Tạo nhân viên' : 'Lưu thay đổi'}</span>
+              <span>
+                {mode === "create" ? "Tạo nhân viên" : "Lưu thay đổi"}
+              </span>
             </Button>
           </div>
         </form>

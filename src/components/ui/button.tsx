@@ -108,7 +108,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           leftIcon && <span className="inline-flex shrink-0 items-center">{leftIcon}</span>
         )}
-        {children && <span>{children}</span>}
+        {children}
         {!isLoading && rightIcon && (
           <span className="inline-flex shrink-0 items-center">{rightIcon}</span>
         )}

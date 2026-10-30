@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Bell, Check, Clock } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface NotificationItem {
   id: string;
@@ -39,7 +40,7 @@ const mockNotifications: NotificationItem[] = [
   },
 ];
 
-export function NotificationBell() {
+export function NotificationBell({ className }: { className?: string } = {}) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,7 +65,10 @@ export function NotificationBell() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl text-[#6A7282] hover:text-[#101828] hover:bg-[#F3F4F6] transition-colors"
+        className={cn(
+          "relative p-2 rounded-xl text-[#6A7282] hover:text-[#101828] hover:bg-[#F3F4F6] transition-colors cursor-pointer",
+          className
+        )}
         aria-label="Thông báo"
       >
         <Bell className="w-5 h-5" />
