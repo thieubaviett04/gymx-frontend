@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState } from "react";
+import Image from "next/image";
 import {
   X,
   Mail,
@@ -16,8 +16,9 @@ import {
   Eye,
   EyeOff,
   User,
-} from 'lucide-react';
-import type { EmployeeDetail } from '@/types/employee';
+} from "lucide-react";
+import { getMediaUrl } from "@/lib/utils/media-url";
+import type { EmployeeDetail } from "@/types/employee";
 
 interface EmployeeDetailDialogProps {
   isOpen: boolean;
@@ -36,13 +37,13 @@ export function EmployeeDetailDialog({
 
   if (!isOpen || !employee) return null;
 
-  const isActive = (employee.employmentStatus || '').toUpperCase() === 'ACTIVE';
+  const isActive = (employee.employmentStatus || "").toUpperCase() === "ACTIVE";
 
   // Format currency
   const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
     }).format(val);
   };
 
@@ -70,24 +71,27 @@ export function EmployeeDetailDialog({
 
           <div className="flex items-center gap-4">
             <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white/20 border-2 border-white/60 shrink-0 flex items-center justify-center shadow-md">
-              {employee.avatarUrl ? (
-                <Image
-                  src={employee.avatarUrl}
+              <span className="font-bold text-2xl text-white">
+                {employee.fullName?.charAt(0)?.toUpperCase() || "U"}
+              </span>
+              {employee.avatarUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={getMediaUrl(employee.avatarUrl)}
                   alt={employee.fullName}
-                  fill
-                  className="object-cover"
-                  sizes="64px"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = "none";
+                  }}
                 />
-              ) : (
-                <span className="font-bold text-2xl text-white">
-                  {employee.fullName?.charAt(0)?.toUpperCase() || 'U'}
-                </span>
               )}
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold truncate">{employee.fullName}</h3>
+                <h3 className="text-xl font-bold truncate">
+                  {employee.fullName}
+                </h3>
                 <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-white/20 text-white border border-white/30">
                   {employee.employeeCode}
                 </span>
@@ -118,31 +122,45 @@ export function EmployeeDetailDialog({
               <Mail className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
               <div>
                 <span className="block text-xs text-[#64748B]">Email:</span>
-                <span className="font-medium text-xs sm:text-sm">{employee.email}</span>
+                <span className="font-medium text-xs sm:text-sm">
+                  {employee.email}
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-2.5">
               <Phone className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
               <div>
-                <span className="block text-xs text-[#64748B]">Số điện thoại:</span>
-                <span className="font-medium text-xs sm:text-sm">{employee.phoneNumber || '—'}</span>
+                <span className="block text-xs text-[#64748B]">
+                  Số điện thoại:
+                </span>
+                <span className="font-medium text-xs sm:text-sm">
+                  {employee.phoneNumber || "—"}
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-2.5">
               <CreditCard className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
               <div>
-                <span className="block text-xs text-[#64748B]">Số CCCD / CMND:</span>
-                <span className="font-medium font-mono text-xs sm:text-sm">{employee.nationalId || '—'}</span>
+                <span className="block text-xs text-[#64748B]">
+                  Số CCCD / CMND:
+                </span>
+                <span className="font-medium font-mono text-xs sm:text-sm">
+                  {employee.nationalId || "—"}
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-2.5">
               <Calendar className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
               <div>
-                <span className="block text-xs text-[#64748B]">Ngày vào làm:</span>
-                <span className="font-medium text-xs sm:text-sm">{employee.hiredAt || '—'}</span>
+                <span className="block text-xs text-[#64748B]">
+                  Ngày vào làm:
+                </span>
+                <span className="font-medium text-xs sm:text-sm">
+                  {employee.hiredAt || "—"}
+                </span>
               </div>
             </div>
 
@@ -151,7 +169,9 @@ export function EmployeeDetailDialog({
                 <MapPin className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
                 <div>
                   <span className="block text-xs text-[#64748B]">Địa chỉ:</span>
-                  <span className="font-medium text-xs sm:text-sm">{employee.address}</span>
+                  <span className="font-medium text-xs sm:text-sm">
+                    {employee.address}
+                  </span>
                 </div>
               </div>
             )}
@@ -164,9 +184,13 @@ export function EmployeeDetailDialog({
                 <DollarSign className="w-5 h-5" />
               </div>
               <div>
-                <span className="block text-xs text-[#64748B]">Mức lương cơ bản</span>
+                <span className="block text-xs text-[#64748B]">
+                  Mức lương cơ bản
+                </span>
                 <span className="font-bold text-base text-[#0F172A]">
-                  {showSalary ? formatCurrency(employee.baseSalaryRate) : '•••••••• VNĐ'}
+                  {showSalary
+                    ? formatCurrency(employee.baseSalaryRate)
+                    : "•••••••• VNĐ"}
                 </span>
               </div>
             </div>
@@ -175,9 +199,13 @@ export function EmployeeDetailDialog({
               type="button"
               onClick={() => setShowSalary(!showSalary)}
               className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
-              title={showSalary ? 'Ẩn mức lương' : 'Hiện mức lương'}
+              title={showSalary ? "Ẩn mức lương" : "Hiện mức lương"}
             >
-              {showSalary ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showSalary ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
             </button>
           </div>
 
@@ -193,7 +221,8 @@ export function EmployeeDetailDialog({
                 <div>
                   <span className="text-[#64748B]">Chuyên môn:</span>
                   <p className="font-bold text-[#0F172A] mt-0.5">
-                    {employee.trainerInfo.specializationName || 'Chưa phân loại'}
+                    {employee.trainerInfo.specializationName ||
+                      "Chưa phân loại"}
                   </p>
                 </div>
                 <div>
@@ -213,13 +242,17 @@ export function EmployeeDetailDialog({
                   <span className="font-bold text-[#0F172A]">
                     {employee.trainerInfo.ratingAvg} / 5
                   </span>
-                  <span className="text-[#64748B]">({employee.trainerInfo.ratingCount} đánh giá)</span>
+                  <span className="text-[#64748B]">
+                    ({employee.trainerInfo.ratingCount} đánh giá)
+                  </span>
                 </div>
               </div>
 
               {employee.trainerInfo.description && (
                 <div className="pt-2 border-t border-amber-200/60 text-xs text-slate-700">
-                  <span className="font-semibold text-slate-900">Giới thiệu: </span>
+                  <span className="font-semibold text-slate-900">
+                    Giới thiệu:{" "}
+                  </span>
                   {employee.trainerInfo.description}
                 </div>
               )}
@@ -230,7 +263,7 @@ export function EmployeeDetailDialog({
         {/* Footer */}
         <div className="px-6 py-4 bg-[#F8FAFC] border-t border-[#F1F5F9] flex items-center justify-between">
           <span className="text-xs text-[#94A3B8]">
-            Đã tạo: {new Date(employee.createdDate).toLocaleDateString('vi-VN')}
+            Đã tạo: {new Date(employee.createdDate).toLocaleDateString("vi-VN")}
           </span>
           <div className="flex items-center gap-2">
             <button

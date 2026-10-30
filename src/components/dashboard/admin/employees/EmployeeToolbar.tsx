@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { Search, Plus, Filter, X } from 'lucide-react';
-import { Button } from '@/components/ui';
-import { EMPLOYEE_POSITIONS, EMPLOYEE_STATUSES } from '@/types/employee';
+import React, { useState, useEffect } from "react";
+import { Search, Plus, Filter, X } from "lucide-react";
+import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
+import { cn } from "@/lib/utils";
+import { EMPLOYEE_POSITIONS, EMPLOYEE_STATUSES } from "@/types/employee";
 
 interface EmployeeToolbarProps {
   searchValue: string;
@@ -25,6 +26,7 @@ export function EmployeeToolbar({
   onAddNew,
 }: EmployeeToolbarProps) {
   const [localSearch, setLocalSearch] = useState(searchValue);
+  const [isFocused, setIsFocused] = useState(false);
 
   // Debounce search 350ms
   useEffect(() => {
@@ -44,25 +46,37 @@ export function EmployeeToolbar({
   const hasFilter = !!selectedPosition || !!selectedStatus || !!localSearch;
 
   const handleResetFilter = () => {
-    setLocalSearch('');
-    onSearchChange('');
-    onPositionChange('');
-    onStatusChange('');
+    setLocalSearch("");
+    onSearchChange("");
+    onPositionChange("");
+    onStatusChange("");
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 mb-5">
-      {/* Search & Filters */}
+    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3.5 mb-5">
+      {/* Search & Filters (Figma Container #1346:6501) */}
       <div className="flex flex-wrap items-center gap-3 flex-1">
         {/* Search Input matching Figma Node 1346:6502 */}
-        <div className="relative w-full sm:w-[320px] md:w-[360px]">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9EA5C0] pointer-events-none" />
+        <div className="relative w-full sm:w-[380px] lg:w-[420px] h-[44px]">
+          <Search
+            className={cn(
+              "absolute left-[14px] top-1/2 -translate-y-1/2 w-5 h-5 transition-colors pointer-events-none stroke-[2.2]",
+              isFocused || localSearch ? "text-[#064343]" : "text-[#9EA5C0]"
+            )}
+          />
           <input
             type="text"
             value={localSearch}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Tìm theo tên, SĐT, mã NV..."
-            className="w-full h-11 pl-10 pr-9 rounded-lg border border-[#E2E8F0] bg-white text-sm text-[#0F172A] placeholder-[#9EA5C0] transition-colors focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343] shadow-2xs"
+            className={cn(
+              "w-full h-[44px] pl-[44px] pr-9 rounded-[8px] bg-white text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] transition-all outline-none",
+              isFocused || localSearch
+                ? "border-2 border-[#064343] ring-4 ring-[#064343]/20 shadow-md font-medium"
+                : "border border-[#E2E8F0] hover:border-[#CBD5E1] shadow-2xs"
+            )}
           />
           {localSearch && (
             <button
@@ -71,76 +85,74 @@ export function EmployeeToolbar({
                 setLocalSearch('');
                 onSearchChange('');
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9EA5C0] hover:text-[#0F172A] p-0.5 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9EA5C0] hover:text-[#064343] p-0.5 cursor-pointer transition-colors"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
-        {/* Dropdown Vai trò (Role Filter) */}
-        <div className="relative min-w-[160px] sm:min-w-[184px]">
-          <select
-            value={selectedPosition}
-            onChange={(e) => onPositionChange(e.target.value)}
-            className="w-full h-11 px-3.5 pr-8 rounded-lg border border-[#E2E8F0] bg-white text-sm font-medium text-[#2F3D50] appearance-none cursor-pointer focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343] shadow-2xs transition-colors"
+        {/* Dropdown Vai trò (Role Filter matching Figma #1346:6508 & #777:13666) */}
+        <div className="min-w-[210px] sm:w-[245px]">
+          <Select
+            value={selectedPosition || "ALL"}
+            onValueChange={(val) => onPositionChange(val === "ALL" ? "" : val)}
           >
-            <option value="">Tất cả vai trò</option>
-            {EMPLOYEE_POSITIONS.map((pos) => (
-              <option key={pos.value} value={pos.value}>
-                {pos.label}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#538D64]">
-            <svg className="w-4 h-4 fill-current text-[#64748B]" viewBox="0 0 20 20">
-              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
-          </div>
+            <SelectTrigger className="w-full h-[44px] px-3.5 rounded-[8px] border-[#E2E8F0] text-[14px] text-[#2F3D50]">
+              <SelectValue placeholder="Tất cả vai trò" />
+            </SelectTrigger>
+            <SelectContent className="min-w-[245px]">
+              <SelectItem value="ALL">Tất cả vai trò</SelectItem>
+              {EMPLOYEE_POSITIONS.map((pos) => (
+                <SelectItem key={pos.value} value={pos.value}>
+                  {pos.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Dropdown Trạng thái (Status Filter) */}
-        <div className="relative min-w-[150px]">
-          <select
-            value={selectedStatus}
-            onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full h-11 px-3.5 pr-8 rounded-lg border border-[#E2E8F0] bg-white text-sm font-medium text-[#2F3D50] appearance-none cursor-pointer focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343] shadow-2xs transition-colors"
+        {/* Dropdown Trạng thái (Status Filter matching Figma #777:13666) */}
+        <div className="min-w-[170px] sm:w-[195px]">
+          <Select
+            value={selectedStatus || "ALL"}
+            onValueChange={(val) => onStatusChange(val === "ALL" ? "" : val)}
           >
-            <option value="">Tất cả trạng thái</option>
-            {EMPLOYEE_STATUSES.map((st) => (
-              <option key={st.value} value={st.value}>
-                {st.label}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#538D64]">
-            <svg className="w-4 h-4 fill-current text-[#64748B]" viewBox="0 0 20 20">
-              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
-          </div>
+            <SelectTrigger className="w-full h-[44px] px-3.5 rounded-[8px] border-[#E2E8F0] text-[14px] text-[#2F3D50]">
+              <SelectValue placeholder="Tất cả trạng thái" />
+            </SelectTrigger>
+            <SelectContent className="min-w-[195px]">
+              <SelectItem value="ALL">Tất cả trạng thái</SelectItem>
+              {EMPLOYEE_STATUSES.map((st) => (
+                <SelectItem key={st.value} value={st.value}>
+                  {st.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Reset filter button */}
+        {/* Reset filter button (nền trắng chữ đỏ, không đổi màu hover, kích thước dài hơn) */}
         {hasFilter && (
           <button
             type="button"
             onClick={handleResetFilter}
-            className="h-11 px-3 text-xs font-semibold text-[#64748B] hover:text-[#0F172A] hover:bg-[#F1F5F9] rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[13px] font-semibold text-red-600 rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-4 h-4 text-red-600 stroke-[2.5]" />
             <span>Xóa bộ lọc</span>
           </button>
         )}
       </div>
 
-      {/* Primary Action Button matching Figma 1346:6513 */}
+      {/* Primary Action Button matching Figma #1346:6513 (kéo dài thêm) */}
       <Button
         type="button"
         onClick={onAddNew}
-        className="h-11 px-4.5 bg-[#064343] hover:bg-[#053737] text-white font-medium rounded-[10px] shadow-sm flex items-center gap-2 cursor-pointer shrink-0 transition-all active:scale-[0.98]"
+        leftIcon={<Plus className="w-4 h-4" />}
+        className="h-[44px] px-6 min-w-[165px] bg-[#064343] hover:bg-[#053737] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] shadow-sm inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 transition-all active:scale-[0.98]"
       >
-        <Plus className="w-4 h-4" />
-        <span className="text-sm font-medium">Thêm nhân viên</span>
+        Thêm nhân viên
       </Button>
     </div>
   );

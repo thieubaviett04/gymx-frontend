@@ -1,52 +1,55 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Users, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { ConfirmDialog } from '@/components/ui';
-import { employeeService } from '@/lib/api';
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { ConfirmDialog } from "@/components/ui";
+import { employeeService } from "@/lib/api";
 import type {
   CreateEmployeePayload,
   EmployeeDetail,
   EmployeeSummary,
   UpdateEmployeePayload,
-} from '@/types/employee';
+} from "@/types/employee";
 import {
   EmployeeToolbar,
   EmployeeTable,
   EmployeePagination,
   EmployeeFormDialog,
   EmployeeDetailDialog,
-} from '@/components/dashboard/admin/employees';
+} from "@/components/dashboard/admin/employees";
 
 export default function AdminEmployeesPage() {
   const queryClient = useQueryClient();
 
   // Search, Filter & Pagination states
-  const [search, setSearch] = useState('');
-  const [position, setPosition] = useState('');
-  const [status, setStatus] = useState('');
+  const [search, setSearch] = useState("");
+  const [position, setPosition] = useState("");
+  const [status, setStatus] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   // Dialogs state
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
-  const [activeEmployee, setActiveEmployee] = useState<EmployeeDetail | null>(null);
+  const [formMode, setFormMode] = useState<"create" | "edit">("create");
+  const [activeEmployee, setActiveEmployee] = useState<EmployeeDetail | null>(
+    null,
+  );
   const [isFetchingDetail, setIsFetchingDetail] = useState(false);
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deletingEmployee, setDeletingEmployee] = useState<EmployeeSummary | null>(null);
+  const [deletingEmployee, setDeletingEmployee] =
+    useState<EmployeeSummary | null>(null);
 
   // Toast notification state
   const [toast, setToast] = useState<{
-    type: 'success' | 'error';
+    type: "success" | "error";
     message: string;
   } | null>(null);
 
-  const showToast = (type: 'success' | 'error', message: string) => {
+  const showToast = (type: "success" | "error", message: string) => {
     setToast({ type, message });
     setTimeout(() => {
       setToast(null);
@@ -55,7 +58,10 @@ export default function AdminEmployeesPage() {
 
   // ─── 1. Query danh sách nhân viên ──────────────────────────────────────────
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['admin-employees', { search, position, status, pageIndex, pageSize }],
+    queryKey: [
+      "admin-employees",
+      { search, position, status, pageIndex, pageSize },
+    ],
     queryFn: async () => {
       const res = await employeeService.list({
         search: search.trim() || undefined,
@@ -70,10 +76,11 @@ export default function AdminEmployeesPage() {
 
   // ─── 2. Mutation Thêm mới ──────────────────────────────────────────────────
   const createMutation = useMutation({
-    mutationFn: (payload: CreateEmployeePayload) => employeeService.create(payload),
+    mutationFn: (payload: CreateEmployeePayload) =>
+      employeeService.create(payload),
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-employees'] });
-      showToast('success', res.message || 'Thêm mới nhân viên thành công.');
+      queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
+      showToast("success", res.message || "Thêm mới nhân viên thành công.");
       setIsFormOpen(false);
     },
     onError: (err: any) => {
@@ -81,18 +88,26 @@ export default function AdminEmployeesPage() {
         err?.response?.data?.error?.description ||
         err?.response?.data?.error?.message ||
         err?.message ||
-        'Có lỗi xảy ra khi tạo nhân viên.';
-      showToast('error', msg);
+        "Có lỗi xảy ra khi tạo nhân viên.";
+      showToast("error", msg);
     },
   });
 
   // ─── 3. Mutation Cập nhật ──────────────────────────────────────────────────
   const updateMutation = useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: UpdateEmployeePayload }) =>
-      employeeService.update(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdateEmployeePayload;
+    }) => employeeService.update(id, payload),
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-employees'] });
-      showToast('success', res.message || 'Cập nhật thông tin nhân viên thành công.');
+      queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
+      showToast(
+        "success",
+        res.message || "Cập nhật thông tin nhân viên thành công.",
+      );
       setIsFormOpen(false);
     },
     onError: (err: any) => {
@@ -100,8 +115,8 @@ export default function AdminEmployeesPage() {
         err?.response?.data?.error?.description ||
         err?.response?.data?.error?.message ||
         err?.message ||
-        'Có lỗi xảy ra khi cập nhật nhân viên.';
-      showToast('error', msg);
+        "Có lỗi xảy ra khi cập nhật nhân viên.";
+      showToast("error", msg);
     },
   });
 
@@ -109,8 +124,8 @@ export default function AdminEmployeesPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => employeeService.delete(id),
     onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ['admin-employees'] });
-      showToast('success', res.message || 'Xóa nhân viên thành công.');
+      queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
+      showToast("success", res.message || "Xóa nhân viên thành công.");
       setIsDeleteOpen(false);
       setDeletingEmployee(null);
     },
@@ -119,14 +134,14 @@ export default function AdminEmployeesPage() {
         err?.response?.data?.error?.description ||
         err?.response?.data?.error?.message ||
         err?.message ||
-        'Có lỗi xảy ra khi xóa nhân viên.';
-      showToast('error', msg);
+        "Có lỗi xảy ra khi xóa nhân viên.";
+      showToast("error", msg);
     },
   });
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
   const handleOpenCreate = () => {
-    setFormMode('create');
+    setFormMode("create");
     setActiveEmployee(null);
     setIsFormOpen(true);
   };
@@ -136,10 +151,10 @@ export default function AdminEmployeesPage() {
       setIsFetchingDetail(true);
       const res = await employeeService.byId(emp.id);
       setActiveEmployee(res.data);
-      setFormMode('edit');
+      setFormMode("edit");
       setIsFormOpen(true);
     } catch {
-      showToast('error', 'Không thể tải thông tin chi tiết nhân viên.');
+      showToast("error", "Không thể tải thông tin chi tiết nhân viên.");
     } finally {
       setIsFetchingDetail(false);
     }
@@ -152,7 +167,7 @@ export default function AdminEmployeesPage() {
       setActiveEmployee(res.data);
       setIsDetailOpen(true);
     } catch {
-      showToast('error', 'Không thể tải thông tin chi tiết nhân viên.');
+      showToast("error", "Không thể tải thông tin chi tiết nhân viên.");
     } finally {
       setIsFetchingDetail(false);
     }
@@ -169,18 +184,18 @@ export default function AdminEmployeesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 flex flex-col space-y-5 pb-6">
       {/* Toast Notification */}
       {toast && (
         <div
           role="status"
           className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium animate-in slide-in-from-top-2 duration-200 ${
-            toast.type === 'success'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-red-50 border-red-200 text-red-800'
+            toast.type === "success"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : "bg-red-50 border-red-200 text-red-800"
           }`}
         >
-          {toast.type === 'success' ? (
+          {toast.type === "success" ? (
             <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
           ) : (
             <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
@@ -189,23 +204,7 @@ export default function AdminEmployeesPage() {
         </div>
       )}
 
-      {/* Page Header matching Figma AppLayout */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-[#64748B] uppercase tracking-wider mb-1">
-            <Users className="w-4 h-4 text-[#064343]" />
-            <span>Phân hệ Quản trị</span>
-          </div>
-          <h1 className="text-2xl font-black text-[#0F172A] tracking-tight">
-            Quản lý nhân viên
-          </h1>
-          <p className="text-xs sm:text-sm text-[#64748B] mt-0.5">
-            Quản lý hồ sơ nhân sự, phân quyền vai trò và chuyên môn huấn luyện viên.
-          </p>
-        </div>
-      </div>
-
-      {/* Toolbar: Search, Role Filter, Status Filter & Add Button */}
+      {/* Toolbar: Search, Role Filter, Status Filter & Add Button (Figma #1346:6500) */}
       <EmployeeToolbar
         searchValue={search}
         onSearchChange={(val) => {
@@ -225,54 +224,59 @@ export default function AdminEmployeesPage() {
         onAddNew={handleOpenCreate}
       />
 
-      {/* Main Table View */}
-      {isError ? (
-        <div className="w-full bg-white rounded-xl border border-red-200 p-8 text-center shadow-xs">
-          <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-2" />
-          <h3 className="text-base font-semibold text-[#0F172A] mb-1">
-            Không thể tải danh sách nhân viên
-          </h3>
-          <p className="text-xs text-[#64748B] mb-4">
-            {(error as any)?.message || 'Vui lòng kiểm tra lại kết nối mạng hoặc thử lại.'}
-          </p>
-          <button
-            type="button"
-            onClick={() => refetch()}
-            className="px-4 py-2 bg-[#064343] text-white text-xs font-semibold rounded-lg hover:bg-[#053737] cursor-pointer"
-          >
-            Tải lại trang
-          </button>
-        </div>
-      ) : (
-        <>
-          <EmployeeTable
-            items={data?.items || []}
-            isLoading={isLoading || isFetchingDetail}
-            pageIndex={pageIndex}
-            pageSize={pageSize}
-            onView={handleOpenView}
-            onEdit={handleOpenEdit}
-            onDelete={handleOpenDelete}
-          />
+      {/* DataTable Container matching Figma #1346:6518 & #1346:6519 */}
+      <div className="bg-white rounded-[8px] p-4 sm:p-[16px_24px] shadow-xs flex-1 flex flex-col justify-between">
+        {isError ? (
+          <div className="w-full flex-1 flex flex-col items-center justify-center bg-[#F8FAFC] rounded-lg border border-red-200 p-8 text-center shadow-xs">
+            <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-2" />
+            <h3 className="text-base font-semibold text-[#0F172A] mb-1">
+              Không thể tải danh sách nhân viên
+            </h3>
+            <p className="text-xs text-[#64748B] mb-4">
+              {(error as any)?.message ||
+                "Vui lòng kiểm tra lại kết nối mạng hoặc thử lại."}
+            </p>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="px-4 py-2 bg-[#064343] text-white text-xs font-semibold rounded-lg hover:bg-[#053737] cursor-pointer"
+            >
+              Tải lại trang
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="flex-1 flex flex-col">
+              <EmployeeTable
+                items={data?.items || []}
+                isLoading={isLoading || isFetchingDetail}
+                pageIndex={pageIndex}
+                pageSize={pageSize}
+                onView={handleOpenView}
+                onEdit={handleOpenEdit}
+                onDelete={handleOpenDelete}
+              />
+            </div>
 
-          {/* Phân trang */}
-          {data && data.totalCount > 0 && (
-            <EmployeePagination
-              pageIndex={data.pageIndex}
-              pageSize={data.pageSize}
-              totalCount={data.totalCount}
-              totalPages={data.totalPages}
-              hasPreviousPage={data.hasPreviousPage}
-              hasNextPage={data.hasNextPage}
-              onPageChange={(p) => setPageIndex(p)}
-              onPageSizeChange={(sz) => {
-                setPageSize(sz);
-                setPageIndex(1);
-              }}
-            />
-          )}
-        </>
-      )}
+            {/* Phân trang (Figma #1346:6804) */}
+            {data && data.totalCount > 0 && (
+              <EmployeePagination
+                pageIndex={data.pageIndex}
+                pageSize={data.pageSize}
+                totalCount={data.totalCount}
+                totalPages={data.totalPages}
+                hasPreviousPage={data.hasPreviousPage}
+                hasNextPage={data.hasNextPage}
+                onPageChange={(p) => setPageIndex(p)}
+                onPageSizeChange={(sz) => {
+                  setPageSize(sz);
+                  setPageIndex(1);
+                }}
+              />
+            )}
+          </>
+        )}
+      </div>
 
       {/* Form Popup Thêm mới / Cập nhật */}
       <EmployeeFormDialog
@@ -296,7 +300,7 @@ export default function AdminEmployeesPage() {
         onClose={() => setIsDetailOpen(false)}
         onEdit={(emp) => {
           setActiveEmployee(emp);
-          setFormMode('edit');
+          setFormMode("edit");
           setIsFormOpen(true);
         }}
       />
@@ -314,17 +318,17 @@ export default function AdminEmployeesPage() {
         description={
           deletingEmployee ? (
             <>
-              Bạn có chắc chắn muốn xóa nhân viên{' '}
+              Bạn có chắc chắn muốn xóa nhân viên{" "}
               <strong className="text-[#064343] font-bold">
                 {deletingEmployee.fullName} ({deletingEmployee.employeeCode})
-              </strong>{' '}
+              </strong>{" "}
               không?
               <span className="block text-xs text-red-500 mt-2 font-medium">
                 Tài khoản đăng nhập của nhân viên này sẽ bị vô hiệu hóa.
               </span>
             </>
           ) : (
-            'Bạn có chắc chắn muốn xóa nhân viên này không?'
+            "Bạn có chắc chắn muốn xóa nhân viên này không?"
           )
         }
         confirmText="Có, tôi đồng ý"

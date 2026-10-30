@@ -93,12 +93,7 @@ export function DashboardStatCards({
         return (
           <div
             key={stat.id}
-            className={cn(
-              'relative p-6 rounded-2xl bg-white border transition-all duration-200 hover:shadow-md flex flex-col justify-between min-h-[170px]',
-              stat.isAlert
-                ? 'border-red-200/80 shadow-[0_0_0_1px_rgba(239,68,68,0.15)] bg-gradient-to-b from-white to-red-50/20'
-                : 'border-[#EDEDED] shadow-xs'
-            )}
+            className="relative p-6 rounded-2xl bg-white border border-[#EDEDED] shadow-xs transition-all duration-200 hover:shadow-md flex flex-col justify-between min-h-[170px]"
           >
             {/* Top row: Icon and Trend Badge */}
             <div className="flex items-center justify-between">
@@ -131,12 +126,7 @@ export function DashboardStatCards({
               <p className="text-sm font-normal text-[#64748B] tracking-tight">
                 {stat.title}
               </p>
-              <p
-                className={cn(
-                  'text-2xl lg:text-[26px] font-bold tracking-tight font-heading',
-                  stat.isAlert ? 'text-[#EF4444]' : 'text-[#0F172A]'
-                )}
-              >
+              <p className="text-2xl lg:text-[26px] font-bold tracking-tight font-heading text-[#0F172A]">
                 {stat.value}
               </p>
             </div>
