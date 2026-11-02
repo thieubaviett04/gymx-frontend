@@ -18,6 +18,7 @@ import {
   EmployeeFormDialog,
   EmployeeDetailDialog,
 } from "@/components/dashboard/admin/employees";
+import { ConnectionErrorState } from "@/components/shared";
 
 export default function AdminEmployeesPage() {
   const queryClient = useQueryClient();
@@ -227,23 +228,7 @@ export default function AdminEmployeesPage() {
       {/* DataTable Container matching Figma #1346:6518 & #1346:6519 */}
       <div className="bg-white rounded-[8px] p-4 sm:p-[16px_24px] shadow-xs flex-1 flex flex-col justify-between">
         {isError ? (
-          <div className="w-full flex-1 flex flex-col items-center justify-center bg-[#F8FAFC] rounded-lg border border-red-200 p-8 text-center shadow-xs">
-            <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-2" />
-            <h3 className="text-base font-semibold text-[#0F172A] mb-1">
-              Không thể tải danh sách nhân viên
-            </h3>
-            <p className="text-xs text-[#64748B] mb-4">
-              {(error as any)?.message ||
-                "Vui lòng kiểm tra lại kết nối mạng hoặc thử lại."}
-            </p>
-            <button
-              type="button"
-              onClick={() => refetch()}
-              className="px-4 py-2 bg-[#064343] text-white text-xs font-semibold rounded-lg hover:bg-[#053737] cursor-pointer"
-            >
-              Tải lại trang
-            </button>
-          </div>
+          <ConnectionErrorState onRetry={() => refetch()} />
         ) : (
           <>
             <div className="flex-1 flex flex-col">
@@ -255,6 +240,16 @@ export default function AdminEmployeesPage() {
                 onView={handleOpenView}
                 onEdit={handleOpenEdit}
                 onDelete={handleOpenDelete}
+                onClearFilter={
+                  search || position || status
+                    ? () => {
+                        setSearch("");
+                        setPosition("");
+                        setStatus("");
+                        setPageIndex(1);
+                      }
+                    : undefined
+                }
               />
             </div>
 
