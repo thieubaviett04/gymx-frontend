@@ -16,6 +16,7 @@ import {
 } from '@/components/ui';
 import { getMediaUrl } from '@/lib/utils/media-url';
 import { useAuthStore } from '@/lib/store/authStore';
+import { useUiStore } from '@/lib/store/uiStore';
 import { useLogout } from '@/lib/hooks';
 
 export interface AdminHeaderProps {
@@ -23,14 +24,17 @@ export interface AdminHeaderProps {
   title?: string;
   breadcrumbs?: BreadcrumbItemData[];
   showSearch?: boolean;
+  actions?: React.ReactNode;
 }
 
 export function AdminHeader({
   onToggleSidebar,
   title = 'Tổng quan hệ thống',
   breadcrumbs = [{ label: 'Tổng quan' }],
+  actions,
 }: AdminHeaderProps) {
   const { user } = useAuthStore();
+  const { headerRightContent } = useUiStore();
   const { isLogoutOpen, setIsLogoutOpen, isLoggingOut, handleLogout } = useLogout();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -75,26 +79,27 @@ export function AdminHeader({
       <header className="sticky top-0 z-30 bg-transparent px-4 md:px-8 py-3.5 md:py-4 transition-all">
         <div className="flex items-center justify-between gap-4">
           {/* Left: Hamburger & Title with Breadcrumb per Figma 3067:123816 */}
-          <div className="flex items-start gap-2.5 min-w-0">
-            {onToggleSidebar && (
-              <button
-                type="button"
-                onClick={onToggleSidebar}
-                className="p-1.5 -ml-1.5 mt-0.5 rounded-lg text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
-                aria-label="Mở menu điều hướng"
-              >
-                <Menu className="w-5 h-5 text-white" />
-              </button>
-            )}
-            <div className="flex flex-col gap-1 min-w-0">
-              <h1 className="text-[18px] md:text-[20px] leading-[26px] font-semibold tracking-tight text-white font-heading truncate drop-shadow-xs">
+          <div className="flex flex-col gap-1.5 min-w-0">
+            <div className="flex items-center gap-2.5">
+              {onToggleSidebar && (
+                <button
+                  type="button"
+                  onClick={onToggleSidebar}
+                  className="p-1 -ml-1 rounded-lg text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0 inline-flex items-center justify-center"
+                  aria-label="Mở menu điều hướng"
+                >
+                  <Menu className="w-6 h-6 text-white" />
+                </button>
+              )}
+              <h1 className="text-[20px] md:text-[22px] font-semibold tracking-tight text-white font-heading truncate drop-shadow-xs leading-none flex items-center">
                 {title}
               </h1>
+            </div>
 
-              {/* Breadcrumb list aligned directly under title */}
-              {breadcrumbs && breadcrumbs.length > 0 && (
-                <Breadcrumb>
-                  <BreadcrumbList className="text-[13px] sm:text-[14px] text-white/80 gap-1.5 sm:gap-2 flex-nowrap overflow-x-auto">
+            {/* Breadcrumb list aligned directly under title */}
+            {breadcrumbs && breadcrumbs.length > 0 && (
+              <Breadcrumb>
+                <BreadcrumbList className="text-[13px] sm:text-[14px] font-normal !font-normal gap-1.5 sm:gap-2 flex-nowrap overflow-x-auto">
                   {breadcrumbs.map((crumb, index) => {
                     const isLast = index === breadcrumbs.length - 1;
                     return (
@@ -108,12 +113,12 @@ export function AdminHeader({
                           {crumb.href && !isLast ? (
                             <BreadcrumbLink
                               href={crumb.href}
-                              className="text-white/70 hover:text-white transition-colors"
+                              className="text-white hover:text-white/80 font-normal !font-normal transition-colors"
                             >
                               {crumb.label}
                             </BreadcrumbLink>
                           ) : (
-                            <BreadcrumbPage className="text-white font-medium">
+                            <BreadcrumbPage className="text-[#B1B5C3] font-normal !font-normal">
                               {crumb.label}
                             </BreadcrumbPage>
                           )}
@@ -124,18 +129,23 @@ export function AdminHeader({
                 </BreadcrumbList>
               </Breadcrumb>
             )}
-            </div>
           </div>
 
-          {/* Right: Notification Bell & Profile Avatar per Figma */}
+          {/* Right: Custom Header Content (e.g. Action buttons on create page) OR Notification Bell & Profile Avatar */}
           <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-            {/* Notification Bell */}
-            <div className="flex items-center">
-              <NotificationBell className="text-white hover:text-white hover:bg-white/10" />
-            </div>
+            {headerRightContent ? (
+              <div className="flex items-center gap-3">{headerRightContent}</div>
+            ) : (
+              <>
+                {actions && <div className="flex items-center gap-2.5">{actions}</div>}
 
-            {/* User Profile Avatar with Dropdown Menu (Figma Node 101:1345) */}
-            <div className="relative" ref={menuRef}>
+                {/* Notification Bell */}
+                <div className="flex items-center">
+                  <NotificationBell className="text-white hover:text-white hover:bg-white/10" />
+                </div>
+
+                {/* User Profile Avatar with Dropdown Menu (Figma Node 101:1345) */}
+                <div className="relative" ref={menuRef}>
               <button
                 type="button"
                 onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -216,9 +226,11 @@ export function AdminHeader({
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </header>
+          </>
+        )}
+      </div>
+    </div>
+  </header>
 
       {/* Pop Up xác nhận đăng xuất chuẩn Figma 51:401 */}
       <ConfirmDialog

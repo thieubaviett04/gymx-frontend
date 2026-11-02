@@ -5,7 +5,7 @@ import { Check, X, AlertTriangle, AlertCircle, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
-  "relative flex items-center w-full min-h-[60px] p-1 pr-4 pl-1 bg-white border border-[#E5E5E5] rounded-full shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all animate-in fade-in duration-200",
+  "relative flex items-center w-full bg-white border border-[#E5E5E5] rounded-full shadow-[0px_4px_12px_rgba(0,0,0,0.05)] transition-all animate-in fade-in duration-200",
   {
     variants: {
       variant: {
@@ -16,9 +16,14 @@ const alertVariants = cva(
         warning: "",
         info: "",
       },
+      size: {
+        default: "min-h-[56px] p-1 pr-4 pl-1 gap-3 sm:gap-4",
+        sm: "min-h-[46px] p-1.5 pr-4 pl-1.5 gap-3",
+      },
     },
     defaultVariants: {
       variant: "danger",
+      size: "default",
     },
   }
 )
@@ -46,6 +51,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
     {
       className,
       variant = "danger",
+      size = "default",
       title,
       children,
       icon,
@@ -56,34 +62,38 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
     ref
   ) => {
     const currentVariant = (variant as string) || "danger"
+    const isSm = size === "sm"
 
     const defaultIcon = React.useMemo(() => {
+      const iconClass = isSm ? "w-4 h-4 text-white stroke-[2.5]" : "w-5 h-5 text-white stroke-[2.5]"
       switch (currentVariant) {
         case "success":
-          return <Check className="w-5 h-5 text-white stroke-[2.5]" />
+          return <Check className={iconClass} />
         case "warning":
-          return <AlertTriangle className="w-5 h-5 text-white stroke-[2.5]" />
+          return <AlertTriangle className={iconClass} />
         case "info":
-          return <Info className="w-5 h-5 text-white stroke-[2.5]" />
+          return <Info className={iconClass} />
         case "danger":
         case "error":
         case "deleted":
         default:
-          return <X className="w-5 h-5 text-white stroke-[2.5]" />
+          return <X className={iconClass} />
       }
-    }, [currentVariant])
+    }, [currentVariant, isSm])
 
     return (
       <div
         ref={ref}
         role="alert"
-        className={cn(alertVariants({ variant }), "gap-3 sm:gap-4", className)}
+        className={cn(alertVariants({ variant, size }), className)}
         {...props}
       >
         {/* Left Circle Icon Badge */}
         <div
           className={cn(
-            "w-[50px] h-[50px] sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center shrink-0 shadow-sm",
+            isSm
+              ? "w-[38px] h-[38px] rounded-full flex items-center justify-center shrink-0 shadow-xs"
+              : "w-[48px] h-[48px] sm:w-[50px] sm:h-[50px] rounded-full flex items-center justify-center shrink-0 shadow-sm",
             iconBgVariants[currentVariant] || iconBgVariants.danger
           )}
         >
@@ -91,13 +101,13 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         </div>
 
         {/* Center Content / Message */}
-        <div className="flex-1 min-w-0 py-1.5 flex flex-col justify-center">
+        <div className="flex-1 min-w-0 py-0.5 flex flex-col justify-center">
           {title && (
-            <p className="text-sm font-semibold text-foreground leading-tight mb-0.5">
+            <p className={cn("font-medium text-foreground leading-tight mb-0.5", isSm ? "text-xs" : "text-sm")}>
               {title}
             </p>
           )}
-          <div className="text-sm font-normal text-foreground leading-snug break-words">
+          <div className={cn("font-normal text-foreground leading-snug break-words", isSm ? "text-[13px]" : "text-sm")}>
             {children}
           </div>
         </div>
@@ -108,9 +118,12 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             type="button"
             onClick={onClose}
             aria-label="Đóng thông báo"
-            className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-[#F5F5F5] transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            className={cn(
+              "rounded-full text-muted-foreground hover:text-foreground hover:bg-[#F5F5F5] transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+              isSm ? "p-1" : "p-1.5"
+            )}
           >
-            <X className="w-5 h-5" />
+            <X className={isSm ? "w-3.5 h-3.5" : "w-5 h-5"} />
           </button>
         )}
       </div>
