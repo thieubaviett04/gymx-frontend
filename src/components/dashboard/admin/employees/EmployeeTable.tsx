@@ -2,9 +2,10 @@
 
 import React from "react";
 import Image from "next/image";
-import { Eye, Edit3, Trash2, User, AlertCircle } from "lucide-react";
+import { Eye, Edit3, Trash2, User } from "lucide-react";
 import { getMediaUrl } from "@/lib/utils/media-url";
 import type { EmployeeSummary } from "@/types/employee";
+import { EmptySearchState } from "@/components/shared";
 
 interface EmployeeTableProps {
   items: EmployeeSummary[];
@@ -14,6 +15,7 @@ interface EmployeeTableProps {
   onView: (emp: EmployeeSummary) => void;
   onEdit: (emp: EmployeeSummary) => void;
   onDelete: (emp: EmployeeSummary) => void;
+  onClearFilter?: () => void;
 }
 
 /** Chuyển đổi mã Role sang nhãn tiếng Việt hiển thị */
@@ -43,6 +45,7 @@ export function EmployeeTable({
   onView,
   onEdit,
   onDelete,
+  onClearFilter,
 }: EmployeeTableProps) {
   if (isLoading) {
     return (
@@ -63,20 +66,7 @@ export function EmployeeTable({
   }
 
   if (!items || items.length === 0) {
-    return (
-      <div className="w-full bg-white rounded-xl border border-[#E2E8F0] p-12 text-center shadow-xs">
-        <div className="w-14 h-14 mx-auto rounded-full bg-slate-50 flex items-center justify-center text-slate-400 mb-3 border border-slate-200">
-          <AlertCircle className="w-7 h-7" />
-        </div>
-        <h3 className="text-base font-semibold text-[#0F172A] mb-1">
-          Không tìm thấy nhân viên nào
-        </h3>
-        <p className="text-sm text-[#64748B] max-w-sm mx-auto">
-          Thử thay đổi từ khóa tìm kiếm hoặc điều chỉnh bộ lọc vai trò, trạng
-          thái.
-        </p>
-      </div>
-    );
+    return <EmptySearchState onClearFilter={onClearFilter} />;
   }
 
   return (
