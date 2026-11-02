@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "@/i18n/routing";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { ConfirmDialog } from "@/components/ui";
+import { AlertCircle } from "lucide-react";
+import { Alert, ConfirmDialog } from "@/components/ui";
 import { employeeService } from "@/lib/api";
 import type {
   CreateEmployeePayload,
@@ -56,6 +57,16 @@ export default function AdminEmployeesPage() {
       setToast(null);
     }, 4000);
   };
+
+  React.useEffect(() => {
+    try {
+      const flashMsg = sessionStorage.getItem("gymx_employee_flash");
+      if (flashMsg) {
+        sessionStorage.removeItem("gymx_employee_flash");
+        showToast("success", flashMsg);
+      }
+    } catch {}
+  }, []);
 
   // ─── 1. Query danh sách nhân viên ──────────────────────────────────────────
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -140,11 +151,11 @@ export default function AdminEmployeesPage() {
     },
   });
 
+  const router = useRouter();
+
   // ─── Handlers ──────────────────────────────────────────────────────────────
   const handleOpenCreate = () => {
-    setFormMode("create");
-    setActiveEmployee(null);
-    setIsFormOpen(true);
+    router.push("/admin/employees/create");
   };
 
   const handleOpenEdit = async (emp: EmployeeSummary) => {
@@ -186,22 +197,17 @@ export default function AdminEmployeesPage() {
 
   return (
     <div className="flex-1 flex flex-col space-y-5 pb-6">
-      {/* Toast Notification */}
+      {/* Toast Alert – Ngang hàng thanh Header (Top Center của vùng nội dung) */}
       {toast && (
-        <div
-          role="status"
-          className={`fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-sm font-medium animate-in slide-in-from-top-2 duration-200 ${
-            toast.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-              : "bg-red-50 border-red-200 text-red-800"
-          }`}
-        >
-          {toast.type === "success" ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          ) : (
-            <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
-          )}
-          <span>{toast.message}</span>
+        <div className="fixed top-3.5 md:top-4 left-1/2 lg:left-[calc(50%+130px)] -translate-x-1/2 z-[100] max-w-[500px] w-auto pointer-events-auto animate-in fade-in slide-in-from-top-3 duration-200">
+          <Alert
+            size="sm"
+            variant={toast.type === "success" ? "success" : "danger"}
+            onClose={() => setToast(null)}
+            className="w-auto min-w-[280px] max-w-[500px] shadow-[0px_8px_24px_rgba(0,0,0,0.15)] border border-[#E5E5E5] bg-white"
+          >
+            <p className="text-[13px] font-normal !font-normal text-[#202939] leading-snug whitespace-nowrap">{toast.message}</p>
+          </Alert>
         </div>
       )}
 

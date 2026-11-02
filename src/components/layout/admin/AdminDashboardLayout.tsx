@@ -12,6 +12,7 @@ interface AdminDashboardLayoutProps {
   title?: string;
   breadcrumbs?: BreadcrumbItemData[];
   activePath?: string;
+  actions?: React.ReactNode;
 }
 
 /** Tự động sinh title và breadcrumbs theo route Figma 1329:14548 & 1329:14213 */
@@ -21,10 +22,16 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
   const segments = cleanPath.split('/').filter(Boolean);
 
   if (cleanPath.includes('/admin/employees') || cleanPath.includes('/admin/staff')) {
+    const isCreate = cleanPath.includes('/create');
     const isDeep = segments.length > 2;
     return {
       title: 'Quản lý nhân viên',
-      breadcrumbs: isDeep
+      breadcrumbs: isCreate
+        ? [
+            { label: 'Danh sách nhân viên', href: '/admin/employees' },
+            { label: 'Thêm mới nhân viên' },
+          ]
+        : isDeep
         ? [
             { label: 'Danh sách nhân viên', href: '/admin/employees' },
             { label: 'Chi tiết nhân viên' },
@@ -103,6 +110,7 @@ export function AdminDashboardLayout({
   title,
   breadcrumbs,
   activePath,
+  actions,
 }: AdminDashboardLayoutProps) {
   const { isMobileMenuOpen, setMobileMenuOpen } = useUiStore();
   const pathname = usePathname() || '';
@@ -132,6 +140,7 @@ export function AdminDashboardLayout({
           title={effectiveTitle}
           breadcrumbs={effectiveBreadcrumbs}
           onToggleSidebar={() => setMobileMenuOpen(!isMobileMenuOpen)}
+          actions={actions}
         />
         <main className="flex-1 p-4 md:p-6 lg:p-8 pb-10 w-full flex flex-col">
           {children}
