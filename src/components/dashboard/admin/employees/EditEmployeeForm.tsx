@@ -44,7 +44,7 @@ function EditEmployeeFormInner({
 }: EditEmployeeFormInnerProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { setHeaderRightContent } = useUiStore();
+  const setHeaderRightContent = useUiStore((s) => s.setHeaderRightContent);
   const formRef = useRef<HTMLFormElement>(null);
 
   // Khởi tạo state trực tiếp từ props dữ liệu nhân viên
@@ -98,7 +98,7 @@ function EditEmployeeFormInner({
     if (onCancel) {
       onCancel();
     } else {
-      router.push('/admin/employees');
+      router.push(`/admin/employees/${employeeId}`);
     }
   }, [onCancel, router]);
 
@@ -112,12 +112,13 @@ function EditEmployeeFormInner({
       showToast('success', msg);
       try {
         sessionStorage.setItem('gymx_employee_flash', msg);
+        sessionStorage.setItem('gymx_employee_view_id', employeeId);
       } catch {}
       setTimeout(() => {
         if (onSuccess) {
           onSuccess();
         } else {
-          router.push('/admin/employees');
+          router.push(`/admin/employees/${employeeId}`);
         }
       }, 1000);
     },
@@ -546,7 +547,7 @@ function EditEmployeeFormInner({
                   />
                   <div className="flex items-center gap-2 pl-2">
                     <div className="w-[1px] h-4 bg-[#CDD5DF]" />
-                    <span className="text-[14px] text-[#697586] font-normal select-none">VND</span>
+                    <span className="text-[14px] text-[#064343] font-semibold select-none">VND</span>
                   </div>
                 </div>
                 {errors.baseSalaryRate && (

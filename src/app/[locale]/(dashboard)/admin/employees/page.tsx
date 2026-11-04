@@ -50,16 +50,32 @@ export default function AdminEmployeesPage() {
     }, 4000);
   };
 
-  // Đọc thông báo flash từ sessionStorage (sau khi thêm mới hoặc sửa xong)
+  // Đọc thông báo flash và tự động mở lại dialog xem chi tiết sau khi sửa thành công
   React.useEffect(() => {
     try {
       const flashMsg = sessionStorage.getItem("gymx_employee_flash");
       if (flashMsg) {
         sessionStorage.removeItem("gymx_employee_flash");
-        const timer = setTimeout(() => {
+        setTimeout(() => {
           showToast("success", flashMsg);
         }, 50);
-        return () => clearTimeout(timer);
+      }
+
+      const autoViewId = sessionStorage.getItem("gymx_employee_view_id");
+      if (autoViewId) {
+        sessionStorage.removeItem("gymx_employee_view_id");
+        (async () => {
+          try {
+            setIsFetchingDetail(true);
+            const res = await employeeService.byId(autoViewId);
+            setActiveEmployee(res.data);
+            setIsDetailOpen(true);
+          } catch {
+            // Bỏ qua nếu lỗi
+          } finally {
+            setIsFetchingDetail(false);
+          }
+        })();
       }
     } catch {}
   }, []);
@@ -109,17 +125,8 @@ export default function AdminEmployeesPage() {
     router.push(`/admin/employees/${emp.id}/edit`);
   };
 
-  const handleOpenView = async (emp: EmployeeSummary) => {
-    try {
-      setIsFetchingDetail(true);
-      const res = await employeeService.byId(emp.id);
-      setActiveEmployee(res.data);
-      setIsDetailOpen(true);
-    } catch {
-      showToast("error", "Không thể tải thông tin chi tiết nhân viên.");
-    } finally {
-      setIsFetchingDetail(false);
-    }
+  const handleOpenView = (emp: EmployeeSummary) => {
+    router.push(`/admin/employees/${emp.id}`);
   };
 
   const handleOpenDelete = (emp: EmployeeSummary) => {
