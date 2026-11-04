@@ -146,7 +146,7 @@ export function DatePicker({
                 <X className="w-3.5 h-3.5" />
               </span>
             )}
-            <FigmaCalendarIcon className="w-5 h-5 text-[#697586]" />
+            <FigmaCalendarIcon className="w-5 h-5 text-[#064343]" />
           </div>
         </button>
       </PopoverTrigger>

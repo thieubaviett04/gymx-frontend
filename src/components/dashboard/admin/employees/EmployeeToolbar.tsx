@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Filter, X } from "lucide-react";
-import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { EMPLOYEE_POSITIONS, EMPLOYEE_STATUSES } from "@/types/employee";
 
@@ -145,15 +145,17 @@ export function EmployeeToolbar({
         )}
       </div>
 
-      {/* Primary Action Button matching Figma #1346:6513 (kéo dài thêm) */}
-      <Button
+      {/* Primary Action Button - không có viền sáng neon hoặc đổi màu hover */}
+      <button
         type="button"
         onClick={onAddNew}
-        leftIcon={<Plus className="w-4 h-4" />}
-        className="h-[44px] px-6 min-w-[165px] bg-[#064343] hover:bg-[#053737] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] shadow-sm inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 transition-all active:scale-[0.98]"
+        className="h-[44px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
       >
-        Thêm nhân viên
-      </Button>
+        <Plus className="w-4 h-4 text-white" />
+        <span>Thêm nhân viên</span>
+      </button>
     </div>
   );
 }
+
+export default EmployeeToolbar;
