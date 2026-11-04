@@ -6,7 +6,7 @@ import {
   RevenueBarChart,
   TopPackagesCard,
   RecentTransactionsCard,
-} from '@/components/dashboard';
+} from '@/components/admin/dashboard';
 
 export default function AdminDashboardPage() {
   return (

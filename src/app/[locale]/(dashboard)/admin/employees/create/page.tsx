@@ -1,5 +1,5 @@
 import React from 'react';
-import { CreateEmployeeForm } from '@/components/dashboard/admin/employees';
+import { CreateEmployeeForm } from '@/components/admin/employees';
 
 export const metadata = {
   title: 'Thêm mới nhân viên | GymX Admin',

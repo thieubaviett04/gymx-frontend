@@ -1,4 +1,5 @@
 import { REGEX, VALIDATION_LIMITS } from './constants';
+import type { EmployeeFormData, EmployeeFormErrors } from '@/types/employee';
 
 export type RegisterFormData = {
   fullName: string;
@@ -114,6 +115,137 @@ export function validateLoginForm(data: LoginFormData): FormErrors {
 
   if (!data.password) {
     errors.password = 'Mật khẩu không được để trống.';
+  }
+
+  return errors;
+}
+
+/**
+ * Validate form thêm mới nhân viên
+ */
+export function validateCreateEmployee(form: EmployeeFormData): EmployeeFormErrors {
+  const errors: EmployeeFormErrors = {};
+
+  // 1. Họ và tên
+  if (!form.fullName.trim()) {
+    errors.fullName = 'Họ và tên không được để trống.';
+  } else if (form.fullName.trim().length > VALIDATION_LIMITS.FULL_NAME_MAX_LENGTH) {
+    errors.fullName = `Họ và tên tối đa ${VALIDATION_LIMITS.FULL_NAME_MAX_LENGTH} ký tự.`;
+  }
+
+  // 2. Email
+  if (!form.email.trim()) {
+    errors.email = 'Email không được để trống.';
+  } else if (!REGEX.EMAIL.test(form.email.trim())) {
+    errors.email = 'Email không đúng định dạng.';
+  }
+
+  // 3. Vai trò
+  if (!form.position) {
+    errors.position = 'Vui lòng chọn vai trò làm việc.';
+  }
+
+  // 4. Số điện thoại (Nếu nhập thì phải có 10 chữ số bắt đầu bằng 0)
+  if (form.phoneNumber.trim()) {
+    const cleanPhone = form.phoneNumber.replace(/\s/g, '');
+    if (!/^0\d{9}$/.test(cleanPhone)) {
+      errors.phoneNumber = 'Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0.';
+    }
+  }
+
+  // 5. Số CCCD (Bắt buộc đúng 12 chữ số theo BE & thực tế)
+  if (!form.nationalId.trim()) {
+    errors.nationalId = 'Số CCCD không được để trống.';
+  } else if (!/^\d{12}$/.test(form.nationalId.trim())) {
+    errors.nationalId = 'Số CCCD phải bao gồm đúng 12 chữ số.';
+  }
+
+  // 6. Mức lương cơ bản
+  if (
+    form.baseSalaryRate === '' ||
+    isNaN(Number(form.baseSalaryRate)) ||
+    Number(form.baseSalaryRate) < 0
+  ) {
+    errors.baseSalaryRate = 'Mức lương cơ bản phải là số không âm.';
+  }
+
+  // 7. Địa chỉ thường trú
+  if (!form.address.trim()) {
+    errors.address = 'Địa chỉ thường trú không được để trống.';
+  }
+
+  // 8. Ràng buộc riêng khi chọn Huấn luyện viên
+  if (form.position === 'TRAINER') {
+    if (!form.specializationId) {
+      errors.specializationId = 'Vui lòng chọn chuyên môn HLV.';
+    }
+
+    if (
+      form.experienceYears === '' ||
+      isNaN(Number(form.experienceYears)) ||
+      Number(form.experienceYears) <= 0
+    ) {
+      errors.experienceYears = 'Số năm kinh nghiệm của HLV phải lớn hơn 0.';
+    }
+
+    if (
+      form.salaryCoefficient === '' ||
+      isNaN(Number(form.salaryCoefficient)) ||
+      Number(form.salaryCoefficient) < 0
+    ) {
+      errors.salaryCoefficient = 'Hệ số lương phải lớn hơn hoặc bằng 0.';
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Validate form cập nhật nhân viên (In-place edit / Edit form)
+ */
+export function validateUpdateEmployee(form: EmployeeFormData): EmployeeFormErrors {
+  const errors: EmployeeFormErrors = {};
+
+  if (!form.fullName.trim()) {
+    errors.fullName = 'Họ tên nhân viên không được để trống.';
+  }
+
+  if (!form.email.trim()) {
+    errors.email = 'Email không được để trống.';
+  } else if (!REGEX.EMAIL.test(form.email.trim())) {
+    errors.email = 'Email không đúng định dạng.';
+  }
+
+  if (!form.position) {
+    errors.position = 'Vui lòng chọn vai trò làm việc.';
+  }
+
+  if (
+    form.baseSalaryRate === '' ||
+    isNaN(Number(form.baseSalaryRate)) ||
+    Number(form.baseSalaryRate) < 0
+  ) {
+    errors.baseSalaryRate = 'Mức lương cơ bản phải là số không âm.';
+  }
+
+  if (form.phoneNumber.trim()) {
+    const cleanPhone = form.phoneNumber.replace(/\s/g, '');
+    if (!/^0\d{9}$/.test(cleanPhone)) {
+      errors.phoneNumber = 'Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0.';
+    }
+  }
+
+  if (form.position === 'TRAINER') {
+    if (!form.specializationId) {
+      errors.specializationId = 'Vui lòng chọn chuyên môn HLV.';
+    }
+    if (
+      form.experienceYears === '' ||
+      isNaN(Number(form.experienceYears)) ||
+      Number(form.experienceYears) <= 0
+    ) {
+      errors.experienceYears = 'Số năm kinh nghiệm phải lớn hơn 0 (tối thiểu 1 năm).';
+    }
   }
 
   return errors;
