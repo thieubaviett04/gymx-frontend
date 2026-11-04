@@ -28,7 +28,7 @@ export const employeeService = {
 
   /** [Admin] Xóa (Soft delete) nhân viên */
   delete: (id: string) =>
-    apiClient.delete<unknown, ApiResponse<{ success: boolean; message?: string }>>(
+    apiClient.delete<unknown, { success: boolean; message?: string }>(
       ENDPOINTS.employees.delete(id)
     ),
 
