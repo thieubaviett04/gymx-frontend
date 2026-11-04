@@ -1,6 +1,7 @@
 /**
  * Utility functions for formatting currencies, dates, numbers, and strings
  */
+import { SPECIALIZATION_OPTIONS } from '@/types/employee';
 
 /**
  * Định dạng số thành tiền tệ VNĐ: 1499000 → "1.499.000 ₫"
@@ -64,4 +65,62 @@ export function formatPhoneNumber(phone: string | null | undefined): string {
     return clean.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
   }
   return phone;
+}
+
+/**
+ * Format chức danh chuẩn hiển thị
+ */
+export function formatPosition(pos?: string | null): string {
+  if (!pos) return '—';
+  const upper = pos.toUpperCase().trim();
+  switch (upper) {
+    case 'TRAINER':
+      return 'Huấn luyện viên';
+    case 'RECEPTIONIST':
+      return 'Lễ tân';
+    case 'ADMIN':
+      return 'Quản trị viên';
+    case 'MANAGER':
+      return 'Quản lý';
+    case 'STAFF':
+      return 'Tạp vụ';
+    default:
+      return pos;
+  }
+}
+
+/**
+ * Format giới tính
+ */
+export function formatGender(gender?: string | null): string {
+  if (!gender) return '—';
+  const g = gender.toUpperCase().trim();
+  if (g === 'NAM') return 'Nam';
+  if (g === 'NU') return 'Nữ';
+  return 'Khác';
+}
+
+/**
+ * Format số tiền (chỉ số, không kèm đơn vị để ghép với VND)
+ */
+export function formatSalaryNumber(val?: number | string | null): string {
+  if (val === undefined || val === null || val === '') return '0';
+  const num = typeof val === 'string' ? Number(val) : val;
+  if (isNaN(num)) return '0';
+  return new Intl.NumberFormat('vi-VN').format(num);
+}
+
+/**
+ * Lấy tên hiển thị chuyên môn theo ID hoặc fallback
+ */
+export function getSpecializationName(
+  specializationId?: string | null,
+  fallbackName?: string | null
+): string {
+  if (fallbackName && fallbackName.trim()) return fallbackName;
+  if (specializationId) {
+    const opt = SPECIALIZATION_OPTIONS.find((item) => item.id === specializationId);
+    if (opt) return opt.name;
+  }
+  return 'Gym & Thể hình';
 }

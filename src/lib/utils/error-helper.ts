@@ -1,4 +1,5 @@
 import type { FormErrors } from './validators';
+import type { EmployeeFormErrors } from '@/types/employee';
 
 /**
  * Trích xuất message thông báo lỗi thân thiện từ Error, AxiosError hoặc string
@@ -29,6 +30,42 @@ export function getErrorMessage(err: unknown): string {
     );
   }
   return 'Đã có lỗi xảy ra. Vui lòng thử lại.';
+}
+
+/**
+ * Chuẩn hóa thông báo lỗi thân thiện cho người dùng
+ */
+export function formatErrorMessage(msg: string): string {
+  if (!msg) return 'Có lỗi xảy ra. Vui lòng kiểm tra lại.';
+  const trimmed = msg.trim();
+  const lower = trimmed.toLowerCase();
+
+  if (
+    lower.includes('network error') ||
+    lower.includes('err_network') ||
+    lower.includes('connection refused') ||
+    lower.includes('failed to fetch') ||
+    lower === 'networkerror'
+  ) {
+    return 'Lỗi kết nối mạng: Không thể kết nối tới máy chủ. Vui lòng kiểm tra lại kết nối internet!';
+  }
+  if (lower.includes('timeout') || lower.includes('timed out')) {
+    return 'Hết thời gian chờ phản hồi từ máy chủ. Vui lòng thử lại sau!';
+  }
+  if (lower.includes('status code 500') || lower === 'internal server error') {
+    return 'Lỗi máy chủ nội bộ (500). Vui lòng thử lại sau hoặc liên hệ quản trị viên!';
+  }
+  if (lower.includes('status code 404') || lower === 'not found') {
+    return 'Không tìm thấy dữ liệu hoặc dịch vụ yêu cầu (404).';
+  }
+  if (lower.includes('status code 401') || lower.includes('unauthorized')) {
+    return 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+  }
+  if (lower.includes('status code 403') || lower.includes('forbidden')) {
+    return 'Bạn không có quyền thực hiện thao tác này (403).';
+  }
+
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
 
 /**
@@ -88,4 +125,87 @@ export function parseAuthBackendError(err: any): FormErrors {
   }
 
   return { general: errDesc || 'Đã có lỗi xảy ra. Vui lòng thử lại sau.' };
+}
+
+/**
+ * Phân tích lỗi từ backend API trả về cho module Employee
+ */
+export function parseEmployeeBackendError(err: unknown): {
+  fieldErrors: EmployeeFormErrors;
+  generalError: string;
+} {
+  const errObj = err as {
+    response?: {
+      data?: {
+        errors?: Record<string, unknown>;
+        error?: { code?: string; description?: string; message?: string };
+        code?: string;
+        message?: string;
+        detail?: string;
+        title?: string;
+      };
+    };
+    message?: string;
+  };
+
+  const data = errObj?.response?.data;
+  const fieldErrors: EmployeeFormErrors = {};
+
+  // 1. FluentValidation dictionary
+  if (data?.errors && typeof data.errors === 'object') {
+    for (const [key, msgs] of Object.entries(data.errors)) {
+      const msg = Array.isArray(msgs) ? msgs[0] : String(msgs);
+      const lowerKey = key.toLowerCase();
+      if (lowerKey === 'email') fieldErrors.email = msg;
+      else if (lowerKey === 'phonenumber' || lowerKey === 'phone') fieldErrors.phoneNumber = msg;
+      else if (lowerKey === 'nationalid' || lowerKey === 'citizenid') fieldErrors.nationalId = msg;
+      else if (lowerKey === 'fullname') fieldErrors.fullName = msg;
+      else if (lowerKey === 'position') fieldErrors.position = msg;
+      else if (lowerKey === 'basesalaryrate') fieldErrors.baseSalaryRate = msg;
+      else if (lowerKey === 'address') fieldErrors.address = msg;
+      else if (lowerKey === 'employmentstatus') fieldErrors.employmentStatus = msg;
+      else if (lowerKey === 'specializationid') fieldErrors.specializationId = msg;
+      else if (lowerKey === 'experienceyears') fieldErrors.experienceYears = msg;
+      else if (lowerKey === 'salarycoefficient') fieldErrors.salaryCoefficient = msg;
+    }
+  }
+
+  // 2. Business Error Code & Detailed Messages từ Backend
+  const errCode = String(data?.error?.code || data?.code || '');
+  const rawDesc =
+    data?.error?.description ||
+    data?.error?.message ||
+    data?.message ||
+    data?.detail ||
+    data?.title ||
+    errObj?.message ||
+    '';
+
+  const formattedMsg = formatErrorMessage(rawDesc);
+
+  if (
+    errCode.includes('Email') ||
+    /email/i.test(errCode) ||
+    /email.*(tồn tại|sử dụng|đã có|trùng|exists|duplicate|already)/i.test(rawDesc)
+  ) {
+    fieldErrors.email = formatErrorMessage(rawDesc || 'Email này đã tồn tại trong hệ thống.');
+  } else if (
+    errCode.includes('Phone') ||
+    /phone/i.test(errCode) ||
+    /(sđt|số điện thoại).*(tồn tại|sử dụng|đã có|trùng|exists|duplicate|already)/i.test(rawDesc)
+  ) {
+    fieldErrors.phoneNumber = formatErrorMessage(rawDesc || 'Số điện thoại này đã tồn tại trong hệ thống.');
+  } else if (
+    errCode.includes('CitizenId') ||
+    errCode.includes('NationalId') ||
+    /cccd|citizen|national/i.test(errCode) ||
+    /(cccd|căn cước).*(tồn tại|sử dụng|đã có|trùng|exists|duplicate|already)/i.test(rawDesc)
+  ) {
+    fieldErrors.nationalId = formatErrorMessage(rawDesc || 'Số CCCD này đã tồn tại trong hệ thống.');
+  }
+
+  return {
+    fieldErrors,
+    generalError: formattedMsg,
+  };
 }

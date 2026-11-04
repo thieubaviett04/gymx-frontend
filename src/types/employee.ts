@@ -122,3 +122,64 @@ export const EMPLOYEE_STATUSES = [
   { value: 'ACTIVE', label: 'Đang làm', color: '#10B981' },
   { value: 'INACTIVE', label: 'Đã nghỉ', color: '#64748B' },
 ] as const;
+
+export interface SpecializationOption {
+  id: string;
+  name: string;
+}
+
+/** Danh sách các chuyên môn HLV chuẩn bị sẵn */
+export const SPECIALIZATION_OPTIONS: SpecializationOption[] = [
+  { id: '11111111-1111-1111-1111-111111111111', name: 'Gym & Thể hình' },
+  { id: '22222222-2222-2222-2222-222222222222', name: 'Yoga & Thiền định' },
+  { id: '33333333-3333-3333-3333-333333333333', name: 'Pilates' },
+  { id: '44444444-4444-4444-4444-444444444444', name: 'Cardio & Giảm mỡ' },
+  { id: '55555555-5555-5555-5555-555555555555', name: 'Kickboxing & Võ thuật' },
+  { id: '66666666-6666-6666-6666-666666666666', name: 'Phục hồi chức năng' },
+];
+
+export type EmployeeDetailTab = 'general' | 'trainer' | 'history' | 'notes';
+
+export interface EmployeeFormData {
+  fullName: string;
+  position: string;
+  gender: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  email: string;
+  baseSalaryRate: number | string;
+  address: string;
+  nationalId: string;
+  hiredAt: string;
+  employmentStatus: string;
+  specializationId: string;
+  experienceYears: number | string;
+  salaryCoefficient: number | string;
+  description: string;
+}
+
+export type EmployeeFormErrors = Record<string, string>;
+
+export interface CreateEmployeeFormProps {
+  onSuccess?: (newEmployeeId?: string) => void;
+  onCancel?: () => void;
+}
+
+export interface EditEmployeeFormProps {
+  id?: string;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}
+
+export interface EmployeeDetailPageProps {
+  id?: string;
+}
+
+export interface EmployeeDetailTabProps {
+  employee: EmployeeDetail;
+  isEditing: boolean;
+  formData: EmployeeFormData;
+  errors: EmployeeFormErrors;
+  onChangeField: <K extends keyof EmployeeFormData>(field: K, value: EmployeeFormData[K]) => void;
+  onClearFieldError?: (field: keyof EmployeeFormData) => void;
+}

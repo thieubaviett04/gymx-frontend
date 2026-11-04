@@ -15,7 +15,7 @@ import {
   EmployeeTable,
   EmployeePagination,
   EmployeeDetailDialog,
-} from "@/components/dashboard/admin/employees";
+} from "@/components/admin/employees";
 import { ConnectionErrorState } from "@/components/shared";
 
 export default function AdminEmployeesPage() {

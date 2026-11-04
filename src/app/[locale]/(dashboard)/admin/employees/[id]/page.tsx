@@ -1,5 +1,5 @@
 import React from 'react';
-import { EmployeeDetailPage } from '@/components/dashboard/admin/employees';
+import { EmployeeDetailPage } from '@/components/admin/employees';
 
 export const metadata = {
   title: 'Chi tiết nhân viên | GymX Admin',
