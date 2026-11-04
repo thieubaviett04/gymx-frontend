@@ -5,6 +5,7 @@ import { useRouter } from "@/i18n/routing";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert, ConfirmDialog } from "@/components/ui";
 import { employeeService } from "@/lib/api";
+import { getErrorMessage } from "@/lib/utils/error-helper";
 import type {
   EmployeeDetail,
   EmployeeSummary,
@@ -85,22 +86,17 @@ export default function AdminEmployeesPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: string) => employeeService.delete(id),
     onSuccess: (res) => {
+      // Nếu item duy nhất của trang > 1 bị xóa, lùi về trang trước đó
+      if (data?.items && data.items.length === 1 && pageIndex > 1) {
+        setPageIndex((prev) => prev - 1);
+      }
       queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
       showToast("success", res.message || "Xóa nhân viên thành công.");
       setIsDeleteOpen(false);
       setDeletingEmployee(null);
     },
     onError: (err: unknown) => {
-      const errObj = err as {
-        response?: { data?: { error?: { description?: string; message?: string } } };
-        message?: string;
-      };
-      const msg =
-        errObj?.response?.data?.error?.description ||
-        errObj?.response?.data?.error?.message ||
-        errObj?.message ||
-        "Có lỗi xảy ra khi xóa nhân viên.";
-      showToast("error", msg);
+      showToast("error", getErrorMessage(err));
     },
   });
 
@@ -133,7 +129,11 @@ export default function AdminEmployeesPage() {
 
   const handleConfirmDelete = async () => {
     if (!deletingEmployee) return;
-    await deleteMutation.mutateAsync(deletingEmployee.id);
+    try {
+      await deleteMutation.mutateAsync(deletingEmployee.id);
+    } catch {
+      // Đã xử lý thông báo lỗi trong onError của deleteMutation
+    }
   };
 
   return (
@@ -233,10 +233,12 @@ export default function AdminEmployeesPage() {
         }}
       />
 
-      {/* Confirm Delete Popup */}
+      {/* Confirm Delete Popup chuẩn Figma Node 51:375 */}
       <ConfirmDialog
         isOpen={isDeleteOpen}
+        size="sm"
         onClose={() => {
+          if (deleteMutation.isPending) return;
           setIsDeleteOpen(false);
           setDeletingEmployee(null);
         }}
@@ -246,14 +248,14 @@ export default function AdminEmployeesPage() {
         description={
           deletingEmployee ? (
             <span>
-              Bạn có chắc chắn muốn xóa nhân viên{" "}
-              <strong className="text-[#FF6B00] font-semibold">
-                {deletingEmployee.fullName}
-              </strong>{" "}
-              (Mã: {deletingEmployee.employeeCode}) không? Thao tác này sẽ chuyển trạng thái nhân viên thành ngừng hoạt động.
+              Bạn có chắc muốn xóa{" "}
+              <span className="text-[#064343] font-medium">
+                &quot;{deletingEmployee.employeeCode}&quot;
+              </span>{" "}
+              chứ?
             </span>
           ) : (
-            "Bạn có chắc chắn muốn xóa nhân viên này không?"
+            "Bạn có chắc muốn xóa nhân viên này chứ?"
           )
         }
         confirmText="Xác nhận xóa"

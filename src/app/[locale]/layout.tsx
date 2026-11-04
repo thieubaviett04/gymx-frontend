@@ -33,6 +33,23 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
+                // 0. Chặn console.error từ hydration mismatch do extension (Cốc Cốc, Bitdefender) chèn bis_skin_checked
+                var _origConsoleError = window.console.error;
+                window.console.error = function() {
+                  var str = '';
+                  for (var i = 0; i < arguments.length; i++) {
+                    var a = arguments[i];
+                    str += ' ' + (typeof a === 'string' ? a : (a && (a.message || a.stack)) || '');
+                  }
+                  if (
+                    str.indexOf('bis_skin_checked') !== -1 ||
+                    str.indexOf('bis_register') !== -1
+                  ) {
+                    return;
+                  }
+                  return _origConsoleError.apply(window.console, arguments);
+                };
+
                 // 1. Chặn toàn bộ lỗi Uncaught do script bên thứ 3 (gads-scrapper, onboarding, extension) bắn vào Console
                 window.addEventListener('error', function(e) {
                   var filename = (e && e.filename) ? String(e.filename) : '';
