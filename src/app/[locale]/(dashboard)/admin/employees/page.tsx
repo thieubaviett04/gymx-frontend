@@ -3,25 +3,22 @@
 import React, { useState } from "react";
 import { useRouter } from "@/i18n/routing";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { AlertCircle } from "lucide-react";
 import { Alert, ConfirmDialog } from "@/components/ui";
 import { employeeService } from "@/lib/api";
 import type {
-  CreateEmployeePayload,
   EmployeeDetail,
   EmployeeSummary,
-  UpdateEmployeePayload,
 } from "@/types/employee";
 import {
   EmployeeToolbar,
   EmployeeTable,
   EmployeePagination,
-  EmployeeFormDialog,
   EmployeeDetailDialog,
 } from "@/components/dashboard/admin/employees";
 import { ConnectionErrorState } from "@/components/shared";
 
 export default function AdminEmployeesPage() {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   // Search, Filter & Pagination states
@@ -32,18 +29,12 @@ export default function AdminEmployeesPage() {
   const [pageSize, setPageSize] = useState(10);
 
   // Dialogs state
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [formMode, setFormMode] = useState<"create" | "edit">("create");
-  const [activeEmployee, setActiveEmployee] = useState<EmployeeDetail | null>(
-    null,
-  );
+  const [activeEmployee, setActiveEmployee] = useState<EmployeeDetail | null>(null);
   const [isFetchingDetail, setIsFetchingDetail] = useState(false);
-
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [deletingEmployee, setDeletingEmployee] =
-    useState<EmployeeSummary | null>(null);
+  const [deletingEmployee, setDeletingEmployee] = useState<EmployeeSummary | null>(null);
 
   // Toast notification state
   const [toast, setToast] = useState<{
@@ -58,18 +49,22 @@ export default function AdminEmployeesPage() {
     }, 4000);
   };
 
+  // Đọc thông báo flash từ sessionStorage (sau khi thêm mới hoặc sửa xong)
   React.useEffect(() => {
     try {
       const flashMsg = sessionStorage.getItem("gymx_employee_flash");
       if (flashMsg) {
         sessionStorage.removeItem("gymx_employee_flash");
-        showToast("success", flashMsg);
+        const timer = setTimeout(() => {
+          showToast("success", flashMsg);
+        }, 50);
+        return () => clearTimeout(timer);
       }
     } catch {}
   }, []);
 
   // ─── 1. Query danh sách nhân viên ──────────────────────────────────────────
-  const { data, isLoading, isError, error, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [
       "admin-employees",
       { search, position, status, pageIndex, pageSize },
@@ -86,53 +81,7 @@ export default function AdminEmployeesPage() {
     },
   });
 
-  // ─── 2. Mutation Thêm mới ──────────────────────────────────────────────────
-  const createMutation = useMutation({
-    mutationFn: (payload: CreateEmployeePayload) =>
-      employeeService.create(payload),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
-      showToast("success", res.message || "Thêm mới nhân viên thành công.");
-      setIsFormOpen(false);
-    },
-    onError: (err: any) => {
-      const msg =
-        err?.response?.data?.error?.description ||
-        err?.response?.data?.error?.message ||
-        err?.message ||
-        "Có lỗi xảy ra khi tạo nhân viên.";
-      showToast("error", msg);
-    },
-  });
-
-  // ─── 3. Mutation Cập nhật ──────────────────────────────────────────────────
-  const updateMutation = useMutation({
-    mutationFn: ({
-      id,
-      payload,
-    }: {
-      id: string;
-      payload: UpdateEmployeePayload;
-    }) => employeeService.update(id, payload),
-    onSuccess: (res) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
-      showToast(
-        "success",
-        res.message || "Cập nhật thông tin nhân viên thành công.",
-      );
-      setIsFormOpen(false);
-    },
-    onError: (err: any) => {
-      const msg =
-        err?.response?.data?.error?.description ||
-        err?.response?.data?.error?.message ||
-        err?.message ||
-        "Có lỗi xảy ra khi cập nhật nhân viên.";
-      showToast("error", msg);
-    },
-  });
-
-  // ─── 4. Mutation Xóa nhân viên ─────────────────────────────────────────────
+  // ─── 2. Mutation Xóa nhân viên ─────────────────────────────────────────────
   const deleteMutation = useMutation({
     mutationFn: (id: string) => employeeService.delete(id),
     onSuccess: (res) => {
@@ -141,35 +90,27 @@ export default function AdminEmployeesPage() {
       setIsDeleteOpen(false);
       setDeletingEmployee(null);
     },
-    onError: (err: any) => {
+    onError: (err: unknown) => {
+      const errObj = err as {
+        response?: { data?: { error?: { description?: string; message?: string } } };
+        message?: string;
+      };
       const msg =
-        err?.response?.data?.error?.description ||
-        err?.response?.data?.error?.message ||
-        err?.message ||
+        errObj?.response?.data?.error?.description ||
+        errObj?.response?.data?.error?.message ||
+        errObj?.message ||
         "Có lỗi xảy ra khi xóa nhân viên.";
       showToast("error", msg);
     },
   });
-
-  const router = useRouter();
 
   // ─── Handlers ──────────────────────────────────────────────────────────────
   const handleOpenCreate = () => {
     router.push("/admin/employees/create");
   };
 
-  const handleOpenEdit = async (emp: EmployeeSummary) => {
-    try {
-      setIsFetchingDetail(true);
-      const res = await employeeService.byId(emp.id);
-      setActiveEmployee(res.data);
-      setFormMode("edit");
-      setIsFormOpen(true);
-    } catch {
-      showToast("error", "Không thể tải thông tin chi tiết nhân viên.");
-    } finally {
-      setIsFetchingDetail(false);
-    }
+  const handleOpenEdit = (emp: EmployeeSummary) => {
+    router.push(`/admin/employees/${emp.id}/edit`);
   };
 
   const handleOpenView = async (emp: EmployeeSummary) => {
@@ -196,8 +137,8 @@ export default function AdminEmployeesPage() {
   };
 
   return (
-    <div className="flex-1 flex flex-col space-y-5 pb-6">
-      {/* Toast Alert – Ngang hàng thanh Header (Top Center của vùng nội dung) */}
+    <div className="w-full flex-1 flex flex-col space-y-6">
+      {/* Toast Alert – Top Center */}
       {toast && (
         <div className="fixed top-3.5 md:top-4 left-1/2 lg:left-[calc(50%+130px)] -translate-x-1/2 z-[100] max-w-[500px] w-auto pointer-events-auto animate-in fade-in slide-in-from-top-3 duration-200">
           <Alert
@@ -206,12 +147,14 @@ export default function AdminEmployeesPage() {
             onClose={() => setToast(null)}
             className="w-auto min-w-[280px] max-w-[500px] shadow-[0px_8px_24px_rgba(0,0,0,0.15)] border border-[#E5E5E5] bg-white"
           >
-            <p className="text-[13px] font-normal !font-normal text-[#202939] leading-snug whitespace-nowrap">{toast.message}</p>
+            <p className="text-[13px] font-normal !font-normal text-[#202939] leading-snug whitespace-nowrap">
+              {toast.message}
+            </p>
           </Alert>
         </div>
       )}
 
-      {/* Toolbar: Search, Role Filter, Status Filter & Add Button (Figma #1346:6500) */}
+      {/* Toolbar: Search, Role Filter, Status Filter & Add Button */}
       <EmployeeToolbar
         searchValue={search}
         onSearchChange={(val) => {
@@ -231,7 +174,7 @@ export default function AdminEmployeesPage() {
         onAddNew={handleOpenCreate}
       />
 
-      {/* DataTable Container matching Figma #1346:6518 & #1346:6519 */}
+      {/* DataTable Container */}
       <div className="bg-white rounded-[8px] p-4 sm:p-[16px_24px] shadow-xs flex-1 flex flex-col justify-between">
         {isError ? (
           <ConnectionErrorState onRetry={() => refetch()} />
@@ -259,7 +202,7 @@ export default function AdminEmployeesPage() {
               />
             </div>
 
-            {/* Phân trang (Figma #1346:6804) */}
+            {/* Pagination Controls */}
             {data && data.totalCount > 0 && (
               <EmployeePagination
                 pageIndex={data.pageIndex}
@@ -268,9 +211,9 @@ export default function AdminEmployeesPage() {
                 totalPages={data.totalPages}
                 hasPreviousPage={data.hasPreviousPage}
                 hasNextPage={data.hasNextPage}
-                onPageChange={(p) => setPageIndex(p)}
-                onPageSizeChange={(sz) => {
-                  setPageSize(sz);
+                onPageChange={(page) => setPageIndex(page)}
+                onPageSizeChange={(size) => {
+                  setPageSize(size);
                   setPageIndex(1);
                 }}
               />
@@ -279,34 +222,18 @@ export default function AdminEmployeesPage() {
         )}
       </div>
 
-      {/* Form Popup Thêm mới / Cập nhật */}
-      <EmployeeFormDialog
-        isOpen={isFormOpen}
-        mode={formMode}
-        employee={activeEmployee}
-        isLoading={createMutation.isPending || updateMutation.isPending}
-        onClose={() => setIsFormOpen(false)}
-        onSubmitCreate={async (payload) => {
-          await createMutation.mutateAsync(payload);
-        }}
-        onSubmitUpdate={async (id, payload) => {
-          await updateMutation.mutateAsync({ id, payload });
-        }}
-      />
-
-      {/* Detail Dialog Xem chi tiết */}
+      {/* Detail Dialog Xem chi tiết (Slide-over drawer chuẩn Figma) */}
       <EmployeeDetailDialog
         isOpen={isDetailOpen}
         employee={activeEmployee}
         onClose={() => setIsDetailOpen(false)}
         onEdit={(emp) => {
-          setActiveEmployee(emp);
-          setFormMode("edit");
-          setIsFormOpen(true);
+          setIsDetailOpen(false);
+          router.push(`/admin/employees/${emp.id}/edit`);
         }}
       />
 
-      {/* Confirm Delete Popup chuẩn Figma 51:376 */}
+      {/* Confirm Delete Popup */}
       <ConfirmDialog
         isOpen={isDeleteOpen}
         onClose={() => {
@@ -318,22 +245,19 @@ export default function AdminEmployeesPage() {
         title="Xác nhận xóa nhân viên"
         description={
           deletingEmployee ? (
-            <>
+            <span>
               Bạn có chắc chắn muốn xóa nhân viên{" "}
-              <strong className="text-[#064343] font-bold">
-                {deletingEmployee.fullName} ({deletingEmployee.employeeCode})
+              <strong className="text-[#FF6B00] font-semibold">
+                {deletingEmployee.fullName}
               </strong>{" "}
-              không?
-              <span className="block text-xs text-red-500 mt-2 font-medium">
-                Tài khoản đăng nhập của nhân viên này sẽ bị vô hiệu hóa.
-              </span>
-            </>
+              (Mã: {deletingEmployee.employeeCode}) không? Thao tác này sẽ chuyển trạng thái nhân viên thành ngừng hoạt động.
+            </span>
           ) : (
             "Bạn có chắc chắn muốn xóa nhân viên này không?"
           )
         }
-        confirmText="Có, tôi đồng ý"
-        cancelText="Không"
+        confirmText="Xác nhận xóa"
+        cancelText="Hủy bỏ"
         isLoading={deleteMutation.isPending}
       />
     </div>

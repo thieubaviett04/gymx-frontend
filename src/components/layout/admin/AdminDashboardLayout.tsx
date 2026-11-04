@@ -23,6 +23,7 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
 
   if (cleanPath.includes('/admin/employees') || cleanPath.includes('/admin/staff')) {
     const isCreate = cleanPath.includes('/create');
+    const isEdit = cleanPath.includes('/edit');
     const isDeep = segments.length > 2;
     return {
       title: 'Quản lý nhân viên',
@@ -30,6 +31,11 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
         ? [
             { label: 'Danh sách nhân viên', href: '/admin/employees' },
             { label: 'Thêm mới nhân viên' },
+          ]
+        : isEdit
+        ? [
+            { label: 'Danh sách nhân viên', href: '/admin/employees' },
+            { label: 'Cập nhật thông tin nhân viên' },
           ]
         : isDeep
         ? [
