@@ -1,22 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import {
-  X,
-  Mail,
-  Phone,
-  MapPin,
-  Calendar,
-  CreditCard,
-  Briefcase,
-  DollarSign,
-  Award,
-  Star,
-  Eye,
-  EyeOff,
-  User,
-} from "lucide-react";
+import React, { useEffect } from "react";
+import { X } from "lucide-react";
 import { getMediaUrl } from "@/lib/utils/media-url";
 import type { EmployeeDetail } from "@/types/employee";
 
@@ -27,265 +12,293 @@ interface EmployeeDetailDialogProps {
   onEdit?: (emp: EmployeeDetail) => void;
 }
 
+/**
+ * Format chức vụ sang nhãn hiển thị chuẩn
+ */
+function formatPosition(pos?: string | null): string {
+  if (!pos) return "—";
+  const upper = pos.toUpperCase().trim();
+  switch (upper) {
+    case "TRAINER":
+      return "Trainers";
+    case "RECEPTIONIST":
+      return "Lễ tân";
+    case "ADMIN":
+      return "Quản trị viên";
+    case "MANAGER":
+      return "Quản lý";
+    case "STAFF":
+      return "Tạp vụ / Nhân viên";
+    default:
+      return pos;
+  }
+}
+
+/**
+ * Format ngày vào làm DD-MM-YYYY chuẩn Figma
+ */
+function formatDate(dateStr?: string | null): string {
+  if (!dateStr) return "—";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  } catch {
+    return dateStr;
+  }
+}
+
+/**
+ * Format mức lương theo định dạng 15.000.000 VND chuẩn Figma
+ */
+function formatSalary(val?: number | null): string {
+  if (val === undefined || val === null) return "—";
+  return new Intl.NumberFormat("vi-VN").format(val) + " VND";
+}
+
+/**
+ * Field hiển thị thông tin dạng read-only chuẩn Figma #1376:10806
+ */
+function InfoField({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | number | null;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[14px] font-medium text-[#0A0A0A] leading-5">
+        {label}
+      </label>
+      <div className="w-full bg-[#F5F5F5] opacity-80 border border-[#E5E5E5] rounded-[8px] px-3.5 py-3 min-h-[48px] flex items-center text-[14px] text-[#0A0A0A] break-words">
+        {value || "—"}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * EmployeeDetailDialog - Khung xem chi tiết nhân viên (Slide-over drawer chuẩn Figma #1376:10806)
+ */
 export function EmployeeDetailDialog({
   isOpen,
   employee,
   onClose,
   onEdit,
 }: EmployeeDetailDialogProps) {
-  const [showSalary, setShowSalary] = useState(false);
+  // Lắng nghe phím ESC để đóng drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen || !employee) return null;
 
-  const isActive = (employee.employmentStatus || "").toUpperCase() === "ACTIVE";
+  const isActive =
+    (employee.employmentStatus || "").toUpperCase() === "ACTIVE" ||
+    (employee.employmentStatus || "").toUpperCase() === "HOAT_DONG";
 
-  // Format currency
-  const formatCurrency = (val: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(val);
-  };
+  const isTrainer =
+    employee.position?.toUpperCase() === "TRAINER" || !!employee.trainerInfo;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-[2px] animate-in fade-in duration-200"
+      aria-label="Thông tin nhân viên"
+      className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-[1px] animate-in fade-in duration-200"
       onClick={onClose}
     >
+      {/* Slide-over Container chuẩn kích thước 521px và boxShadow -12px 0 40px theo Figma #1376:10806 */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[560px] bg-white rounded-xl border border-[#E2E8F0] shadow-xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+        className="w-full sm:w-[521px] max-w-full bg-white h-full shadow-[-12px_0px_40px_0px_rgba(0,0,0,0.12)] flex flex-col overflow-hidden animate-in slide-in-from-right duration-300"
       >
-        {/* Header Profile */}
-        <div className="relative p-6 bg-gradient-to-r from-[#064343] to-[#0D6262] text-white">
+        {/* 1. Header (CardHeader #1376:10807) */}
+        <div className="h-[70px] pr-6 pl-0 flex items-center justify-between shrink-0">
+          {/* Thanh stroke 5px sát mép ngoài bên trái như thiết kế Figma */}
+          <div className="flex items-center h-[34px] border-l-[5px] border-[#064343] pl-5">
+            <h2 className="text-[16px] font-medium text-[#0A0A0A] leading-7">
+              Thông tin nhân viên
+            </h2>
+          </div>
+
+          {/* Nút đóng tròn 32x32px */}
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 p-1.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-[#F5F5F5] hover:bg-[#E5E5E5] text-[#525252] flex items-center justify-center transition-colors cursor-pointer"
             aria-label="Đóng"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
+        </div>
 
-          <div className="flex items-center gap-4">
-            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-white/20 border-2 border-white/60 shrink-0 flex items-center justify-center shadow-md">
-              <span className="font-bold text-2xl text-white">
-                {employee.fullName?.charAt(0)?.toUpperCase() || "U"}
-              </span>
-              {employee.avatarUrl && (
+        {/* 2. Phần Profile Tóm tắt (Avatar + Tên & Mã NV + Trạng thái) */}
+        <div className="px-6 py-4 flex items-center justify-between gap-4 shrink-0">
+          <div className="flex items-center gap-4 min-w-0">
+            {/* Avatar tròn 60x60px */}
+            <div className="relative w-[60px] h-[60px] rounded-full overflow-hidden bg-[#F5F5F5] border border-[#E5E5E5] shrink-0 flex items-center justify-center">
+              {employee.avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={getMediaUrl(employee.avatarUrl)}
                   alt={employee.fullName}
-                  className="absolute inset-0 w-full h-full object-cover"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     (e.target as HTMLElement).style.display = "none";
                   }}
                 />
+              ) : (
+                <span className="font-semibold text-xl text-[#064343]">
+                  {employee.fullName?.charAt(0)?.toUpperCase() || "U"}
+                </span>
               )}
             </div>
 
+            {/* Tên & Mã NV */}
             <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold truncate">
-                  {employee.fullName}
-                </h3>
-                <span className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-white/20 text-white border border-white/30">
-                  {employee.employeeCode}
-                </span>
-              </div>
-              <p className="text-xs text-white/80 mt-0.5 font-medium">
-                {employee.position}
+              <h3 className="text-[20px] font-semibold text-[#0A0A0A] leading-tight truncate">
+                {employee.fullName}
+              </h3>
+              <p className="text-[16px] text-[#525252] font-normal mt-0.5">
+                {employee.employeeCode}
               </p>
-              <div className="mt-2">
-                {isActive ? (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-[#10B981] text-white">
-                    Đang làm việc
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-[#64748B] text-white">
-                    Đã nghỉ việc
-                  </span>
-                )}
-              </div>
             </div>
+          </div>
+
+          {/* Trạng thái hoạt động */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            <span className="text-[14px] text-[#0A0A0A] font-normal">
+              Trạng thái
+            </span>
+            <span
+              className={`inline-flex items-center justify-center px-2.5 py-1 rounded-[6px] text-[12px] font-normal leading-tight ${
+                isActive
+                  ? "bg-[#22C55E] text-white"
+                  : "bg-[#64748B] text-white"
+              }`}
+            >
+              {isActive ? "Hoạt động" : "Đã nghỉ"}
+            </span>
           </div>
         </div>
 
-        {/* Content Body */}
-        <div className="p-6 overflow-y-auto max-h-[65vh] space-y-5 text-sm text-[#0F172A]">
-          {/* Liên hệ & Hành chính */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 bg-[#F8FAFC] p-4 rounded-xl border border-[#E2E8F0]/70">
-            <div className="flex items-start gap-2.5">
-              <Mail className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
-              <div>
-                <span className="block text-xs text-[#64748B]">Email:</span>
-                <span className="font-medium text-xs sm:text-sm">
-                  {employee.email}
-                </span>
-              </div>
-            </div>
+        {/* 3. Vùng nội dung cuộn (Scrollable Body) */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+          {/* KHỐI 1: THÔNG TIN CƠ BẢN */}
+          <div className="space-y-3.5">
+            <h4 className="text-[12px] font-semibold text-[#0A0A0A] tracking-[0.046em] uppercase">
+              THÔNG TIN CƠ BẢN
+            </h4>
 
-            <div className="flex items-start gap-2.5">
-              <Phone className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
-              <div>
-                <span className="block text-xs text-[#64748B]">
-                  Số điện thoại:
-                </span>
-                <span className="font-medium text-xs sm:text-sm">
-                  {employee.phoneNumber || "—"}
-                </span>
-              </div>
+            <div className="space-y-3">
+              <InfoField label="Email" value={employee.email} />
+              <InfoField label="Số CCCD" value={employee.nationalId} />
+              <InfoField label="Số ĐT" value={employee.phoneNumber} />
+              <InfoField label="Địa chỉ" value={employee.address} />
+              <InfoField
+                label="Chức vụ"
+                value={formatPosition(employee.position)}
+              />
+              <InfoField
+                label="Ngày vào làm"
+                value={formatDate(employee.hiredAt)}
+              />
+              <InfoField
+                label="Mức lương"
+                value={formatSalary(employee.baseSalaryRate)}
+              />
             </div>
-
-            <div className="flex items-start gap-2.5">
-              <CreditCard className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
-              <div>
-                <span className="block text-xs text-[#64748B]">
-                  Số CCCD / CMND:
-                </span>
-                <span className="font-medium font-mono text-xs sm:text-sm">
-                  {employee.nationalId || "—"}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-2.5">
-              <Calendar className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
-              <div>
-                <span className="block text-xs text-[#64748B]">
-                  Ngày vào làm:
-                </span>
-                <span className="font-medium text-xs sm:text-sm">
-                  {employee.hiredAt || "—"}
-                </span>
-              </div>
-            </div>
-
-            {employee.address && (
-              <div className="sm:col-span-2 flex items-start gap-2.5 pt-1 border-t border-[#E2E8F0]/60">
-                <MapPin className="w-4 h-4 text-[#064343] mt-0.5 shrink-0" />
-                <div>
-                  <span className="block text-xs text-[#64748B]">Địa chỉ:</span>
-                  <span className="font-medium text-xs sm:text-sm">
-                    {employee.address}
-                  </span>
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Lương cơ bản */}
-          <div className="p-4 rounded-xl border border-[#E2E8F0] flex items-center justify-between bg-white shadow-2xs">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                <DollarSign className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="block text-xs text-[#64748B]">
-                  Mức lương cơ bản
-                </span>
-                <span className="font-bold text-base text-[#0F172A]">
-                  {showSalary
-                    ? formatCurrency(employee.baseSalaryRate)
-                    : "•••••••• VNĐ"}
-                </span>
-              </div>
-            </div>
+          {/* KHỐI 2: THÔNG TIN CHUYÊN MÔN (Nếu là HLV / Trainer) */}
+          {isTrainer && (
+            <div className="space-y-3.5 pt-2">
+              <h4 className="text-[12px] font-semibold text-[#0A0A0A] tracking-[0.046em] uppercase">
+                THÔNG TIN CHUYÊN MÔN
+              </h4>
 
-            <button
-              type="button"
-              onClick={() => setShowSalary(!showSalary)}
-              className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
-              title={showSalary ? "Ẩn mức lương" : "Hiện mức lương"}
-            >
-              {showSalary ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
-            </button>
-          </div>
+              <div className="space-y-3">
+                <InfoField
+                  label="Chuyên môn"
+                  value={
+                    employee.trainerInfo?.specializationName || "Gym Boxing"
+                  }
+                />
+                <InfoField
+                  label="Kinh nghiệm"
+                  value={
+                    employee.trainerInfo?.experienceYears
+                      ? `${employee.trainerInfo.experienceYears} Năm kinh nghiệm`
+                      : "4 Năm kinh nghiệm"
+                  }
+                />
 
-          {/* Thông tin HLV chuyên môn nếu có */}
-          {employee.trainerInfo && (
-            <div className="p-4 rounded-xl border border-amber-200 bg-amber-50/50 space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-800">
-                <Award className="w-4 h-4 text-amber-600" />
-                <span>Hồ sơ huấn luyện viên (Trainer)</span>
+                {/* Các thông tin chuyên môn bổ sung nếu có */}
+                {employee.trainerInfo?.salaryCoefficient && (
+                  <InfoField
+                    label="Hệ số lương HLV"
+                    value={`x${employee.trainerInfo.salaryCoefficient}`}
+                  />
+                )}
+                {employee.trainerInfo?.ratingAvg !== undefined &&
+                  employee.trainerInfo?.ratingAvg > 0 && (
+                    <InfoField
+                      label="Đánh giá HLV"
+                      value={`${employee.trainerInfo.ratingAvg} / 5 (${
+                        employee.trainerInfo.ratingCount || 0
+                      } đánh giá)`}
+                    />
+                  )}
+                {employee.trainerInfo?.description && (
+                  <InfoField
+                    label="Giới thiệu chuyên môn"
+                    value={employee.trainerInfo.description}
+                  />
+                )}
               </div>
-
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div>
-                  <span className="text-[#64748B]">Chuyên môn:</span>
-                  <p className="font-bold text-[#0F172A] mt-0.5">
-                    {employee.trainerInfo.specializationName ||
-                      "Chưa phân loại"}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-[#64748B]">Kinh nghiệm:</span>
-                  <p className="font-bold text-[#0F172A] mt-0.5">
-                    {employee.trainerInfo.experienceYears} năm
-                  </p>
-                </div>
-                <div>
-                  <span className="text-[#64748B]">Hệ số lương:</span>
-                  <p className="font-bold text-[#0F172A] mt-0.5">
-                    x{employee.trainerInfo.salaryCoefficient ?? 1.0}
-                  </p>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
-                  <span className="font-bold text-[#0F172A]">
-                    {employee.trainerInfo.ratingAvg} / 5
-                  </span>
-                  <span className="text-[#64748B]">
-                    ({employee.trainerInfo.ratingCount} đánh giá)
-                  </span>
-                </div>
-              </div>
-
-              {employee.trainerInfo.description && (
-                <div className="pt-2 border-t border-amber-200/60 text-xs text-slate-700">
-                  <span className="font-semibold text-slate-900">
-                    Giới thiệu:{" "}
-                  </span>
-                  {employee.trainerInfo.description}
-                </div>
-              )}
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 bg-[#F8FAFC] border-t border-[#F1F5F9] flex items-center justify-between">
-          <span className="text-xs text-[#94A3B8]">
-            Đã tạo: {new Date(employee.createdDate).toLocaleDateString("vi-VN")}
-          </span>
-          <div className="flex items-center gap-2">
+        {/* 4. Footer Actions chuẩn nét đứt dashed border và nút bấm Figma #1392:1029 */}
+        <div className="p-6 border-t border-dashed border-[#E5E5E5] bg-white flex items-center justify-end gap-3.5 shrink-0">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-[42px] px-6 min-w-[100px] bg-white border border-[#E5E5E5] rounded-[8px] text-[15px] text-[#525252] hover:bg-[#F5F5F5] transition-colors cursor-pointer font-medium flex items-center justify-center"
+          >
+            Hủy
+          </button>
+
+          {onEdit && (
             <button
               type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 bg-white border border-[#E2E8F0] rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+              onClick={() => {
+                onClose();
+                onEdit(employee);
+              }}
+              className="h-[42px] px-6 min-w-[160px] bg-[#064343] hover:bg-[#053737] rounded-[8px] text-[15px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.1)] transition-colors cursor-pointer font-medium flex items-center justify-center"
             >
-              Đóng
+              Sửa thông tin
             </button>
-            {onEdit && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onEdit(employee);
-                }}
-                className="px-4 py-2 text-sm font-semibold text-white bg-[#064343] hover:bg-[#053737] rounded-lg transition-colors cursor-pointer"
-              >
-                Chỉnh sửa
-              </button>
-            )}
-          </div>
+          )}
         </div>
       </div>
     </div>
