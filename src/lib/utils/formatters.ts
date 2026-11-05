@@ -124,3 +124,35 @@ export function getSpecializationName(
   }
   return 'Gym & Thể hình';
 }
+
+/**
+ * Format trạng thái gói tập sang tiếng Việt
+ */
+export function formatPackageStatus(status?: string | null): string {
+  if (!status) return '—';
+  const upper = status.toUpperCase().trim();
+  switch (upper) {
+    case 'ACTIVE':
+      return 'Đang hoạt động';
+    case 'INACTIVE':
+      return 'Chưa kích hoạt';
+    case 'DISCONTINUED':
+      return 'Ngừng kinh doanh';
+    default:
+      return status;
+  }
+}
+
+/**
+ * Format thời hạn gói tập (tháng + ngày)
+ */
+export function formatPackageDuration(months: number, days?: number): string {
+  if (months >= 12 && months % 12 === 0) {
+    const years = months / 12;
+    return `${years} năm (${months} tháng)`;
+  }
+  if (days && days > 0 && months <= 0) {
+    return `${days} ngày`;
+  }
+  return `${months} tháng`;
+}
