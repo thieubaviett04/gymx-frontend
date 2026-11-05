@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Filter, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
+import { TrashBinIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import { EMPLOYEE_POSITIONS, EMPLOYEE_STATUSES } from "@/types/employee";
 
@@ -132,14 +133,15 @@ export function EmployeeToolbar({
           </Select>
         </div>
 
-        {/* Reset filter button (nền trắng chữ đỏ, không đổi màu hover, kích thước dài hơn) */}
+        {/* Reset filter button (nền trắng chữ đỏ, không đổi màu hover, kích thước dài hơn, icon thùng rác #EE464C) */}
         {hasFilter && (
           <button
             type="button"
             onClick={handleResetFilter}
-            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[13px] font-semibold text-red-600 rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[13px] font-semibold text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            title="Xóa bộ lọc"
           >
-            <X className="w-4 h-4 text-red-600 stroke-[2.5]" />
+            <TrashBinIcon className="w-4 h-4" color="#EE464C" />
             <span>Xóa bộ lọc</span>
           </button>
         )}
