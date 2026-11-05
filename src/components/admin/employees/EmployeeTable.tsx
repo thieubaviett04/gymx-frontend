@@ -96,8 +96,8 @@ export function EmployeeTable({
             <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Trạng thái
             </th>
-            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[11%]">
-              <div className="flex items-center justify-center w-full">Hành động</div>
+            <th className="py-2 pl-[15px] pr-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-left select-none whitespace-nowrap w-[11%]">
+              Hành động
             </th>
           </tr>
         </thead>
@@ -177,9 +177,9 @@ export function EmployeeTable({
                   )}
                 </td>
 
-                {/* 8. Hành động (căn chỉnh cân đối chuẩn giữa với tiêu đề "Hành động") */}
-                <td className="py-2 px-[10px] rounded-r-[6px] text-center">
-                  <div className="flex items-center justify-center gap-[10px] w-full">
+                {/* 8. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
+                <td className="py-2 px-[10px] rounded-r-[6px]">
+                  <div className="flex items-center gap-[10px]">
                     {/* Xem chi tiết */}
                     <button
                       type="button"
