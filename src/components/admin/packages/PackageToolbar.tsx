@@ -172,28 +172,28 @@ export function PackageToolbar({
           </Select>
         </div>
 
-        {/* Reset filter button (nền trắng chữ đỏ, không đổi màu hover, icon thùng rác #EE464C) */}
+        {/* Reset filter button (nền trắng chữ đỏ, font regular, icon thùng rác 20px) */}
         {hasFilter && (
           <button
             type="button"
             onClick={handleResetFilters}
-            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[13px] font-semibold text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
             title="Xóa bộ lọc"
           >
-            <TrashBinIcon className="w-4 h-4" color="#EE464C" />
+            <TrashBinIcon className="w-5 h-5" color="#EE464C" />
             <span>Xóa bộ lọc</span>
           </button>
         )}
       </div>
 
-      {/* Button Thêm mới gói tập - không đổi màu hover */}
+      {/* Button Thêm mới gói tập - font regular, icon 20px */}
       <div className="shrink-0 self-end lg:self-auto">
         <button
           type="button"
           onClick={onAddNew}
           className="h-[44px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
         >
-          <Plus className="w-4 h-4 text-white" />
+          <Plus className="w-5 h-5 text-white stroke-[2]" />
           <span>Thêm gói tập</span>
         </button>
       </div>
