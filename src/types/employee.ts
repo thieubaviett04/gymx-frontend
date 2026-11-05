@@ -18,6 +18,7 @@ export interface EmployeeSummary {
   avatarUrl?: string | null;
   trainerSpecialization?: string | null;
   trainerExperienceYears?: number | null;
+  trainerPricePerSession?: number | null;
   createdDate: string;
 }
 
@@ -26,6 +27,7 @@ export interface TrainerDetailInfo {
   specializationId: string;
   specializationName: string;
   experienceYears: number;
+  pricePerSession?: number | null;
   salaryCoefficient?: number | null;
   description?: string | null;
   ratingAvg: number;
@@ -68,6 +70,7 @@ export interface CreateEmployeePayload {
   // HLV info (khi Position === 'TRAINER')
   specializationId?: string;
   experienceYears?: number;
+  pricePerSession?: number;
   salaryCoefficient?: number;
   description?: string;
 }
@@ -86,6 +89,7 @@ export interface UpdateEmployeePayload {
   // HLV info (khi Position === 'TRAINER')
   specializationId?: string;
   experienceYears?: number;
+  pricePerSession?: number;
   salaryCoefficient?: number;
   description?: string;
 }
@@ -154,7 +158,8 @@ export interface EmployeeFormData {
   employmentStatus: string;
   specializationId: string;
   experienceYears: number | string;
-  salaryCoefficient: number | string;
+  pricePerSession: number | string;
+  salaryCoefficient?: number | string;
   description: string;
 }
 

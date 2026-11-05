@@ -27,6 +27,7 @@ const INITIAL_CREATE_FORM: EmployeeFormData = {
   employmentStatus: 'ACTIVE',
   specializationId: '',
   experienceYears: '1',
+  pricePerSession: '',
   salaryCoefficient: '1.0',
   description: '',
 };
@@ -160,7 +161,8 @@ export function useCreateEmployeeForm(options: CreateEmployeeFormProps = {}) {
       if (formData.position === 'TRAINER') {
         payload.specializationId = formData.specializationId;
         payload.experienceYears = Number(formData.experienceYears);
-        payload.salaryCoefficient = Number(formData.salaryCoefficient);
+        payload.pricePerSession =
+          formData.pricePerSession !== '' ? Number(formData.pricePerSession) : 0;
         payload.description = formData.description.trim() || undefined;
       }
 

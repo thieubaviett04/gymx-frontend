@@ -32,6 +32,7 @@ const INITIAL_FORM_DATA: EmployeeFormData = {
   employmentStatus: 'ACTIVE',
   specializationId: SPECIALIZATION_OPTIONS[0].id,
   experienceYears: 1,
+  pricePerSession: '',
   salaryCoefficient: '1.0',
   description: '',
 };
@@ -83,6 +84,11 @@ export function useEmployeeDetailForm(employeeId: string, employee?: EmployeeDet
       baseSalaryRate:
         emp.baseSalaryRate !== undefined && emp.baseSalaryRate !== null
           ? emp.baseSalaryRate
+          : '',
+      pricePerSession:
+        emp.trainerInfo?.pricePerSession !== undefined &&
+        emp.trainerInfo?.pricePerSession !== null
+          ? emp.trainerInfo.pricePerSession
           : '',
       salaryCoefficient:
         emp.trainerInfo?.salaryCoefficient !== undefined &&
@@ -178,8 +184,10 @@ export function useEmployeeDetailForm(employeeId: string, employee?: EmployeeDet
     if (formData.position === 'TRAINER') {
       payload.specializationId = formData.specializationId;
       payload.experienceYears = Number(formData.experienceYears);
-      payload.salaryCoefficient =
-        formData.salaryCoefficient !== '' ? Number(formData.salaryCoefficient) : undefined;
+      payload.pricePerSession =
+        formData.pricePerSession !== '' && formData.pricePerSession !== undefined
+          ? Number(formData.pricePerSession)
+          : undefined;
       payload.description = formData.description.trim() || undefined;
     } else if (formData.description.trim()) {
       payload.description = formData.description.trim();

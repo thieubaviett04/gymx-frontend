@@ -161,7 +161,7 @@ export function EmployeeDetailDialog({
   // Trainer form states
   const [specializationId, setSpecializationId] = useState("");
   const [experienceYears, setExperienceYears] = useState<number | string>("");
-  const [salaryCoefficient, setSalaryCoefficient] = useState<number | string>("");
+  const [pricePerSession, setPricePerSession] = useState<number | string>("");
   const [description, setDescription] = useState("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -193,10 +193,10 @@ export function EmployeeDetailDialog({
         ? emp.trainerInfo.experienceYears
         : ""
     );
-    setSalaryCoefficient(
-      emp.trainerInfo?.salaryCoefficient !== undefined &&
-        emp.trainerInfo?.salaryCoefficient !== null
-        ? emp.trainerInfo.salaryCoefficient
+    setPricePerSession(
+      emp.trainerInfo?.pricePerSession !== undefined &&
+        emp.trainerInfo?.pricePerSession !== null
+        ? emp.trainerInfo.pricePerSession
         : ""
     );
     setDescription(emp.trainerInfo?.description || "");
@@ -273,7 +273,8 @@ export function EmployeeDetailDialog({
           else if (lowerKey === "address") beErrors.address = msg;
           else if (lowerKey === "specializationid") beErrors.specializationId = msg;
           else if (lowerKey === "experienceyears") beErrors.experienceYears = msg;
-          else if (lowerKey === "salarycoefficient") beErrors.salaryCoefficient = msg;
+          else if (lowerKey === "pricepersession") beErrors.pricePerSession = msg;
+          else if (lowerKey === "salarycoefficient") beErrors.pricePerSession = msg;
         }
         setErrors(beErrors);
       }
@@ -341,8 +342,8 @@ export function EmployeeDetailDialog({
     if (position === "TRAINER") {
       payload.specializationId = specializationId;
       payload.experienceYears = Number(experienceYears);
-      payload.salaryCoefficient =
-        salaryCoefficient !== "" ? Number(salaryCoefficient) : undefined;
+      payload.pricePerSession =
+        pricePerSession !== "" ? Number(pricePerSession) : undefined;
       payload.description = description.trim() || undefined;
     }
 
@@ -726,15 +727,6 @@ export function EmployeeDetailDialog({
                       value={employee.email || "—"}
                     />
                     <InfoItem
-                      label="Hệ số lương"
-                      value={
-                        employee.trainerInfo?.salaryCoefficient !== undefined &&
-                        employee.trainerInfo?.salaryCoefficient !== null
-                          ? String(employee.trainerInfo.salaryCoefficient)
-                          : "1.8"
-                      }
-                    />
-                    <InfoItem
                       label="Địa chỉ thường trú"
                       value={employee.address || "—"}
                     />
@@ -793,30 +785,6 @@ export function EmployeeDetailDialog({
                       {errors.email && (
                         <p className="text-xs text-red-500 mt-0.5">{errors.email}</p>
                       )}
-                    </div>
-
-                    {/* Hệ số lương */}
-                    <div className="flex flex-col gap-1.5 min-w-0">
-                      <label className="text-[13px] font-medium text-[#202939]">
-                        Hệ số lương HLV
-                      </label>
-                      <div
-                        className={`h-[42px] px-3.5 py-2 rounded-[8px] flex items-center border ${
-                          position === "TRAINER"
-                            ? "bg-white border-[#CDD5DF] focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]"
-                            : "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed"
-                        }`}
-                      >
-                        <input
-                          type="number"
-                          step="0.1"
-                          disabled={position !== "TRAINER"}
-                          value={salaryCoefficient}
-                          onChange={(e) => setSalaryCoefficient(e.target.value)}
-                          placeholder="Ví dụ: 1.5"
-                          className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none disabled:cursor-not-allowed disabled:text-slate-400"
-                        />
-                      </div>
                     </div>
 
                     {/* Địa chỉ thường trú */}
@@ -946,11 +914,12 @@ export function EmployeeDetailDialog({
                         }
                       />
                       <InfoItem
-                        label="Hệ số phụ cấp / lương HLV"
+                        label="Giá 1 buổi tập"
                         value={
-                          employee.trainerInfo?.salaryCoefficient
-                            ? `x${employee.trainerInfo.salaryCoefficient}`
-                            : "1.0"
+                          employee.trainerInfo?.pricePerSession !== undefined &&
+                          employee.trainerInfo?.pricePerSession !== null
+                            ? `${Number(employee.trainerInfo.pricePerSession).toLocaleString("vi-VN")} ₫`
+                            : "0 ₫"
                         }
                       />
                       <InfoItem
@@ -1062,20 +1031,24 @@ export function EmployeeDetailDialog({
                         )}
                       </div>
 
-                      {/* Hệ số lương */}
+                      {/* Giá 1 buổi tập */}
                       <div className="flex flex-col gap-1.5 min-w-0">
                         <label className="text-[13px] font-medium text-[#202939]">
-                          Hệ số lương HLV
+                          Giá 1 buổi tập
                         </label>
-                        <div className="h-[42px] px-3.5 py-2 bg-white border border-[#CDD5DF] rounded-[8px] flex items-center focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]">
+                        <div className="h-[42px] px-3.5 py-2 bg-white border border-[#CDD5DF] rounded-[8px] flex items-center justify-between focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]">
                           <input
                             type="number"
-                            step="0.1"
-                            value={salaryCoefficient}
-                            onChange={(e) => setSalaryCoefficient(e.target.value)}
-                            placeholder="Ví dụ: 1.5"
+                            min="0"
+                            step="10000"
+                            value={pricePerSession}
+                            onChange={(e) => setPricePerSession(e.target.value)}
+                            placeholder="Ví dụ: 200000"
                             className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
                           />
+                          <span className="text-[13px] text-[#064343] font-semibold pl-2 select-none">
+                            ₫
+                          </span>
                         </div>
                       </div>
                     </div>

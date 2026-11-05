@@ -262,37 +262,6 @@ export function GeneralInfoTab({
             {errors.email && <p className="text-xs text-red-500 mt-0.5">{errors.email}</p>}
           </div>
 
-          {/* Hệ số lương HLV */}
-          <div className="flex flex-col gap-1.5 min-w-0">
-            <label className="text-[13px] font-medium text-[#202939]">Hệ số lương HLV</label>
-            {isEditing ? (
-              <div
-                className={`h-[42px] px-3.5 py-2 rounded-[8px] flex items-center border ${
-                  formData.position === 'TRAINER'
-                    ? 'bg-slate-50 border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
-                    : 'bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
-              >
-                <input
-                  type="number"
-                  step="0.1"
-                  disabled={formData.position !== 'TRAINER'}
-                  value={formData.salaryCoefficient}
-                  onChange={(e) => onChangeField('salaryCoefficient', e.target.value)}
-                  placeholder="Ví dụ: 1.5"
-                  className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none disabled:cursor-not-allowed disabled:text-slate-400"
-                />
-              </div>
-            ) : (
-              <div className="h-[42px] px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-[8px] flex items-center text-[14px] font-medium text-[#202939]">
-                {employee.trainerInfo?.salaryCoefficient !== undefined &&
-                employee.trainerInfo?.salaryCoefficient !== null
-                  ? `x${employee.trainerInfo.salaryCoefficient}`
-                  : '1.0'}
-              </div>
-            )}
-          </div>
-
           {/* Địa chỉ thường trú */}
           <div className="flex flex-col gap-1.5 min-w-0">
             <label className="text-[13px] font-medium text-[#202939]">Địa chỉ thường trú</label>
