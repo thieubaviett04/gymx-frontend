@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { FolderOpenIcon, TrashBinIcon } from "@/components/ui/icons";
 import { employeeService } from "@/lib/api";
 import {
   DatePicker,
@@ -1167,26 +1168,27 @@ export function EmployeeDetailDialog({
                 type="button"
                 onClick={handleCancelEdit}
                 disabled={updateMutation.isPending}
-                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer font-medium flex items-center justify-center disabled:opacity-50"
+                className="h-[40px] px-4 min-w-[95px] bg-white border border-[#E2E8F0] rounded-[10px] text-[14px] font-normal leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                Hủy bỏ
+                <TrashBinIcon className="w-4 h-4" color="#EE464C" />
+                <span>Hủy bỏ</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSaveEdit}
                 disabled={updateMutation.isPending}
-                className="h-[40px] px-5 min-w-[130px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer font-medium flex items-center justify-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="h-[40px] px-5 min-w-[130px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[14px] font-normal leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {updateMutation.isPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Đang lưu...
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Đang lưu...</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
-                    Lưu thay đổi
+                    <FolderOpenIcon className="w-4 h-4 text-white" />
+                    <span>Lưu thay đổi</span>
                   </>
                 )}
               </button>

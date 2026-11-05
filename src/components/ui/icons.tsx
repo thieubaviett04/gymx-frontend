@@ -161,3 +161,53 @@ export function TrashBinIcon({
     </svg>
   );
 }
+
+/**
+ * Icon Lưu lại từ Figma Node 1438:11069 (#1438:11092 vuesax/linear/folder-open)
+ */
+export function FolderOpenIcon({
+  className,
+  color = 'currentColor',
+  size = 20,
+  width,
+  height,
+  ...props
+}: IconProps) {
+  const iconWidth = width ?? size;
+  const iconHeight = height ?? size;
+
+  return (
+    <svg
+      width={iconWidth}
+      height={iconHeight}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path
+        d="M18.0583 11.917L17.725 16.0837C17.6 17.3587 17.5 18.3337 15.2416 18.3337H4.7583C2.49997 18.3337 2.39997 17.3587 2.27497 16.0837L1.94163 11.917C1.87497 11.2253 2.09163 10.5837 2.4833 10.092C2.49163 10.0837 2.49163 10.0837 2.49997 10.0753C2.9583 9.51699 3.64997 9.16699 4.42497 9.16699H15.575C16.35 9.16699 17.0333 9.51699 17.4833 10.0587C17.4916 10.067 17.5 10.0753 17.5 10.0837C17.9083 10.5753 18.1333 11.217 18.0583 11.917Z"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+      />
+      <path
+        d="M2.91699 9.52474V5.23307C2.91699 2.39974 3.62533 1.69141 6.45866 1.69141H7.51699C8.57533 1.69141 8.81699 2.00807 9.21699 2.54141L10.2753 3.95807C10.542 4.30807 10.7003 4.52474 11.4087 4.52474H13.5337C16.367 4.52474 17.0753 5.23307 17.0753 8.06641V9.55807"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.8584 14.167H12.1417"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}

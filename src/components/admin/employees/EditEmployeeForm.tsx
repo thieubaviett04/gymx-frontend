@@ -4,10 +4,11 @@ import React, { useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useQuery } from '@tanstack/react-query';
-import { AlertCircle, ArrowLeft, Check, Loader2, RefreshCw } from 'lucide-react';
+import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { employeeService } from '@/lib/api';
 import { useUiStore } from '@/lib/store/uiStore';
 import { Alert } from '@/components/ui';
+import { FolderOpenIcon, TrashBinIcon } from '@/components/ui/icons';
 import type { EmployeeDetail, EditEmployeeFormProps } from '@/types/employee';
 import { SPECIALIZATION_OPTIONS } from '@/types/employee';
 import { useEmployeeDetailForm } from '@/lib/hooks';
@@ -66,30 +67,32 @@ function EditEmployeeFormInner({
   useEffect(() => {
     setHeaderRightContent(
       <div className="flex items-center gap-3">
+        {/* Nút Hủy bỏ (icon thùng rác như bảng dữ liệu, font regular) */}
         <button
           type="button"
           onClick={() => handleCancelRef.current()}
           disabled={isSaving}
-          className="h-[44px] px-5 py-2.5 bg-white hover:bg-slate-50 text-[#2F3D50] text-[15px] font-normal leading-[18px] rounded-[8px] shadow-[0px_3px_26px_0px_rgba(175,190,211,0.15)] transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98] disabled:opacity-50"
+          className="h-[44px] px-5 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-[#2F3D50] text-[14px] font-normal leading-[20px] rounded-[10px] shadow-2xs transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98] disabled:opacity-50"
         >
-          <ArrowLeft className="w-4 h-4 text-[#2F3D50]" />
+          <TrashBinIcon className="w-5 h-5" color="#EE464C" />
           <span>Hủy bỏ</span>
         </button>
 
+        {/* Nút Lưu lại (chuẩn Figma Node 1438:11069, font regular) */}
         <button
           type="button"
           onClick={() => saveEditRef.current()}
           disabled={isSaving}
-          className="h-[44px] px-5 py-2.5 bg-[#064343] hover:bg-[#053737] text-white text-[15px] font-normal leading-[18px] rounded-[8px] shadow-[0px_6px_30px_0px_rgba(175,190,211,0.15)] transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+          className="h-[44px] px-5 bg-[#064343] hover:bg-[#053737] text-white text-[14px] font-normal leading-[20px] tracking-[0.01em] rounded-[10px] shadow-2xs transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {isSaving ? (
             <>
-              <Loader2 className="w-4 h-4 animate-spin text-white" />
+              <Loader2 className="w-5 h-5 animate-spin text-white" />
               <span>Đang lưu...</span>
             </>
           ) : (
             <>
-              <Check className="w-4 h-4 text-white" />
+              <FolderOpenIcon className="w-5 h-5 text-white" />
               <span>Lưu lại</span>
             </>
           )}
