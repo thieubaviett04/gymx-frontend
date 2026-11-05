@@ -2,7 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Eye, Edit3, Trash2, User } from "lucide-react";
+import { User } from "lucide-react";
+import { Badge, EyeViewIcon, EditPencilIcon, TrashBinIcon } from "@/components/ui";
 import { getMediaUrl } from "@/lib/utils/media-url";
 import type { EmployeeSummary } from "@/types/employee";
 import { EmptySearchState } from "@/components/shared";
@@ -163,31 +164,31 @@ export function EmployeeTable({
                   {emp.email}
                 </td>
 
-                {/* 7. Trạng thái (Badge chuẩn Figma 1346:6561 / 1346:6672) */}
+                {/* 7. Trạng thái (Badge chuẩn GymX Figma Node 1437:1446) */}
                 <td className="py-[11px] px-[10px]">
                   {isActive ? (
-                    <span className="inline-flex items-center justify-center px-3 py-[5px] rounded-[6px] text-[14px] leading-[18px] font-normal bg-[#10B981] text-white">
+                    <Badge variant="active">
                       Đang làm
-                    </span>
+                    </Badge>
                   ) : (
-                    <span className="inline-flex items-center justify-center px-3 py-[5px] rounded-[6px] text-[14px] leading-[18px] font-normal bg-[#64748B] text-white">
+                    <Badge variant="discontinued">
                       Đã nghỉ
-                    </span>
+                    </Badge>
                   )}
                 </td>
 
-                {/* 8. Hành động (3 Icon Buttons 28x28px chuẩn Figma 1346:6564) */}
+                {/* 8. Hành động (3 nút icon chuẩn Figma Node 1438:11026: #FFB800, #064343, #EE464C) */}
                 <td className="py-2 px-[10px] rounded-r-[6px]">
-                  <div className="flex items-center justify-center gap-[10px]">
+                  <div className="flex items-center justify-center gap-[16px]">
                     {/* Xem chi tiết */}
                     <button
                       type="button"
                       onClick={() => onView(emp)}
                       title="Xem chi tiết"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
                       aria-label="Xem chi tiết"
                     >
-                      <Eye className="w-[18px] h-[18px]" />
+                      <EyeViewIcon className="w-[20px] h-[20px]" color="#FFB800" />
                     </button>
 
                     {/* Chỉnh sửa */}
@@ -195,10 +196,10 @@ export function EmployeeTable({
                       type="button"
                       onClick={() => onEdit(emp)}
                       title="Chỉnh sửa thông tin"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
                       aria-label="Chỉnh sửa"
                     >
-                      <Edit3 className="w-[18px] h-[18px]" />
+                      <EditPencilIcon className="w-[20px] h-[20px]" color="#064343" />
                     </button>
 
                     {/* Xóa nhân viên */}
@@ -206,10 +207,10 @@ export function EmployeeTable({
                       type="button"
                       onClick={() => onDelete(emp)}
                       title="Xóa / Vô hiệu hóa"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#EF4444] hover:bg-red-50 transition-colors cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
                       aria-label="Xóa nhân viên"
                     >
-                      <Trash2 className="w-[18px] h-[18px]" />
+                      <TrashBinIcon className="w-[20px] h-[20px]" color="#EE464C" />
                     </button>
                   </div>
                 </td>

@@ -173,40 +173,40 @@ export function PackageTable({
                   )}
                 </td>
 
-                {/* 9. Hành động (3 nút icon fill màu chuẩn Figma Node 1438:11026, size 21px) */}
+                {/* 9. Hành động (3 nút icon chuẩn Figma Node 1438:11026: #FFB800, #064343, #EE464C) */}
                 <td className="py-2 px-[10px] rounded-r-[6px]">
-                  <div className="flex items-center justify-center gap-[8px]">
-                    {/* Xem chi tiết (Eye fill màu #064343) */}
+                  <div className="flex items-center justify-center gap-[16px]">
+                    {/* Xem chi tiết (Eye màu #FFB800) */}
                     <button
                       type="button"
                       onClick={() => onView(pkg)}
                       title="Xem chi tiết"
-                      className="w-[32px] h-[32px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
                       aria-label="Xem chi tiết"
                     >
-                      <EyeViewIcon className="w-[21px] h-[21px]" color="#064343" />
+                      <EyeViewIcon className="w-[20px] h-[20px]" color="#FFB800" />
                     </button>
 
-                    {/* Chỉnh sửa (Figma Node 1438:11052 edit-pencil fill #064343) */}
+                    {/* Chỉnh sửa (Figma Node 1440:11107 edit-pencil màu #064343) */}
                     <button
                       type="button"
                       onClick={() => onEdit(pkg)}
                       title="Chỉnh sửa thông tin"
-                      className="w-[32px] h-[32px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
                       aria-label="Chỉnh sửa"
                     >
-                      <EditPencilIcon className="w-[21px] h-[21px]" color="#064343" />
+                      <EditPencilIcon className="w-[20px] h-[20px]" color="#064343" />
                     </button>
 
-                    {/* Xóa gói tập (Figma Node 1438:11028 vuesax/linear/trash stroke #EE464C) */}
+                    {/* Xóa gói tập (Figma Node 1438:11028 trash màu #EE464C) */}
                     <button
                       type="button"
                       onClick={() => onDelete(pkg)}
                       title="Xóa gói tập"
-                      className="w-[32px] h-[32px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
+                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
                       aria-label="Xóa gói tập"
                     >
-                      <TrashBinIcon className="w-[21px] h-[21px]" color="#EE464C" />
+                      <TrashBinIcon className="w-[20px] h-[20px]" color="#EE464C" />
                     </button>
                   </div>
                 </td>
