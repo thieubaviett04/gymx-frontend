@@ -106,13 +106,13 @@ export function EmployeeTable({
             const stt = (pageIndex - 1) * pageSize + idx + 1;
             const isActive =
               (emp.employmentStatus || '').toUpperCase() === 'ACTIVE';
-            // Alternating row background: #F9FFE6 on odd (1st, 3rd, 5th), #F8F8F8 on even (2nd, 4th, 6th)
-            const rowBg = idx % 2 === 0 ? 'bg-[#F9FFE6]' : 'bg-[#F8F8F8]';
+            // Alternating row background: #F0F5F5 (soft primary teal tint) on even, white on odd
+            const rowBg = idx % 2 === 0 ? 'bg-[#F0F5F5]' : 'bg-white';
 
             return (
               <tr
                 key={emp.id}
-                className={`${rowBg} transition-colors hover:brightness-[0.98] group`}
+                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
               >
                 {/* 1. STT */}
                 <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">

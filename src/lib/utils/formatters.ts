@@ -144,15 +144,17 @@ export function formatPackageStatus(status?: string | null): string {
 }
 
 /**
- * Format thời hạn gói tập (tháng + ngày)
+ * Format thời hạn gói tập luôn theo tháng (theo yêu cầu hiển thị UI)
  */
 export function formatPackageDuration(months: number, days?: number): string {
-  if (months >= 12 && months % 12 === 0) {
-    const years = months / 12;
-    return `${years} năm (${months} tháng)`;
+  if (months && months > 0) {
+    return `${months} tháng`;
   }
-  if (days && days > 0 && months <= 0) {
+  if (days && days > 0) {
+    if (days % 30 === 0) {
+      return `${days / 30} tháng`;
+    }
     return `${days} ngày`;
   }
-  return `${months} tháng`;
+  return '0 tháng';
 }

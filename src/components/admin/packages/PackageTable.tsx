@@ -87,77 +87,56 @@ export function PackageTable({
             const isActive = statusUpper === 'ACTIVE';
             const isDiscontinued = statusUpper === 'DISCONTINUED';
 
-            // Alternating row background: #F9FFE6 on odd, #F8F8F8 on even
-            const rowBg = idx % 2 === 0 ? 'bg-[#F9FFE6]' : 'bg-[#F8F8F8]';
+            // Alternating row background: #F0F5F5 (soft primary teal tint) on even, white on odd
+            const rowBg = idx % 2 === 0 ? 'bg-[#F0F5F5]' : 'bg-white';
 
             return (
               <tr
                 key={pkg.id}
-                className={`${rowBg} transition-colors hover:brightness-[0.98] group`}
+                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
               >
                 {/* 1. STT */}
-                <td className="py-[11px] px-[12px] rounded-l-[6px] text-[#202939] font-normal">
+                <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">
                   {stt}
                 </td>
 
-                {/* 2. Mã gói */}
-                <td className="py-[11px] px-[12px]">
-                  <div className="flex flex-col">
-                    <span className="text-[#064343] font-semibold tracking-tight">
-                      {pkg.packageCode}
+                {/* 2. Mã gói (dùng chung font thông thường như các cột khác) */}
+                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
+                  <span>{pkg.packageCode}</span>
+                  {pkg.previousPackageCode && (
+                    <span className="block text-[11px] text-[#64748B]">
+                      Thay {pkg.previousPackageCode}
                     </span>
-                    {pkg.previousPackageCode && (
-                      <span className="text-[11px] text-[#64748B]">
-                        Thay {pkg.previousPackageCode}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </td>
 
-                {/* 3. Tên gói tập & mô tả tóm tắt */}
-                <td className="py-[11px] px-[12px]">
-                  <div className="flex flex-col">
-                    <span className="text-[#0A0A0A] font-medium truncate" title={pkg.name}>
-                      {pkg.name}
-                    </span>
-                    {pkg.description && (
-                      <span className="text-[12px] text-[#64748B] truncate max-w-[240px]">
-                        {pkg.description}
-                      </span>
-                    )}
-                  </div>
+                {/* 3. Tên gói tập (chỉ hiển thị tên gói tập, không mô tả) */}
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal truncate max-w-[260px]" title={pkg.name}>
+                  {pkg.name}
                 </td>
 
                 {/* 4. Giá niêm yết */}
-                <td className="py-[11px] px-[12px] text-[#064343] font-semibold">
+                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
                   {formatVND(pkg.price)}
                 </td>
 
                 {/* 5. Thời hạn */}
-                <td className="py-[11px] px-[12px] text-[#202939] font-normal">
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
                   {formatPackageDuration(pkg.durationMonths, pkg.durationDays)}
                 </td>
 
                 {/* 6. Check-in tối đa */}
-                <td className="py-[11px] px-[12px] text-[#202939] font-normal">
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
                   {pkg.maxCheckins ? `${pkg.maxCheckins} lượt` : 'Không giới hạn'}
                 </td>
 
-                {/* 7. Hội viên đang sử dụng */}
-                <td className="py-[11px] px-[12px]">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium ${
-                      pkg.activeMembersCount > 0
-                        ? 'bg-[#E0F2FE] text-[#0369A1]'
-                        : 'bg-slate-100 text-slate-500'
-                    }`}
-                  >
-                    {pkg.activeMembersCount} hội viên
-                  </span>
+                {/* 7. Hội viên đang sử dụng (text thông thường, không dùng badge) */}
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                  {pkg.activeMembersCount} hội viên
                 </td>
 
                 {/* 8. Trạng thái (3 màu chuẩn Figma Node 1437:1446) */}
-                <td className="py-[11px] px-[12px]">
+                <td className="py-[11px] px-[10px]">
                   {isActive ? (
                     <Badge variant="active">
                       Hoạt động
