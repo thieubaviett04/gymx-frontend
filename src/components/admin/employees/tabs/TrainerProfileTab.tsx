@@ -133,10 +133,10 @@ export function TrainerProfileTab({
             )}
           </div>
 
-          {/* 3. Giá 1 buổi tập */}
+          {/* 3. Giá buổi tập */}
           <div className="flex flex-col gap-1.5 min-w-0">
             <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-              Giá 1 buổi tập {isEditing && <span className="text-[#EE0033]">*</span>}
+              Giá buổi tập {isEditing && <span className="text-[#EE0033]">*</span>}
             </label>
             {isEditing ? (
               <div
@@ -155,12 +155,13 @@ export function TrainerProfileTab({
                     onChangeField('pricePerSession', e.target.value);
                     onClearFieldError?.('pricePerSession');
                   }}
-                  placeholder="Ví dụ: 200000"
+                  placeholder="Nhập giá buổi tập"
                   className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
                 />
-                <span className="text-[13px] text-[#064343] font-semibold pl-2 select-none">
-                  ₫
-                </span>
+                <div className="flex items-center gap-2 pl-2 select-none">
+                  <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                  <span className="text-[13px] font-semibold text-[#064343]">VND</span>
+                </div>
               </div>
             ) : (
               <div className="h-[42px] px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-[8px] flex items-center justify-between text-[14px] font-semibold text-[#064343]">
@@ -170,9 +171,9 @@ export function TrainerProfileTab({
                     ? Number(employee.trainerInfo.pricePerSession).toLocaleString('vi-VN')
                     : '0'}
                 </span>
-                <div className="flex items-center gap-1.5 text-[#064343]">
-                  <div className="w-[1px] h-3.5 bg-slate-300" />
-                  <span className="text-[13px] font-semibold">₫</span>
+                <div className="flex items-center gap-2 text-[#064343]">
+                  <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                  <span className="text-[13px] font-semibold">VND</span>
                 </div>
               </div>
             )}

@@ -919,12 +919,12 @@ export function EmployeeDetailDialog({
                         }
                       />
                       <InfoItem
-                        label="Giá 1 buổi tập"
+                        label="Giá buổi tập"
                         value={
                           employee.trainerInfo?.pricePerSession !== undefined &&
                           employee.trainerInfo?.pricePerSession !== null
-                            ? `${Number(employee.trainerInfo.pricePerSession).toLocaleString("vi-VN")} ₫`
-                            : "0 ₫"
+                            ? `${Number(employee.trainerInfo.pricePerSession).toLocaleString("vi-VN")} VND`
+                            : "0 VND"
                         }
                       />
                       <InfoItem
@@ -1036,10 +1036,10 @@ export function EmployeeDetailDialog({
                         )}
                       </div>
 
-                      {/* Giá 1 buổi tập */}
+                      {/* Giá buổi tập */}
                       <div className="flex flex-col gap-1.5 min-w-0">
                         <label className="text-[13px] font-medium text-[#202939]">
-                          Giá 1 buổi tập
+                          Giá buổi tập
                         </label>
                         <div className="h-[42px] px-3.5 py-2 bg-white border border-[#CDD5DF] rounded-[8px] flex items-center justify-between focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]">
                           <input
@@ -1048,12 +1048,13 @@ export function EmployeeDetailDialog({
                             step="10000"
                             value={pricePerSession}
                             onChange={(e) => setPricePerSession(e.target.value)}
-                            placeholder="Ví dụ: 200000"
+                            placeholder="Nhập giá buổi tập"
                             className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
                           />
-                          <span className="text-[13px] text-[#064343] font-semibold pl-2 select-none">
-                            ₫
-                          </span>
+                          <div className="flex items-center gap-2 pl-2 select-none">
+                            <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                            <span className="text-[13px] font-semibold text-[#064343]">VND</span>
+                          </div>
                         </div>
                       </div>
                     </div>

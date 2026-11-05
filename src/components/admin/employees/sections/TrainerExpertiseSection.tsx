@@ -108,13 +108,13 @@ export function TrainerExpertiseSection({
           )}
         </div>
 
-        {/* 3. Giá 1 buổi tập (*) */}
+        {/* 3. Giá buổi tập (*) */}
         <div className="flex flex-col gap-1.5 min-w-0">
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-            Giá 1 buổi tập {isTrainer && <span className="text-[#EE0033]">*</span>}
+            Giá buổi tập {isTrainer && <span className="text-[#EE0033]">*</span>}
           </label>
           <div
-            className={`h-[42px] px-3.5 py-2 rounded-[8px] bg-slate-50 border border-slate-200 flex items-center transition-all ${
+            className={`h-[42px] px-3.5 py-2 rounded-[8px] bg-slate-50 border border-slate-200 flex items-center justify-between transition-all ${
               errors.pricePerSession
                 ? 'border-red-400 bg-red-50/20'
                 : 'focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
@@ -127,7 +127,7 @@ export function TrainerExpertiseSection({
               step="10000"
               min="0"
               disabled={!isTrainer}
-              placeholder="Ví dụ: 200000"
+              placeholder="Nhập giá buổi tập"
               value={formData.pricePerSession}
               onChange={(e) => {
                 onChangeField('pricePerSession', e.target.value);
@@ -135,9 +135,10 @@ export function TrainerExpertiseSection({
               }}
               className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none disabled:cursor-not-allowed"
             />
-            <span className="text-[13px] text-[#064343] font-semibold pl-2 select-none">
-              ₫
-            </span>
+            <div className="flex items-center gap-2 pl-2 select-none">
+              <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+              <span className="text-[13px] font-semibold text-[#064343]">VND</span>
+            </div>
           </div>
           {errors.pricePerSession && isTrainer && (
             <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">

@@ -547,15 +547,16 @@ export function EmployeeFormDialog({
                     />
                   </div>
 
-                  {/* Giá 1 buổi tập */}
+                  {/* Giá buổi tập */}
                   <div>
                     <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
-                      Giá 1 buổi tập (VNĐ)
+                      Giá buổi tập (VND)
                     </label>
                     <input
                       type="number"
                       step="10000"
                       min="0"
+                      placeholder="Nhập giá buổi tập"
                       value={pricePerSession}
                       onChange={(e) =>
                         setPricePerSession(Number(e.target.value))
