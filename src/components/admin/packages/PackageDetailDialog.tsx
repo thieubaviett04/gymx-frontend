@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { X, Edit3, Calendar, Clock, Users, ArrowRight, Ban } from 'lucide-react';
-import { Button, Badge } from '@/components/ui';
+import { X, Calendar, Clock, Users, ArrowRight, Ban } from 'lucide-react';
+import { Button, Badge, EditPencilIcon } from '@/components/ui';
 import {
   formatVND,
   formatDate,
@@ -240,7 +240,7 @@ export function PackageDetailDialog({
               }}
               className="h-[40px] px-5 bg-[#064343] hover:bg-[#085454] text-white flex items-center gap-2 cursor-pointer font-medium"
             >
-              <Edit3 className="w-4 h-4" />
+              <EditPencilIcon className="w-4 h-4" color="#FFFFFF" />
               <span>Chỉnh sửa gói tập</span>
             </Button>
           )}
