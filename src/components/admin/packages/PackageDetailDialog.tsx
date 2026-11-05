@@ -1,14 +1,13 @@
 'use client';
 
 import React from 'react';
-import { X, Edit3, Calendar, CheckCircle2, AlertTriangle, XCircle, Clock, Users, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { X, Edit3, Calendar, Clock, Users, ArrowRight, Ban } from 'lucide-react';
+import { Button, Badge } from '@/components/ui';
 import {
   formatVND,
   formatDate,
   formatDateTime,
   formatPackageDuration,
-  formatPackageStatus,
 } from '@/lib/utils/formatters';
 import type { PackageDetail, PackageSummary } from '@/types/package';
 
@@ -17,6 +16,7 @@ interface PackageDetailDialogProps {
   packageData: PackageDetail | PackageSummary | null;
   onClose: () => void;
   onEdit?: (pkg: PackageDetail | PackageSummary) => void;
+  onDiscontinue?: (pkg: PackageDetail | PackageSummary) => void;
 }
 
 export function PackageDetailDialog({
@@ -24,6 +24,7 @@ export function PackageDetailDialog({
   packageData,
   onClose,
   onEdit,
+  onDiscontinue,
 }: PackageDetailDialogProps) {
   if (!isOpen || !packageData) return null;
 
@@ -82,22 +83,19 @@ export function PackageDetailDialog({
                 <span className="text-[22px] font-extrabold text-[#064343]">
                   {formatVND(packageData.price)}
                 </span>
-                <div className="mt-1">
+                <div className="mt-1.5">
                   {isActive ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#10B981] text-white">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      Đang hoạt động
-                    </span>
+                    <Badge variant="active">
+                      Hoạt động
+                    </Badge>
                   ) : isDiscontinued ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#EF4444] text-white">
-                      <XCircle className="w-3.5 h-3.5" />
-                      Ngừng kinh doanh
-                    </span>
+                    <Badge variant="discontinued">
+                      Đang khóa
+                    </Badge>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[12px] font-semibold bg-[#F59E0B] text-white">
-                      <AlertTriangle className="w-3.5 h-3.5" />
+                    <Badge variant="inactive">
                       Chưa kích hoạt
-                    </span>
+                    </Badge>
                   )}
                 </div>
               </div>
@@ -216,6 +214,23 @@ export function PackageDetailDialog({
           >
             Đóng
           </Button>
+
+          {/* Nút Ngừng kinh doanh trong Detail view nếu chưa bị khóa */}
+          {!isDiscontinued && onDiscontinue && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                onClose();
+                onDiscontinue(packageData);
+              }}
+              className="h-[40px] px-4 border-[#F37277] text-[#F37277] hover:bg-rose-50 flex items-center gap-1.5 cursor-pointer font-medium"
+            >
+              <Ban className="w-4 h-4" />
+              <span>Ngừng kinh doanh</span>
+            </Button>
+          )}
+
           {onEdit && (
             <Button
               type="button"
@@ -236,4 +251,3 @@ export function PackageDetailDialog({
 }
 
 export default PackageDetailDialog;
-

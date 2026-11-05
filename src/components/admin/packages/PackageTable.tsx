@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Eye, Edit3, Trash2, Ban } from 'lucide-react';
+import { Eye, Edit3, Trash2 } from 'lucide-react';
 import { EmptySearchState } from '@/components/shared';
-import { formatVND, formatDate, formatPackageDuration } from '@/lib/utils/formatters';
+import { Badge } from '@/components/ui';
+import { formatVND, formatPackageDuration } from '@/lib/utils/formatters';
 import type { PackageSummary } from '@/types/package';
 
 interface PackageTableProps {
@@ -13,7 +14,6 @@ interface PackageTableProps {
   pageSize: number;
   onView: (pkg: PackageSummary) => void;
   onEdit: (pkg: PackageSummary) => void;
-  onDiscontinue: (pkg: PackageSummary) => void;
   onDelete: (pkg: PackageSummary) => void;
   onClearFilter?: () => void;
 }
@@ -25,7 +25,6 @@ export function PackageTable({
   pageSize,
   onView,
   onEdit,
-  onDiscontinue,
   onDelete,
   onClearFilter,
 }: PackageTableProps) {
@@ -56,28 +55,28 @@ export function PackageTable({
             <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[5%]">
               STT
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[10%] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Mã gói
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[22%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[23%]">
               Tên gói tập
             </th>
             <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
               Giá niêm yết
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
               Thời hạn
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
               Check-in tối đa
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Đang sử dụng
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
               Trạng thái
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[9%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[10%]">
               Hành động
             </th>
           </tr>
@@ -103,8 +102,17 @@ export function PackageTable({
                 </td>
 
                 {/* 2. Mã gói */}
-                <td className="py-[11px] px-[12px] text-[#064343] font-semibold tracking-tight">
-                  {pkg.packageCode}
+                <td className="py-[11px] px-[12px]">
+                  <div className="flex flex-col">
+                    <span className="text-[#064343] font-semibold tracking-tight">
+                      {pkg.packageCode}
+                    </span>
+                    {pkg.previousPackageCode && (
+                      <span className="text-[11px] text-[#64748B]">
+                        Thay {pkg.previousPackageCode}
+                      </span>
+                    )}
+                  </div>
                 </td>
 
                 {/* 3. Tên gói tập & mô tả tóm tắt */}
@@ -149,26 +157,26 @@ export function PackageTable({
                   </span>
                 </td>
 
-                {/* 8. Trạng thái */}
+                {/* 8. Trạng thái (3 màu chuẩn Figma Node 1437:1446) */}
                 <td className="py-[11px] px-[12px]">
                   {isActive ? (
-                    <span className="inline-flex items-center justify-center px-2.5 py-[4px] rounded-[6px] text-[13px] leading-[17px] font-medium bg-[#10B981] text-white">
+                    <Badge variant="active">
                       Hoạt động
-                    </span>
+                    </Badge>
                   ) : isDiscontinued ? (
-                    <span className="inline-flex items-center justify-center px-2.5 py-[4px] rounded-[6px] text-[13px] leading-[17px] font-medium bg-[#EF4444] text-white">
-                      Ngừng KD
-                    </span>
+                    <Badge variant="discontinued">
+                      Đang khóa
+                    </Badge>
                   ) : (
-                    <span className="inline-flex items-center justify-center px-2.5 py-[4px] rounded-[6px] text-[13px] leading-[17px] font-medium bg-[#F59E0B] text-white">
+                    <Badge variant="inactive">
                       Chưa kích hoạt
-                    </span>
+                    </Badge>
                   )}
                 </td>
 
-                {/* 9. Hành động */}
+                {/* 9. Hành động (Đúng 3 nút icon chuẩn Figma) */}
                 <td className="py-2 px-[10px] rounded-r-[6px]">
-                  <div className="flex items-center justify-center gap-1.5">
+                  <div className="flex items-center justify-center gap-[10px]">
                     {/* Xem chi tiết */}
                     <button
                       type="button"
@@ -177,42 +185,29 @@ export function PackageTable({
                       className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
                       aria-label="Xem chi tiết"
                     >
-                      <Eye className="w-[17px] h-[17px]" />
+                      <Eye className="w-[18px] h-[18px]" />
                     </button>
 
                     {/* Chỉnh sửa */}
                     <button
                       type="button"
                       onClick={() => onEdit(pkg)}
-                      title="Chỉnh sửa gói tập"
+                      title="Chỉnh sửa thông tin"
                       className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
-                      aria-label="Chỉnh sửa gói tập"
+                      aria-label="Chỉnh sửa"
                     >
-                      <Edit3 className="w-[17px] h-[17px]" />
+                      <Edit3 className="w-[18px] h-[18px]" />
                     </button>
 
-                    {/* Ngừng kinh doanh (chỉ hiển thị nếu chưa ngừng kinh doanh) */}
-                    {!isDiscontinued && (
-                      <button
-                        type="button"
-                        onClick={() => onDiscontinue(pkg)}
-                        title="Ngừng kinh doanh gói tập"
-                        className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#F59E0B] hover:text-[#D97706] hover:bg-amber-50 transition-colors cursor-pointer"
-                        aria-label="Ngừng kinh doanh gói tập"
-                      >
-                        <Ban className="w-[17px] h-[17px]" />
-                      </button>
-                    )}
-
-                    {/* Xóa */}
+                    {/* Xóa gói tập */}
                     <button
                       type="button"
                       onClick={() => onDelete(pkg)}
                       title="Xóa gói tập"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#EF4444] hover:text-red-700 hover:bg-red-50 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#EF4444] hover:bg-red-50 transition-colors cursor-pointer"
                       aria-label="Xóa gói tập"
                     >
-                      <Trash2 className="w-[17px] h-[17px]" />
+                      <Trash2 className="w-[18px] h-[18px]" />
                     </button>
                   </div>
                 </td>
@@ -226,4 +221,3 @@ export function PackageTable({
 }
 
 export default PackageTable;
-

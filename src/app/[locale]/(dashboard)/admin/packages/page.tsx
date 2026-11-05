@@ -150,7 +150,7 @@ export default function AdminPackagesPage() {
     mutationFn: (id: string) => packageService.discontinue(id),
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['admin-packages'] });
-      showToast('success', res.message || 'Đã ngừng kinh doanh gói tập thành công.');
+      showToast('success', res.message || 'Đã cập nhật trạng thái Ngừng kinh doanh cho gói tập.');
       setIsDiscontinueOpen(false);
       setDiscontinuingPackage(null);
     },
@@ -285,7 +285,6 @@ export default function AdminPackagesPage() {
                 pageSize={pageSize}
                 onView={handleOpenView}
                 onEdit={handleOpenEdit}
-                onDiscontinue={handleOpenDiscontinue}
                 onDelete={handleOpenDelete}
                 onClearFilter={
                   search || durationFilter !== 'ALL' || status !== 'ALL' || sortBy !== 'latest'
@@ -347,6 +346,11 @@ export default function AdminPackagesPage() {
           setActiveDetailPackage(null);
           setEditingPackage(pkg);
           setIsFormOpen(true);
+        }}
+        onDiscontinue={(pkg) => {
+          setIsDetailOpen(false);
+          setActiveDetailPackage(null);
+          handleOpenDiscontinue(pkg as PackageSummary);
         }}
       />
 
@@ -427,4 +431,3 @@ export default function AdminPackagesPage() {
     </div>
   );
 }
-
