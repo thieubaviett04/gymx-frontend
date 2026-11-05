@@ -56,6 +56,15 @@ export const ENDPOINTS = {
     purchase:       `${V1}/packages/purchase`,
   },
 
+  adminPackages: {
+    list:           `${V1}/admin/packages`,
+    byId:           (id: string) => `${V1}/admin/packages/${id}`,
+    create:         `${V1}/admin/packages`,
+    update:         (id: string) => `${V1}/admin/packages/${id}`,
+    delete:         (id: string) => `${V1}/admin/packages/${id}`,
+    discontinue:    (id: string) => `${V1}/admin/packages/${id}/discontinue`,
+  },
+
   // ─── Attendance ───────────────────────────────────────────────────────────
   attendance: {
     list:           `${V1}/attendance`,

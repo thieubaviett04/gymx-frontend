@@ -1,5 +1,6 @@
 import { REGEX, VALIDATION_LIMITS } from './constants';
 import type { EmployeeFormData, EmployeeFormErrors } from '@/types/employee';
+import type { PackageFormData, PackageFormErrors } from '@/types/package';
 
 export type RegisterFormData = {
   fullName: string;
@@ -245,6 +246,70 @@ export function validateUpdateEmployee(form: EmployeeFormData): EmployeeFormErro
       Number(form.experienceYears) <= 0
     ) {
       errors.experienceYears = 'Số năm kinh nghiệm phải lớn hơn 0 (tối thiểu 1 năm).';
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Validate form Gói tập (Tạo mới & Cập nhật)
+ */
+export function validatePackageForm(
+  form: PackageFormData,
+  isEdit = false
+): PackageFormErrors {
+  const errors: PackageFormErrors = {};
+
+  // 1. Tên gói tập
+  if (!form.name.trim()) {
+    errors.name = 'Tên gói tập không được để trống.';
+  } else if (form.name.trim().length > 100) {
+    errors.name = 'Tên gói tập tối đa 100 ký tự.';
+  }
+
+  // 2. Giá gói tập
+  if (form.price === '' || form.price === undefined || form.price === null) {
+    errors.price = 'Vui lòng nhập giá của gói tập.';
+  } else {
+    const numPrice = Number(form.price);
+    if (isNaN(numPrice) || numPrice < 0) {
+      errors.price = 'Giá gói tập phải là số thực không âm.';
+    }
+  }
+
+  // 3. Thời hạn (tháng)
+  if (form.durationMonths === '' || form.durationMonths === undefined || form.durationMonths === null) {
+    errors.durationMonths = 'Vui lòng nhập thời hạn gói tập.';
+  } else {
+    const numMonths = Number(form.durationMonths);
+    if (isNaN(numMonths) || numMonths <= 0 || !Number.isInteger(numMonths)) {
+      errors.durationMonths = 'Thời hạn gói tập phải là số nguyên dương lớn hơn 0.';
+    }
+  }
+
+  // 4. Giới hạn check-in (tùy chọn)
+  if (form.maxCheckins !== '' && form.maxCheckins !== undefined && form.maxCheckins !== null) {
+    const numCheckins = Number(form.maxCheckins);
+    if (isNaN(numCheckins) || numCheckins <= 0 || !Number.isInteger(numCheckins)) {
+      errors.maxCheckins = 'Số lượt check-in tối đa phải là số nguyên dương.';
+    }
+  }
+
+  // 5. Ngày bắt đầu áp dụng
+  if (!form.effectiveStartDate) {
+    errors.effectiveStartDate = 'Vui lòng chọn ngày bắt đầu áp dụng.';
+  } else if (!isEdit) {
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (form.effectiveStartDate < todayStr) {
+      errors.effectiveStartDate = 'Ngày bắt đầu áp dụng không được chọn ngày ở quá khứ.';
+    }
+  }
+
+  // 6. Ngày kết thúc áp dụng (tùy chọn)
+  if (form.effectiveEndDate) {
+    if (form.effectiveStartDate && form.effectiveEndDate < form.effectiveStartDate) {
+      errors.effectiveEndDate = 'Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu áp dụng.';
     }
   }
 
