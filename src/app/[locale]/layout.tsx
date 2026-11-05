@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { plusJakartaSans, inter } from '@/lib/fonts';
-import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import QueryProvider from '@/lib/providers/QueryProvider';
@@ -27,90 +26,6 @@ export default async function RootLayout({
         suppressHydrationWarning
         className={`${plusJakartaSans.variable} ${inter.variable} font-sans antialiased bg-background text-foreground min-h-screen`}
       >
-        <Script
-          id="suppress-extension-noise"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                // 0. Chặn console.error từ hydration mismatch do extension (Cốc Cốc, Bitdefender) chèn bis_skin_checked
-                var _origConsoleError = window.console.error;
-                window.console.error = function() {
-                  var str = '';
-                  for (var i = 0; i < arguments.length; i++) {
-                    var a = arguments[i];
-                    str += ' ' + (typeof a === 'string' ? a : (a && (a.message || a.stack)) || '');
-                  }
-                  if (
-                    str.indexOf('bis_skin_checked') !== -1 ||
-                    str.indexOf('bis_register') !== -1
-                  ) {
-                    return;
-                  }
-                  return _origConsoleError.apply(window.console, arguments);
-                };
-
-                // 1. Chặn toàn bộ lỗi Uncaught do script bên thứ 3 (gads-scrapper, onboarding, extension) bắn vào Console
-                window.addEventListener('error', function(e) {
-                  var filename = (e && e.filename) ? String(e.filename) : '';
-                  var message = (e && e.message) ? String(e.message) : '';
-                  if (
-                    filename.indexOf('gads-scrapper') !== -1 ||
-                    filename.indexOf('onboarding') !== -1 ||
-                    filename.indexOf('extension') !== -1 ||
-                    filename.indexOf('chrome-extension') !== -1 ||
-                    message.indexOf("Cannot access 'm' before initialization") !== -1 ||
-                    message.indexOf('Could not establish connection') !== -1
-                  ) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return true;
-                  }
-                }, true);
-
-                // 2. Chặn lỗi Uncaught (in promise) undefined từ script onboarding / extension
-                window.addEventListener('unhandledrejection', function(e) {
-                  var reason = e ? e.reason : null;
-                  var reasonStr = reason ? (reason.stack || String(reason)) : '';
-                  if (
-                    !reason ||
-                    reason === 'undefined' ||
-                    reasonStr.indexOf('onboarding') !== -1 ||
-                    reasonStr.indexOf('gads-scrapper') !== -1 ||
-                    reasonStr.indexOf('extension') !== -1 ||
-                    reasonStr.indexOf('chrome-extension') !== -1
-                  ) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    return true;
-                  }
-                }, true);
-
-                // 3. Tự động dọn dẹp các attribute do extension Cốc Cốc / Adblock tự chèn vào DOM
-                var removeAttr = function(el) {
-                  if (el && el.removeAttribute) {
-                    el.removeAttribute('bis_skin_checked');
-                    el.removeAttribute('bis_register');
-                  }
-                };
-                document.querySelectorAll('[bis_skin_checked], [bis_register]').forEach(removeAttr);
-                var observer = new MutationObserver(function(mutations) {
-                  for (var i = 0; i < mutations.length; i++) {
-                    var m = mutations[i];
-                    if (m.type === 'attributes' && (m.attributeName === 'bis_skin_checked' || m.attributeName === 'bis_register')) {
-                      removeAttr(m.target);
-                    }
-                  }
-                });
-                observer.observe(document.documentElement, {
-                  attributes: true,
-                  subtree: true,
-                  attributeFilter: ['bis_skin_checked', 'bis_register']
-                });
-              })();
-            `,
-          }}
-        />
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>{children}</QueryProvider>
         </NextIntlClientProvider>
