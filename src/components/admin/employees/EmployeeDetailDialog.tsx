@@ -12,7 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FolderOpenIcon, TrashBinIcon } from "@/components/ui/icons";
+import { EditPencilIcon, FolderOpenIcon } from "@/components/ui/icons";
 import { employeeService } from "@/lib/api";
 import {
   DatePicker,
@@ -1147,18 +1147,18 @@ export function EmployeeDetailDialog({
               <button
                 type="button"
                 onClick={onClose}
-                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer font-medium flex items-center justify-center"
+                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[14px] font-normal leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center"
               >
-                Đóng
+                <span>Đóng</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="h-[40px] px-5 min-w-[124px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer font-medium flex items-center justify-center gap-1.5"
+                className="h-[40px] px-5 min-w-[124px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[14px] font-normal leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
-                <Pencil className="w-3.5 h-3.5" />
-                Chỉnh sửa
+                <EditPencilIcon className="w-5 h-5" color="#FFFFFF" />
+                <span>Chỉnh sửa</span>
               </button>
             </div>
           ) : (
@@ -1168,9 +1168,8 @@ export function EmployeeDetailDialog({
                 type="button"
                 onClick={handleCancelEdit}
                 disabled={updateMutation.isPending}
-                className="h-[40px] px-4 min-w-[95px] bg-white border border-[#E2E8F0] rounded-[10px] text-[14px] font-normal leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[14px] font-normal leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-50"
               >
-                <TrashBinIcon className="w-4 h-4" color="#EE464C" />
                 <span>Hủy bỏ</span>
               </button>
 

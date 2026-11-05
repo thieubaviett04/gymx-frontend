@@ -8,7 +8,7 @@ import { AlertCircle, Loader2, RefreshCw } from 'lucide-react';
 import { employeeService } from '@/lib/api';
 import { useUiStore } from '@/lib/store/uiStore';
 import { Alert } from '@/components/ui';
-import { FolderOpenIcon, TrashBinIcon } from '@/components/ui/icons';
+import { FolderOpenIcon } from '@/components/ui/icons';
 import type { EmployeeDetail, EditEmployeeFormProps } from '@/types/employee';
 import { SPECIALIZATION_OPTIONS } from '@/types/employee';
 import { useEmployeeDetailForm } from '@/lib/hooks';
@@ -67,14 +67,13 @@ function EditEmployeeFormInner({
   useEffect(() => {
     setHeaderRightContent(
       <div className="flex items-center gap-3">
-        {/* Nút Hủy bỏ (icon thùng rác như bảng dữ liệu, font regular) */}
+        {/* Nút Hủy bỏ (nút phụ, chỉ để text chuẩn UX) */}
         <button
           type="button"
           onClick={() => handleCancelRef.current()}
           disabled={isSaving}
-          className="h-[44px] px-5 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-[#2F3D50] text-[14px] font-normal leading-[20px] rounded-[10px] shadow-2xs transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98] disabled:opacity-50"
+          className="h-[44px] px-5 bg-white hover:bg-slate-50 border border-[#E2E8F0] text-[#2F3D50] text-[14px] font-normal leading-[20px] rounded-[10px] shadow-2xs transition-all cursor-pointer inline-flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
         >
-          <TrashBinIcon className="w-5 h-5" color="#EE464C" />
           <span>Hủy bỏ</span>
         </button>
 

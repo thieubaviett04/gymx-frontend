@@ -17,7 +17,7 @@ import {
 } from '@/components/ui';
 import { usePackageForm } from '@/lib/hooks/usePackageForm';
 import { formatVND } from '@/lib/utils/formatters';
-import { FolderOpenIcon, TrashBinIcon } from '@/components/ui/icons';
+import { FolderOpenIcon } from '@/components/ui/icons';
 import type {
   CreatePackagePayload,
   PackageDetail,
@@ -281,9 +281,8 @@ export function PackageFormDialog({
             variant="outline"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="h-[40px] px-4 text-[#525252] border-[#E5E5E5] hover:bg-slate-50 cursor-pointer font-normal text-[14px] flex items-center gap-2"
+            className="h-[40px] px-4 text-[#525252] border-[#E5E5E5] hover:bg-slate-50 cursor-pointer font-normal text-[14px]"
           >
-            <TrashBinIcon className="w-4 h-4" color="#EE464C" />
             <span>Hủy bỏ</span>
           </Button>
           <button

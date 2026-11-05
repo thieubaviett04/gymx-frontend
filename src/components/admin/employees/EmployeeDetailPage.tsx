@@ -4,10 +4,11 @@ import React, { useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Pencil, Loader2, Check } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { employeeService } from '@/lib/api';
 import { useUiStore } from '@/lib/store/uiStore';
 import { Alert, Badge } from '@/components/ui';
+import { EditPencilIcon, FolderOpenIcon } from '@/components/ui/icons';
 import type { EmployeeDetail, EmployeeDetailPageProps } from '@/types/employee';
 import { ConnectionErrorState } from '@/components/shared';
 import { useEmployeeDetailForm } from '@/lib/hooks';
@@ -72,12 +73,12 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     if (activeTab === 'history' || activeTab === 'notes') {
       setHeaderRightContent(
         <div className="flex items-center gap-3">
+          {/* Nút phụ: Quay lại (chỉ để text chuẩn UX, font regular) */}
           <button
             type="button"
             onClick={() => router.push('/admin/employees')}
-            className="h-[44px] px-5 py-2.5 bg-white border border-[#CDD5DF] text-[#525252] text-[15px] font-normal leading-[18px] rounded-[8px] hover:bg-slate-50 transition-colors cursor-pointer inline-flex items-center gap-2 active:scale-[0.98]"
+            className="h-[44px] px-5 bg-white border border-[#CDD5DF] text-[#525252] text-[14px] font-normal leading-[20px] rounded-[10px] hover:bg-slate-50 transition-colors cursor-pointer inline-flex items-center justify-center active:scale-[0.98]"
           >
-            <ArrowLeft className="w-4 h-4 text-[#525252]" />
             <span>Quay lại</span>
           </button>
         </div>
@@ -85,24 +86,27 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     } else if (isEditing) {
       setHeaderRightContent(
         <div className="flex items-center gap-3">
+          {/* Nút phụ: Hủy (chỉ để text chuẩn UX, font regular) */}
           <button
             type="button"
             onClick={() => cancelEditRef.current()}
             disabled={isSaving}
-            className="h-[44px] min-w-[90px] px-5 py-2.5 bg-white border border-[#CDD5DF] text-[#525252] text-[15px] font-normal leading-[18px] rounded-[8px] hover:bg-slate-50 transition-colors cursor-pointer inline-flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
+            className="h-[44px] min-w-[90px] px-5 bg-white border border-[#CDD5DF] text-[#525252] text-[14px] font-normal leading-[20px] rounded-[10px] hover:bg-slate-50 transition-colors cursor-pointer inline-flex items-center justify-center active:scale-[0.98] disabled:opacity-50"
           >
-            Hủy
+            <span>Hủy</span>
           </button>
+
+          {/* CTA: Lưu thay đổi (icon lưu Figma, font regular) */}
           <button
             type="button"
             onClick={() => saveEditRef.current()}
             disabled={isSaving}
-            className="h-[44px] min-w-[120px] px-5 py-2.5 bg-[#064343] hover:bg-[#053737] text-white text-[15px] font-normal leading-[18px] rounded-[8px] shadow-[0px_6px_30px_0px_rgba(175,190,211,0.15)] transition-all cursor-pointer inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+            className="h-[44px] min-w-[120px] px-5 bg-[#064343] hover:bg-[#053737] text-white text-[14px] font-normal leading-[20px] rounded-[10px] shadow-[0px_6px_30px_0px_rgba(175,190,211,0.15)] transition-all cursor-pointer inline-flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSaving ? (
-              <Loader2 className="w-4 h-4 animate-spin text-white" />
+              <Loader2 className="w-5 h-5 animate-spin text-white" />
             ) : (
-              <Check className="w-4 h-4 text-white" />
+              <FolderOpenIcon className="w-5 h-5 text-white" />
             )}
             <span>{isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}</span>
           </button>
@@ -111,20 +115,22 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     } else {
       setHeaderRightContent(
         <div className="flex items-center gap-3">
+          {/* Nút phụ: Quay lại (chỉ để text chuẩn UX, font regular) */}
           <button
             type="button"
             onClick={() => router.push('/admin/employees')}
-            className="h-[44px] px-5 py-2.5 bg-white border border-[#CDD5DF] text-[#525252] text-[15px] font-normal leading-[18px] rounded-[8px] hover:bg-slate-50 transition-colors cursor-pointer inline-flex items-center gap-2 active:scale-[0.98]"
+            className="h-[44px] px-5 bg-white border border-[#CDD5DF] text-[#525252] text-[14px] font-normal leading-[20px] rounded-[10px] hover:bg-slate-50 transition-colors cursor-pointer inline-flex items-center justify-center active:scale-[0.98]"
           >
-            <ArrowLeft className="w-4 h-4 text-[#525252]" />
             <span>Quay lại</span>
           </button>
+
+          {/* CTA: Chỉnh sửa (icon cây bút chuẩn bảng data, font regular) */}
           <button
             type="button"
             onClick={() => startEditRef.current()}
-            className="h-[44px] px-5 py-2.5 bg-[#064343] hover:bg-[#053737] text-white text-[15px] font-normal leading-[18px] rounded-[8px] shadow-[0px_6px_30px_0px_rgba(175,190,211,0.15)] transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98]"
+            className="h-[44px] px-5 bg-[#064343] hover:bg-[#053737] text-white text-[14px] font-normal leading-[20px] rounded-[10px] shadow-[0px_6px_30px_0px_rgba(175,190,211,0.15)] transition-all cursor-pointer inline-flex items-center gap-2 active:scale-[0.98]"
           >
-            <Pencil className="w-4 h-4 text-white" />
+            <EditPencilIcon className="w-5 h-5" color="#FFFFFF" />
             <span>Chỉnh sửa</span>
           </button>
         </div>

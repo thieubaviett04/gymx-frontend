@@ -232,17 +232,17 @@ export function PackageDetailDialog({
           )}
 
           {onEdit && (
-            <Button
+            <button
               type="button"
               onClick={() => {
                 onClose();
                 onEdit(packageData);
               }}
-              className="h-[40px] px-5 bg-[#064343] hover:bg-[#085454] text-white flex items-center gap-2 cursor-pointer font-medium"
+              className="h-[40px] px-5 bg-[#064343] hover:bg-[#053737] rounded-[10px] text-white flex items-center gap-2 cursor-pointer font-normal text-[14px]"
             >
-              <EditPencilIcon className="w-4 h-4" color="#FFFFFF" />
+              <EditPencilIcon className="w-5 h-5" color="#FFFFFF" />
               <span>Chỉnh sửa gói tập</span>
-            </Button>
+            </button>
           )}
         </div>
       </div>
