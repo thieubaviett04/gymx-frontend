@@ -66,7 +66,7 @@ export function EmployeeFormDialog({
     SPECIALIZATION_OPTIONS[0].id,
   );
   const [experienceYears, setExperienceYears] = useState<number>(2);
-  const [salaryCoefficient, setSalaryCoefficient] = useState<number>(1.2);
+  const [pricePerSession, setPricePerSession] = useState<number>(200000);
   const [description, setDescription] = useState("");
 
   // Validation errors
@@ -95,7 +95,7 @@ export function EmployeeFormDialog({
           employee.trainerInfo.specializationId || SPECIALIZATION_OPTIONS[0].id,
         );
         setExperienceYears(employee.trainerInfo.experienceYears ?? 1);
-        setSalaryCoefficient(employee.trainerInfo.salaryCoefficient ?? 1.0);
+        setPricePerSession(employee.trainerInfo.pricePerSession ?? 200000);
         setDescription(employee.trainerInfo.description || "");
       }
     } else {
@@ -113,7 +113,7 @@ export function EmployeeFormDialog({
       setEmploymentStatus("ACTIVE");
       setSpecializationId(SPECIALIZATION_OPTIONS[0].id);
       setExperienceYears(2);
-      setSalaryCoefficient(1.2);
+      setPricePerSession(200000);
       setDescription("");
     }
     setErrors({});
@@ -180,7 +180,7 @@ export function EmployeeFormDialog({
         if (position === "TRAINER") {
           payload.specializationId = specializationId;
           payload.experienceYears = Number(experienceYears);
-          payload.salaryCoefficient = Number(salaryCoefficient);
+          payload.pricePerSession = Number(pricePerSession);
           payload.description = description.trim() || undefined;
         }
 
@@ -201,7 +201,7 @@ export function EmployeeFormDialog({
         if (position === "TRAINER") {
           payload.specializationId = specializationId;
           payload.experienceYears = Number(experienceYears);
-          payload.salaryCoefficient = Number(salaryCoefficient);
+          payload.pricePerSession = Number(pricePerSession);
           payload.description = description.trim() || undefined;
         }
 
@@ -547,19 +547,19 @@ export function EmployeeFormDialog({
                     />
                   </div>
 
-                  {/* Hệ số lương */}
+                  {/* Giá buổi tập */}
                   <div>
                     <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
-                      Hệ số lương (KPI/Rating)
+                      Giá buổi tập (VND)
                     </label>
                     <input
                       type="number"
-                      step="0.1"
-                      min="1.0"
-                      max="5.0"
-                      value={salaryCoefficient}
+                      step="10000"
+                      min="0"
+                      placeholder="Nhập giá buổi tập"
+                      value={pricePerSession}
                       onChange={(e) =>
-                        setSalaryCoefficient(Number(e.target.value))
+                        setPricePerSession(Number(e.target.value))
                       }
                       className="w-full h-10 px-3 rounded-lg border border-[#E2E8F0] text-sm text-[#0F172A] focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343]"
                     />

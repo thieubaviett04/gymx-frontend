@@ -47,19 +47,6 @@ export function EmptySearchState({
             {message}
           </p>
         </div>
-
-        {/* Nút xóa bộ lọc tiện lợi nếu có truyền onClearFilter */}
-        {onClearFilter && (
-          <div className="mt-7">
-            <button
-              type="button"
-              onClick={onClearFilter}
-              className="h-[36px] px-4 py-2 border border-[#D0D5DD] hover:bg-[#F8FAFC] active:scale-[0.98] text-[#2F3D50] text-[14px] font-medium leading-[24px] rounded-[8px] shadow-2xs transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-            >
-              <span>{clearFilterText}</span>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

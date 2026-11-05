@@ -108,37 +108,41 @@ export function TrainerExpertiseSection({
           )}
         </div>
 
-        {/* 3. Hệ số lương HLV (*) */}
+        {/* 3. Giá buổi tập (*) */}
         <div className="flex flex-col gap-1.5 min-w-0">
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-            Hệ số lương HLV {isTrainer && <span className="text-[#EE0033]">*</span>}
+            Giá buổi tập {isTrainer && <span className="text-[#EE0033]">*</span>}
           </label>
           <div
-            className={`h-[42px] px-3.5 py-2 rounded-[8px] bg-slate-50 border border-slate-200 flex items-center transition-all ${
-              errors.salaryCoefficient
+            className={`h-[42px] px-3.5 py-2 rounded-[8px] bg-slate-50 border border-slate-200 flex items-center justify-between transition-all ${
+              errors.pricePerSession
                 ? 'border-red-400 bg-red-50/20'
                 : 'focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
             }`}
           >
             <input
-              id="salaryCoefficient"
-              name="salaryCoefficient"
+              id="pricePerSession"
+              name="pricePerSession"
               type="number"
-              step="0.1"
+              step="10000"
               min="0"
               disabled={!isTrainer}
-              placeholder="Ví dụ: 1.5"
-              value={formData.salaryCoefficient}
+              placeholder="Nhập giá buổi tập"
+              value={formData.pricePerSession}
               onChange={(e) => {
-                onChangeField('salaryCoefficient', e.target.value);
-                onClearFieldError?.('salaryCoefficient');
+                onChangeField('pricePerSession', e.target.value);
+                onClearFieldError?.('pricePerSession');
               }}
               className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none disabled:cursor-not-allowed"
             />
+            <div className="flex items-center gap-2 pl-2 select-none">
+              <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+              <span className="text-[13px] font-semibold text-[#064343]">VND</span>
+            </div>
           </div>
-          {errors.salaryCoefficient && isTrainer && (
+          {errors.pricePerSession && isTrainer && (
             <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
-              {errors.salaryCoefficient}
+              {errors.pricePerSession}
             </p>
           )}
         </div>

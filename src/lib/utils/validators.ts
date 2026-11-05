@@ -190,11 +190,11 @@ export function validateCreateEmployee(form: EmployeeFormData): EmployeeFormErro
     }
 
     if (
-      form.salaryCoefficient === '' ||
-      isNaN(Number(form.salaryCoefficient)) ||
-      Number(form.salaryCoefficient) < 0
+      form.pricePerSession === '' ||
+      isNaN(Number(form.pricePerSession)) ||
+      Number(form.pricePerSession) < 0
     ) {
-      errors.salaryCoefficient = 'Hệ số lương phải lớn hơn hoặc bằng 0.';
+      errors.pricePerSession = 'Giá buổi tập phải lớn hơn hoặc bằng 0.';
     }
   }
 
@@ -246,6 +246,13 @@ export function validateUpdateEmployee(form: EmployeeFormData): EmployeeFormErro
       Number(form.experienceYears) <= 0
     ) {
       errors.experienceYears = 'Số năm kinh nghiệm phải lớn hơn 0 (tối thiểu 1 năm).';
+    }
+    if (
+      form.pricePerSession !== undefined &&
+      form.pricePerSession !== '' &&
+      (isNaN(Number(form.pricePerSession)) || Number(form.pricePerSession) < 0)
+    ) {
+      errors.pricePerSession = 'Giá buổi tập phải lớn hơn hoặc bằng 0.';
     }
   }
 

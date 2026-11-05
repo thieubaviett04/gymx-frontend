@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Eye, Edit3, Trash2 } from 'lucide-react';
 import { EmptySearchState } from '@/components/shared';
-import { Badge } from '@/components/ui';
+import { Badge, EditPencilIcon, EyeViewIcon, TrashBinIcon } from '@/components/ui';
 import { formatVND, formatPackageDuration } from '@/lib/utils/formatters';
 import type { PackageSummary } from '@/types/package';
 
@@ -49,34 +48,34 @@ export function PackageTable({
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="w-full text-left border-separate border-spacing-y-[2px] table-fixed">
+      <table className="w-full text-left border-separate border-spacing-y-[4px] table-fixed">
         <thead>
           <tr className="bg-white">
             <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[5%]">
               STT
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Mã gói
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[23%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[20%]">
               Tên gói tập
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
               Giá niêm yết
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Thời hạn
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Check-in tối đa
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Đang sử dụng
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Trạng thái
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[10%]">
+            <th className="py-2.5 pl-[15px] pr-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-left select-none whitespace-nowrap w-[11%]">
               Hành động
             </th>
           </tr>
@@ -88,77 +87,56 @@ export function PackageTable({
             const isActive = statusUpper === 'ACTIVE';
             const isDiscontinued = statusUpper === 'DISCONTINUED';
 
-            // Alternating row background: #F9FFE6 on odd, #F8F8F8 on even
-            const rowBg = idx % 2 === 0 ? 'bg-[#F9FFE6]' : 'bg-[#F8F8F8]';
+            // Row background: #F0F5F5 (soft primary teal tint) đồng nhất cho tất cả các dòng
+            const rowBg = 'bg-[#F0F5F5]';
 
             return (
               <tr
                 key={pkg.id}
-                className={`${rowBg} transition-colors hover:brightness-[0.98] group`}
+                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
               >
                 {/* 1. STT */}
-                <td className="py-[11px] px-[12px] rounded-l-[6px] text-[#202939] font-normal">
+                <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">
                   {stt}
                 </td>
 
-                {/* 2. Mã gói */}
-                <td className="py-[11px] px-[12px]">
-                  <div className="flex flex-col">
-                    <span className="text-[#064343] font-semibold tracking-tight">
-                      {pkg.packageCode}
+                {/* 2. Mã gói (dùng chung font thông thường như các cột khác) */}
+                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
+                  <span>{pkg.packageCode}</span>
+                  {pkg.previousPackageCode && (
+                    <span className="block text-[11px] text-[#64748B]">
+                      Thay {pkg.previousPackageCode}
                     </span>
-                    {pkg.previousPackageCode && (
-                      <span className="text-[11px] text-[#64748B]">
-                        Thay {pkg.previousPackageCode}
-                      </span>
-                    )}
-                  </div>
+                  )}
                 </td>
 
-                {/* 3. Tên gói tập & mô tả tóm tắt */}
-                <td className="py-[11px] px-[12px]">
-                  <div className="flex flex-col">
-                    <span className="text-[#0A0A0A] font-medium truncate" title={pkg.name}>
-                      {pkg.name}
-                    </span>
-                    {pkg.description && (
-                      <span className="text-[12px] text-[#64748B] truncate max-w-[240px]">
-                        {pkg.description}
-                      </span>
-                    )}
-                  </div>
+                {/* 3. Tên gói tập (chỉ hiển thị tên gói tập, không mô tả) */}
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal truncate max-w-[260px]" title={pkg.name}>
+                  {pkg.name}
                 </td>
 
                 {/* 4. Giá niêm yết */}
-                <td className="py-[11px] px-[12px] text-[#064343] font-semibold">
+                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
                   {formatVND(pkg.price)}
                 </td>
 
                 {/* 5. Thời hạn */}
-                <td className="py-[11px] px-[12px] text-[#202939] font-normal">
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
                   {formatPackageDuration(pkg.durationMonths, pkg.durationDays)}
                 </td>
 
                 {/* 6. Check-in tối đa */}
-                <td className="py-[11px] px-[12px] text-[#202939] font-normal">
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
                   {pkg.maxCheckins ? `${pkg.maxCheckins} lượt` : 'Không giới hạn'}
                 </td>
 
-                {/* 7. Hội viên đang sử dụng */}
-                <td className="py-[11px] px-[12px]">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[12px] font-medium ${
-                      pkg.activeMembersCount > 0
-                        ? 'bg-[#E0F2FE] text-[#0369A1]'
-                        : 'bg-slate-100 text-slate-500'
-                    }`}
-                  >
-                    {pkg.activeMembersCount} hội viên
-                  </span>
+                {/* 7. Hội viên đang sử dụng (text thông thường, không dùng badge) */}
+                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                  {pkg.activeMembersCount} hội viên
                 </td>
 
                 {/* 8. Trạng thái (3 màu chuẩn Figma Node 1437:1446) */}
-                <td className="py-[11px] px-[12px]">
+                <td className="py-[11px] px-[10px]">
                   {isActive ? (
                     <Badge variant="active">
                       Hoạt động
@@ -174,40 +152,40 @@ export function PackageTable({
                   )}
                 </td>
 
-                {/* 9. Hành động (Đúng 3 nút icon chuẩn Figma) */}
+                {/* 9. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
                 <td className="py-2 px-[10px] rounded-r-[6px]">
-                  <div className="flex items-center justify-center gap-[10px]">
-                    {/* Xem chi tiết */}
+                  <div className="flex items-center gap-[10px]">
+                    {/* Xem chi tiết (Eye màu #FFB800) */}
                     <button
                       type="button"
                       onClick={() => onView(pkg)}
                       title="Xem chi tiết"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
                       aria-label="Xem chi tiết"
                     >
-                      <Eye className="w-[18px] h-[18px]" />
+                      <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
                     </button>
 
-                    {/* Chỉnh sửa */}
+                    {/* Chỉnh sửa (Figma Node 1440:11107 edit-pencil màu #064343) */}
                     <button
                       type="button"
                       onClick={() => onEdit(pkg)}
                       title="Chỉnh sửa thông tin"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
                       aria-label="Chỉnh sửa"
                     >
-                      <Edit3 className="w-[18px] h-[18px]" />
+                      <EditPencilIcon className="w-[18px] h-[18px]" color="#064343" />
                     </button>
 
-                    {/* Xóa gói tập */}
+                    {/* Xóa gói tập (Figma Node 1438:11028 trash màu #EE464C) */}
                     <button
                       type="button"
                       onClick={() => onDelete(pkg)}
                       title="Xóa gói tập"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#EF4444] hover:bg-red-50 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
                       aria-label="Xóa gói tập"
                     >
-                      <Trash2 className="w-[18px] h-[18px]" />
+                      <TrashBinIcon className="w-[18px] h-[18px]" color="#EE464C" />
                     </button>
                   </div>
                 </td>

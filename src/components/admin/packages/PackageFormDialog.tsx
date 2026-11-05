@@ -17,6 +17,7 @@ import {
 } from '@/components/ui';
 import { usePackageForm } from '@/lib/hooks/usePackageForm';
 import { formatVND } from '@/lib/utils/formatters';
+import { FolderOpenIcon } from '@/components/ui/icons';
 import type {
   CreatePackagePayload,
   PackageDetail,
@@ -280,26 +281,27 @@ export function PackageFormDialog({
             variant="outline"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="h-[40px] px-4 text-[#525252] border-[#E5E5E5] hover:bg-slate-50 cursor-pointer"
+            className="h-[40px] px-4 text-[#525252] border-[#E5E5E5] hover:bg-slate-50 cursor-pointer font-normal text-[14px]"
           >
-            Hủy bỏ
+            <span>Hủy bỏ</span>
           </Button>
-          <Button
+          <button
             type="submit"
             disabled={isSubmitting}
-            className="h-[40px] px-6 bg-[#064343] hover:bg-[#085454] text-white font-medium rounded-[8px] shadow-sm cursor-pointer"
+            className="h-[40px] px-5 bg-[#064343] hover:bg-[#053737] text-white font-normal text-[14px] leading-[20px] rounded-[8px] shadow-sm cursor-pointer flex items-center gap-2"
           >
             {isSubmitting ? (
               <span className="flex items-center gap-2">
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 Đang lưu...
               </span>
-            ) : isEdit ? (
-              'Cập nhật gói tập'
             ) : (
-              'Tạo gói tập'
+              <>
+                <FolderOpenIcon className="w-4 h-4 text-white" />
+                <span>{isEdit ? 'Cập nhật gói tập' : 'Tạo gói tập'}</span>
+              </>
             )}
-          </Button>
+          </button>
         </DialogFooter>
       </form>
     </Dialog>

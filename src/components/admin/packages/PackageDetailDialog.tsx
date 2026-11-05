@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { X, Edit3, Calendar, Clock, Users, ArrowRight, Ban } from 'lucide-react';
-import { Button, Badge } from '@/components/ui';
+import { X, Calendar, Clock, Users, ArrowRight, Ban } from 'lucide-react';
+import { Button, Badge, EditPencilIcon } from '@/components/ui';
 import {
   formatVND,
   formatDate,
@@ -232,17 +232,17 @@ export function PackageDetailDialog({
           )}
 
           {onEdit && (
-            <Button
+            <button
               type="button"
               onClick={() => {
                 onClose();
                 onEdit(packageData);
               }}
-              className="h-[40px] px-5 bg-[#064343] hover:bg-[#085454] text-white flex items-center gap-2 cursor-pointer font-medium"
+              className="h-[40px] px-5 bg-[#064343] hover:bg-[#053737] rounded-[10px] text-white flex items-center gap-2 cursor-pointer font-normal text-[14px]"
             >
-              <Edit3 className="w-4 h-4" />
+              <EditPencilIcon className="w-5 h-5" color="#FFFFFF" />
               <span>Chỉnh sửa gói tập</span>
-            </Button>
+            </button>
           )}
         </div>
       </div>

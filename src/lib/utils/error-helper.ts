@@ -166,7 +166,11 @@ export function parseEmployeeBackendError(err: unknown): {
       else if (lowerKey === 'employmentstatus') fieldErrors.employmentStatus = msg;
       else if (lowerKey === 'specializationid') fieldErrors.specializationId = msg;
       else if (lowerKey === 'experienceyears') fieldErrors.experienceYears = msg;
-      else if (lowerKey === 'salarycoefficient') fieldErrors.salaryCoefficient = msg;
+      else if (lowerKey === 'pricepersession') fieldErrors.pricePerSession = msg;
+      else if (lowerKey === 'salarycoefficient') {
+        fieldErrors.salaryCoefficient = msg;
+        fieldErrors.pricePerSession = msg;
+      }
     }
   }
 

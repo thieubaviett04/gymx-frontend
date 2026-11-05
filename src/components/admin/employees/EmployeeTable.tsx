@@ -2,7 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Eye, Edit3, Trash2, User } from "lucide-react";
+import { User } from "lucide-react";
+import { Badge, EyeViewIcon, EditPencilIcon, TrashBinIcon } from "@/components/ui";
 import { getMediaUrl } from "@/lib/utils/media-url";
 import type { EmployeeSummary } from "@/types/employee";
 import { EmptySearchState } from "@/components/shared";
@@ -71,7 +72,7 @@ export function EmployeeTable({
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="w-full text-left border-separate border-spacing-y-[2px] table-fixed">
+      <table className="w-full text-left border-separate border-spacing-y-[4px] table-fixed">
         <thead>
           <tr className="bg-white">
             <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[5%]">
@@ -80,22 +81,22 @@ export function EmployeeTable({
             <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Mã NV
             </th>
-            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[23%]">
+            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[22%]">
               Họ & Tên
             </th>
             <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Vai trò
             </th>
-            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[14%]">
+            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
               Số điện thoại
             </th>
-            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[20%]">
+            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[18%]">
               Email
             </th>
-            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[9%]">
+            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Trạng thái
             </th>
-            <th className="py-2 px-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[8%]">
+            <th className="py-2 pl-[15px] pr-2.5 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-left select-none whitespace-nowrap w-[11%]">
               Hành động
             </th>
           </tr>
@@ -105,13 +106,13 @@ export function EmployeeTable({
             const stt = (pageIndex - 1) * pageSize + idx + 1;
             const isActive =
               (emp.employmentStatus || '').toUpperCase() === 'ACTIVE';
-            // Alternating row background: #F9FFE6 on odd (1st, 3rd, 5th), #F8F8F8 on even (2nd, 4th, 6th)
-            const rowBg = idx % 2 === 0 ? 'bg-[#F9FFE6]' : 'bg-[#F8F8F8]';
+            // Row background: #F0F5F5 (soft primary teal tint) đồng nhất cho tất cả các dòng
+            const rowBg = 'bg-[#F0F5F5]';
 
             return (
               <tr
                 key={emp.id}
-                className={`${rowBg} transition-colors hover:brightness-[0.98] group`}
+                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
               >
                 {/* 1. STT */}
                 <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">
@@ -163,31 +164,31 @@ export function EmployeeTable({
                   {emp.email}
                 </td>
 
-                {/* 7. Trạng thái (Badge chuẩn Figma 1346:6561 / 1346:6672) */}
+                {/* 7. Trạng thái (Badge chuẩn GymX Figma Node 1437:1446) */}
                 <td className="py-[11px] px-[10px]">
                   {isActive ? (
-                    <span className="inline-flex items-center justify-center px-3 py-[5px] rounded-[6px] text-[14px] leading-[18px] font-normal bg-[#10B981] text-white">
+                    <Badge variant="active">
                       Đang làm
-                    </span>
+                    </Badge>
                   ) : (
-                    <span className="inline-flex items-center justify-center px-3 py-[5px] rounded-[6px] text-[14px] leading-[18px] font-normal bg-[#64748B] text-white">
+                    <Badge variant="discontinued">
                       Đã nghỉ
-                    </span>
+                    </Badge>
                   )}
                 </td>
 
-                {/* 8. Hành động (3 Icon Buttons 28x28px chuẩn Figma 1346:6564) */}
+                {/* 8. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
                 <td className="py-2 px-[10px] rounded-r-[6px]">
-                  <div className="flex items-center justify-center gap-[10px]">
+                  <div className="flex items-center gap-[10px]">
                     {/* Xem chi tiết */}
                     <button
                       type="button"
                       onClick={() => onView(emp)}
                       title="Xem chi tiết"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
                       aria-label="Xem chi tiết"
                     >
-                      <Eye className="w-[18px] h-[18px]" />
+                      <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
                     </button>
 
                     {/* Chỉnh sửa */}
@@ -195,10 +196,10 @@ export function EmployeeTable({
                       type="button"
                       onClick={() => onEdit(emp)}
                       title="Chỉnh sửa thông tin"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#064343] hover:bg-black/5 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
                       aria-label="Chỉnh sửa"
                     >
-                      <Edit3 className="w-[18px] h-[18px]" />
+                      <EditPencilIcon className="w-[18px] h-[18px]" color="#064343" />
                     </button>
 
                     {/* Xóa nhân viên */}
@@ -206,10 +207,10 @@ export function EmployeeTable({
                       type="button"
                       onClick={() => onDelete(emp)}
                       title="Xóa / Vô hiệu hóa"
-                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center text-[#64748B] hover:text-[#EF4444] hover:bg-red-50 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
                       aria-label="Xóa nhân viên"
                     >
-                      <Trash2 className="w-[18px] h-[18px]" />
+                      <TrashBinIcon className="w-[18px] h-[18px]" color="#EE464C" />
                     </button>
                   </div>
                 </td>

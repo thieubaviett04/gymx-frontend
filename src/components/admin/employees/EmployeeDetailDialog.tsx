@@ -12,6 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { EditPencilIcon, FolderOpenIcon } from "@/components/ui/icons";
 import { employeeService } from "@/lib/api";
 import {
   DatePicker,
@@ -21,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
   Alert,
+  Badge,
 } from "@/components/ui";
 import type { EmployeeDetail, UpdateEmployeePayload } from "@/types/employee";
 import { SPECIALIZATION_OPTIONS } from "./CreateEmployeeForm";
@@ -159,7 +161,7 @@ export function EmployeeDetailDialog({
   // Trainer form states
   const [specializationId, setSpecializationId] = useState("");
   const [experienceYears, setExperienceYears] = useState<number | string>("");
-  const [salaryCoefficient, setSalaryCoefficient] = useState<number | string>("");
+  const [pricePerSession, setPricePerSession] = useState<number | string>("");
   const [description, setDescription] = useState("");
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -191,10 +193,10 @@ export function EmployeeDetailDialog({
         ? emp.trainerInfo.experienceYears
         : ""
     );
-    setSalaryCoefficient(
-      emp.trainerInfo?.salaryCoefficient !== undefined &&
-        emp.trainerInfo?.salaryCoefficient !== null
-        ? emp.trainerInfo.salaryCoefficient
+    setPricePerSession(
+      emp.trainerInfo?.pricePerSession !== undefined &&
+        emp.trainerInfo?.pricePerSession !== null
+        ? emp.trainerInfo.pricePerSession
         : ""
     );
     setDescription(emp.trainerInfo?.description || "");
@@ -271,7 +273,8 @@ export function EmployeeDetailDialog({
           else if (lowerKey === "address") beErrors.address = msg;
           else if (lowerKey === "specializationid") beErrors.specializationId = msg;
           else if (lowerKey === "experienceyears") beErrors.experienceYears = msg;
-          else if (lowerKey === "salarycoefficient") beErrors.salaryCoefficient = msg;
+          else if (lowerKey === "pricepersession") beErrors.pricePerSession = msg;
+          else if (lowerKey === "salarycoefficient") beErrors.pricePerSession = msg;
         }
         setErrors(beErrors);
       }
@@ -339,23 +342,28 @@ export function EmployeeDetailDialog({
     if (position === "TRAINER") {
       payload.specializationId = specializationId;
       payload.experienceYears = Number(experienceYears);
-      payload.salaryCoefficient =
-        salaryCoefficient !== "" ? Number(salaryCoefficient) : undefined;
+      payload.pricePerSession =
+        pricePerSession !== "" ? Number(pricePerSession) : undefined;
       payload.description = description.trim() || undefined;
     }
 
     updateMutation.mutate(payload);
   };
 
+  const isTrainer =
+    (isEditing ? position : employee?.position)?.toUpperCase() === "TRAINER";
+
+  useEffect(() => {
+    if (!isTrainer && activeTab === "trainer") {
+      setActiveTab("general");
+    }
+  }, [isTrainer, activeTab]);
+
   if (!isOpen || !employee) return null;
 
   const isActive =
     (employee.employmentStatus || "").toUpperCase() === "ACTIVE" ||
     (employee.employmentStatus || "").toUpperCase() === "HOAT_DONG";
-
-  const isTrainer =
-    (isEditing ? position : employee.position)?.toUpperCase() === "TRAINER" ||
-    !!employee.trainerInfo;
 
   return (
     <div
@@ -418,19 +426,21 @@ export function EmployeeDetailDialog({
         {/* 2. Dòng thông tin Metadata Tóm tắt (#1415:1976 - Khoảng cách phân khối rõ ràng) */}
         <div className="px-6 mt-3.5 mb-2 flex items-center flex-wrap gap-x-5 gap-y-2 shrink-0 bg-white">
           <div className="flex items-center gap-1.5">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Mã nhân viên:
             </span>
-            <span className="font-bold text-[13px] text-[#064343]">
+            <span className="font-semibold text-[14px] text-[#064343]">
               {employee.employeeCode}
             </span>
           </div>
 
+          <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
+
           <div className="flex items-center gap-1.5">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Ngày tạo:
             </span>
-            <span className="text-[12px] font-medium text-[#202939]">
+            <span className="text-[14px] font-medium text-[#202939]">
               {formatDateTime(employee.createdDate)}
             </span>
           </div>
@@ -438,10 +448,10 @@ export function EmployeeDetailDialog({
           <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
           <div className="flex items-center gap-1.5">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Chức danh:
             </span>
-            <span className="text-[13px] font-semibold text-[#10B981]">
+            <span className="text-[14px] font-semibold text-[#064343]">
               {formatPosition(isEditing ? position : employee.position)}
             </span>
           </div>
@@ -449,22 +459,23 @@ export function EmployeeDetailDialog({
           <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Trạng thái:
             </span>
-            <span
-              className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold leading-tight text-white ${
+            <Badge
+              variant={
                 (isEditing ? employmentStatus : employee.employmentStatus)?.toUpperCase() ===
                 "ACTIVE"
-                  ? "bg-[#22C55E]"
-                  : "bg-[#64748B]"
-              }`}
+                  ? "active"
+                  : "discontinued"
+              }
+              className="text-[13px] font-normal leading-[18px] px-3 py-[4px] rounded-[6px]"
             >
               {(isEditing ? employmentStatus : employee.employmentStatus)?.toUpperCase() ===
               "ACTIVE"
                 ? "Đang làm việc"
                 : "Đã nghỉ việc"}
-            </span>
+            </Badge>
           </div>
         </div>
 
@@ -721,15 +732,6 @@ export function EmployeeDetailDialog({
                       value={employee.email || "—"}
                     />
                     <InfoItem
-                      label="Hệ số lương"
-                      value={
-                        employee.trainerInfo?.salaryCoefficient !== undefined &&
-                        employee.trainerInfo?.salaryCoefficient !== null
-                          ? String(employee.trainerInfo.salaryCoefficient)
-                          : "1.8"
-                      }
-                    />
-                    <InfoItem
                       label="Địa chỉ thường trú"
                       value={employee.address || "—"}
                     />
@@ -788,30 +790,6 @@ export function EmployeeDetailDialog({
                       {errors.email && (
                         <p className="text-xs text-red-500 mt-0.5">{errors.email}</p>
                       )}
-                    </div>
-
-                    {/* Hệ số lương */}
-                    <div className="flex flex-col gap-1.5 min-w-0">
-                      <label className="text-[13px] font-medium text-[#202939]">
-                        Hệ số lương HLV
-                      </label>
-                      <div
-                        className={`h-[42px] px-3.5 py-2 rounded-[8px] flex items-center border ${
-                          position === "TRAINER"
-                            ? "bg-white border-[#CDD5DF] focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]"
-                            : "bg-slate-50 border-slate-200 text-slate-400 cursor-not-allowed"
-                        }`}
-                      >
-                        <input
-                          type="number"
-                          step="0.1"
-                          disabled={position !== "TRAINER"}
-                          value={salaryCoefficient}
-                          onChange={(e) => setSalaryCoefficient(e.target.value)}
-                          placeholder="Ví dụ: 1.5"
-                          className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none disabled:cursor-not-allowed disabled:text-slate-400"
-                        />
-                      </div>
                     </div>
 
                     {/* Địa chỉ thường trú */}
@@ -906,7 +884,7 @@ export function EmployeeDetailDialog({
             </>
           )}
 
-          {activeTab === "trainer" && (
+          {activeTab === "trainer" && isTrainer && (
             <div className="bg-white pb-4">
               <div className="border-b border-[#F1F5F9] pb-2.5 mb-5 flex items-center justify-between">
                 <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase flex items-center gap-2">
@@ -941,11 +919,12 @@ export function EmployeeDetailDialog({
                         }
                       />
                       <InfoItem
-                        label="Hệ số phụ cấp / lương HLV"
+                        label="Giá buổi tập"
                         value={
-                          employee.trainerInfo?.salaryCoefficient
-                            ? `x${employee.trainerInfo.salaryCoefficient}`
-                            : "1.0"
+                          employee.trainerInfo?.pricePerSession !== undefined &&
+                          employee.trainerInfo?.pricePerSession !== null
+                            ? `${Number(employee.trainerInfo.pricePerSession).toLocaleString("vi-VN")} VND`
+                            : "0 VND"
                         }
                       />
                       <InfoItem
@@ -1057,20 +1036,25 @@ export function EmployeeDetailDialog({
                         )}
                       </div>
 
-                      {/* Hệ số lương */}
+                      {/* Giá buổi tập */}
                       <div className="flex flex-col gap-1.5 min-w-0">
                         <label className="text-[13px] font-medium text-[#202939]">
-                          Hệ số lương HLV
+                          Giá buổi tập
                         </label>
-                        <div className="h-[42px] px-3.5 py-2 bg-white border border-[#CDD5DF] rounded-[8px] flex items-center focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]">
+                        <div className="h-[42px] px-3.5 py-2 bg-white border border-[#CDD5DF] rounded-[8px] flex items-center justify-between focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]">
                           <input
                             type="number"
-                            step="0.1"
-                            value={salaryCoefficient}
-                            onChange={(e) => setSalaryCoefficient(e.target.value)}
-                            placeholder="Ví dụ: 1.5"
+                            min="0"
+                            step="10000"
+                            value={pricePerSession}
+                            onChange={(e) => setPricePerSession(e.target.value)}
+                            placeholder="Nhập giá buổi tập"
                             className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
                           />
+                          <div className="flex items-center gap-2 pl-2 select-none">
+                            <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                            <span className="text-[13px] font-semibold text-[#064343]">VND</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1142,18 +1126,18 @@ export function EmployeeDetailDialog({
               <button
                 type="button"
                 onClick={onClose}
-                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer font-medium flex items-center justify-center"
+                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[14px] font-normal leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center"
               >
-                Đóng
+                <span>Đóng</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setIsEditing(true)}
-                className="h-[40px] px-5 min-w-[124px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer font-medium flex items-center justify-center gap-1.5"
+                className="h-[40px] px-5 min-w-[124px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[14px] font-normal leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-2"
               >
-                <Pencil className="w-3.5 h-3.5" />
-                Chỉnh sửa
+                <EditPencilIcon className="w-5 h-5" color="#FFFFFF" />
+                <span>Chỉnh sửa</span>
               </button>
             </div>
           ) : (
@@ -1163,26 +1147,26 @@ export function EmployeeDetailDialog({
                 type="button"
                 onClick={handleCancelEdit}
                 disabled={updateMutation.isPending}
-                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer font-medium flex items-center justify-center disabled:opacity-50"
+                className="h-[40px] px-5 min-w-[84px] bg-white border border-[#E2E8F0] rounded-[10px] text-[14px] font-normal leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-50"
               >
-                Hủy bỏ
+                <span>Hủy bỏ</span>
               </button>
 
               <button
                 type="button"
                 onClick={handleSaveEdit}
                 disabled={updateMutation.isPending}
-                className="h-[40px] px-5 min-w-[130px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer font-medium flex items-center justify-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                className="h-[40px] px-5 min-w-[130px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[14px] font-normal leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {updateMutation.isPending ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Đang lưu...
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Đang lưu...</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
-                    Lưu thay đổi
+                    <FolderOpenIcon className="w-4 h-4 text-white" />
+                    <span>Lưu thay đổi</span>
                   </>
                 )}
               </button>

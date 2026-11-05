@@ -11,9 +11,10 @@ export const PACKAGE_STATUS_LABELS: Record<PackageStatus, string> = {
 
 export const PACKAGE_DURATION_OPTIONS = [
   { value: 'ALL', label: 'Tất cả thời hạn' },
-  { value: '1', label: '1 tháng (≤ 1 tháng)' },
-  { value: '6', label: '6 tháng (≤ 6 tháng)' },
-  { value: '12', label: '12 tháng (≤ 1 năm)' },
+  { value: '1', label: 'Dưới 1 tháng' },
+  { value: '3', label: 'Dưới 3 tháng' },
+  { value: '6', label: 'Dưới 6 tháng' },
+  { value: '12', label: 'Dưới 12 tháng' },
 ] as const;
 
 export const PACKAGE_SORT_OPTIONS = [
