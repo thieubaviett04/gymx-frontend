@@ -48,35 +48,35 @@ export function PackageTable({
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="w-full text-left border-separate border-spacing-y-[2px] table-fixed">
+      <table className="w-full text-left border-separate border-spacing-y-[4px] table-fixed">
         <thead>
           <tr className="bg-white">
             <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[5%]">
               STT
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Mã gói
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[23%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[20%]">
               Tên gói tập
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
               Giá niêm yết
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Thời hạn
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[12%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
               Check-in tối đa
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Đang sử dụng
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[13%]">
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Trạng thái
             </th>
-            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[10%]">
-              Hành động
+            <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] text-center select-none whitespace-nowrap w-[11%]">
+              <div className="flex items-center justify-center w-full">Hành động</div>
             </th>
           </tr>
         </thead>
@@ -152,18 +152,18 @@ export function PackageTable({
                   )}
                 </td>
 
-                {/* 9. Hành động (3 nút icon chuẩn Figma Node 1438:11026: #FFB800, #064343, #EE464C) */}
-                <td className="py-2 px-[10px] rounded-r-[6px]">
-                  <div className="flex items-center justify-center gap-[16px]">
+                {/* 9. Hành động (căn chỉnh cân đối chuẩn giữa với tiêu đề "Hành động") */}
+                <td className="py-2 px-[10px] rounded-r-[6px] text-center">
+                  <div className="flex items-center justify-center gap-[10px] w-full">
                     {/* Xem chi tiết (Eye màu #FFB800) */}
                     <button
                       type="button"
                       onClick={() => onView(pkg)}
                       title="Xem chi tiết"
-                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
                       aria-label="Xem chi tiết"
                     >
-                      <EyeViewIcon className="w-[20px] h-[20px]" color="#FFB800" />
+                      <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
                     </button>
 
                     {/* Chỉnh sửa (Figma Node 1440:11107 edit-pencil màu #064343) */}
@@ -171,10 +171,10 @@ export function PackageTable({
                       type="button"
                       onClick={() => onEdit(pkg)}
                       title="Chỉnh sửa thông tin"
-                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 transition-colors cursor-pointer"
                       aria-label="Chỉnh sửa"
                     >
-                      <EditPencilIcon className="w-[20px] h-[20px]" color="#064343" />
+                      <EditPencilIcon className="w-[18px] h-[18px]" color="#064343" />
                     </button>
 
                     {/* Xóa gói tập (Figma Node 1438:11028 trash màu #EE464C) */}
@@ -182,10 +182,10 @@ export function PackageTable({
                       type="button"
                       onClick={() => onDelete(pkg)}
                       title="Xóa gói tập"
-                      className="w-[30px] h-[30px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
+                      className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
                       aria-label="Xóa gói tập"
                     >
-                      <TrashBinIcon className="w-[20px] h-[20px]" color="#EE464C" />
+                      <TrashBinIcon className="w-[18px] h-[18px]" color="#EE464C" />
                     </button>
                   </div>
                 </td>
