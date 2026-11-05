@@ -1,6 +1,41 @@
 import React from 'react';
 
 /**
+ * Icon Xem chi tiết (Eye) chuẩn fill màu #064343 (GymX primary dark green)
+ */
+export function EyeViewIcon({
+  className,
+  color = '#064343',
+  ...props
+}: React.SVGProps<SVGSVGElement> & { color?: string }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path
+        d="M1.71875 10C2.96875 6.13708 6.1875 3.46 10 3.46C13.8125 3.46 17.0312 6.13708 18.2812 10C17.0312 13.8629 13.8125 16.54 10 16.54C6.1875 16.54 2.96875 13.8629 1.71875 10Z"
+        stroke={color}
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle
+        cx="10"
+        cy="10"
+        r="3"
+        fill={color}
+      />
+    </svg>
+  );
+}
+
+/**
  * Icon Chỉnh sửa từ Figma Node 1438:11026 (edit-pencil)
  * Màu sắc mặc định: #064343 (GymX primary dark green)
  */
@@ -92,4 +127,3 @@ export function TrashBinIcon({
     </svg>
   );
 }
-
