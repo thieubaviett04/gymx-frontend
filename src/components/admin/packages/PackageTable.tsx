@@ -87,8 +87,8 @@ export function PackageTable({
             const isActive = statusUpper === 'ACTIVE';
             const isDiscontinued = statusUpper === 'DISCONTINUED';
 
-            // Alternating row background: #F0F5F5 (soft primary teal tint) on even, white on odd
-            const rowBg = idx % 2 === 0 ? 'bg-[#F0F5F5]' : 'bg-white';
+            // Row background: #F0F5F5 (soft primary teal tint) đồng nhất cho tất cả các dòng
+            const rowBg = 'bg-[#F0F5F5]';
 
             return (
               <tr
