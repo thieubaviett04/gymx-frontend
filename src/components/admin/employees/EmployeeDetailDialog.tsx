@@ -350,15 +350,20 @@ export function EmployeeDetailDialog({
     updateMutation.mutate(payload);
   };
 
+  const isTrainer =
+    (isEditing ? position : employee?.position)?.toUpperCase() === "TRAINER";
+
+  useEffect(() => {
+    if (!isTrainer && activeTab === "trainer") {
+      setActiveTab("general");
+    }
+  }, [isTrainer, activeTab]);
+
   if (!isOpen || !employee) return null;
 
   const isActive =
     (employee.employmentStatus || "").toUpperCase() === "ACTIVE" ||
     (employee.employmentStatus || "").toUpperCase() === "HOAT_DONG";
-
-  const isTrainer =
-    (isEditing ? position : employee.position)?.toUpperCase() === "TRAINER" ||
-    !!employee.trainerInfo;
 
   return (
     <div
@@ -446,9 +451,30 @@ export function EmployeeDetailDialog({
             <span className="text-[14px] font-medium text-[#64748B]">
               Chức danh:
             </span>
-            <span className="text-[14px] font-semibold text-[#064343]">
-              {formatPosition(isEditing ? position : employee.position)}
-            </span>
+            {isEditing ? (
+              <Select
+                value={position}
+                onValueChange={(val) => {
+                  setPosition(val);
+                  setErrors((p) => ({ ...p, position: "" }));
+                }}
+              >
+                <SelectTrigger className="h-[32px] px-2.5 py-1 text-[13px] font-semibold text-[#064343] bg-slate-50 border border-slate-200 rounded-[6px] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]">
+                  <SelectValue placeholder="Chọn vai trò" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="RECEPTIONIST">Lễ tân</SelectItem>
+                  <SelectItem value="TRAINER">Huấn luyện viên</SelectItem>
+                  <SelectItem value="MANAGER">Quản lý</SelectItem>
+                  <SelectItem value="ADMIN">Quản trị viên</SelectItem>
+                  <SelectItem value="STAFF">Tạp vụ</SelectItem>
+                </SelectContent>
+              </Select>
+            ) : (
+              <span className="text-[14px] font-semibold text-[#064343]">
+                {formatPosition(employee.position)}
+              </span>
+            )}
           </div>
 
           <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
@@ -879,7 +905,7 @@ export function EmployeeDetailDialog({
             </>
           )}
 
-          {activeTab === "trainer" && (
+          {activeTab === "trainer" && isTrainer && (
             <div className="bg-white pb-4">
               <div className="border-b border-[#F1F5F9] pb-2.5 mb-5 flex items-center justify-between">
                 <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase flex items-center gap-2">

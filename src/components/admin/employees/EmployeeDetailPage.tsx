@@ -7,9 +7,18 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { employeeService } from '@/lib/api';
 import { useUiStore } from '@/lib/store/uiStore';
-import { Alert, Badge } from '@/components/ui';
+import {
+  Alert,
+  Badge,
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from '@/components/ui';
 import { EditPencilIcon, FolderOpenIcon } from '@/components/ui/icons';
 import type { EmployeeDetail, EmployeeDetailPageProps } from '@/types/employee';
+import { EMPLOYEE_POSITIONS } from '@/types/employee';
 import { ConnectionErrorState } from '@/components/shared';
 import { useEmployeeDetailForm } from '@/lib/hooks';
 import { formatPosition, formatDateTime } from '@/lib/utils';
@@ -273,9 +282,30 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
             {/* Chức danh */}
             <div className="flex items-center gap-1.5">
               <span className="text-[#64748B] font-medium text-[14px]">Chức danh:</span>
-              <span className="text-[14px] font-semibold text-[#064343]">
-                {formatPosition(currentPosition)}
-              </span>
+              {isEditing ? (
+                <Select
+                  value={formData.position}
+                  onValueChange={(val) => {
+                    changeField('position', val);
+                    clearFieldError?.('position');
+                  }}
+                >
+                  <SelectTrigger className="h-[32px] px-2.5 py-1 text-[13px] font-semibold text-[#064343] bg-slate-50 border border-slate-200 rounded-[6px] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]">
+                    <SelectValue placeholder="Chọn vai trò" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {EMPLOYEE_POSITIONS.map((pos) => (
+                      <SelectItem key={pos.value} value={pos.value}>
+                        {pos.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <span className="text-[14px] font-semibold text-[#064343]">
+                  {formatPosition(currentPosition)}
+                </span>
+              )}
             </div>
 
             {/* Divider */}
@@ -306,7 +336,7 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
           />
         )}
 
-        {activeTab === 'trainer' && (
+        {activeTab === 'trainer' && isTrainer && (
           <TrainerProfileTab
             employee={employee}
             isEditing={isEditing}

@@ -196,20 +196,22 @@ export function useEmployeeDetailForm(employeeId: string, employee?: EmployeeDet
     updateMutation.mutate(payload);
   }, [formData, showToast, updateMutation]);
 
+  // Tự động chuyển về tab 'general' nếu vai trò không phải Trainer
+  const isTrainer =
+    (isEditing ? formData.position : employee?.position || '').toUpperCase() === 'TRAINER';
+
   const changeTab = useCallback(
     (tab: EmployeeDetailTab) => {
+      if (tab === 'trainer' && !isTrainer) {
+        return;
+      }
       if ((tab === 'history' || tab === 'notes') && isEditing) {
         cancelEdit();
       }
       setActiveTab(tab);
     },
-    [isEditing, cancelEdit]
+    [isEditing, cancelEdit, isTrainer]
   );
-
-  // Tự động chuyển về tab 'general' nếu vai trò không phải Trainer
-  const isTrainer =
-    (isEditing ? formData.position : employee?.position || '').toUpperCase() === 'TRAINER' ||
-    !!employee?.trainerInfo;
 
   useEffect(() => {
     if (!isTrainer && activeTab === 'trainer') {
