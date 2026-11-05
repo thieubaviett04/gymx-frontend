@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
   Alert,
+  Badge,
 } from "@/components/ui";
 import type { EmployeeDetail, UpdateEmployeePayload } from "@/types/employee";
 import { SPECIALIZATION_OPTIONS } from "./CreateEmployeeForm";
@@ -418,19 +419,21 @@ export function EmployeeDetailDialog({
         {/* 2. Dòng thông tin Metadata Tóm tắt (#1415:1976 - Khoảng cách phân khối rõ ràng) */}
         <div className="px-6 mt-3.5 mb-2 flex items-center flex-wrap gap-x-5 gap-y-2 shrink-0 bg-white">
           <div className="flex items-center gap-1.5">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Mã nhân viên:
             </span>
-            <span className="font-bold text-[13px] text-[#064343]">
+            <span className="font-semibold text-[14px] text-[#064343]">
               {employee.employeeCode}
             </span>
           </div>
 
+          <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
+
           <div className="flex items-center gap-1.5">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Ngày tạo:
             </span>
-            <span className="text-[12px] font-medium text-[#202939]">
+            <span className="text-[14px] font-medium text-[#202939]">
               {formatDateTime(employee.createdDate)}
             </span>
           </div>
@@ -438,10 +441,10 @@ export function EmployeeDetailDialog({
           <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
           <div className="flex items-center gap-1.5">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Chức danh:
             </span>
-            <span className="text-[13px] font-semibold text-[#10B981]">
+            <span className="text-[14px] font-semibold text-[#064343]">
               {formatPosition(isEditing ? position : employee.position)}
             </span>
           </div>
@@ -449,22 +452,23 @@ export function EmployeeDetailDialog({
           <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
           <div className="flex items-center gap-2">
-            <span className="text-[13px] font-medium text-[#64748B]">
+            <span className="text-[14px] font-medium text-[#64748B]">
               Trạng thái:
             </span>
-            <span
-              className={`inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-[12px] font-semibold leading-tight text-white ${
+            <Badge
+              variant={
                 (isEditing ? employmentStatus : employee.employmentStatus)?.toUpperCase() ===
                 "ACTIVE"
-                  ? "bg-[#22C55E]"
-                  : "bg-[#64748B]"
-              }`}
+                  ? "active"
+                  : "discontinued"
+              }
+              className="text-[13px] font-normal leading-[18px] px-3 py-[4px] rounded-[6px]"
             >
               {(isEditing ? employmentStatus : employee.employmentStatus)?.toUpperCase() ===
               "ACTIVE"
                 ? "Đang làm việc"
                 : "Đã nghỉ việc"}
-            </span>
+            </Badge>
           </div>
         </div>
 
