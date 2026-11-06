@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   Dumbbell,
   FileText,
+  Layers,
   LayoutDashboard,
   LucideIcon,
   Receipt,
@@ -36,6 +37,11 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     label: 'Quản lý gói tập',
     href: '/admin/packages',
     icon: Dumbbell,
+  },
+  {
+    label: 'Danh mục gói tập',
+    href: '/admin/package-categories',
+    icon: Layers,
   },
   {
     label: 'Quản lý vi phạm',
@@ -71,7 +77,6 @@ export function AdminNav({
   const effectivePath = activePath ?? currentPathname;
 
   const isItemActive = (href: string) => {
-    // Exact or dashboard match for admin root
     if (href === '/admin' || href === '/admin/dashboard') {
       return (
         effectivePath === '/admin' ||

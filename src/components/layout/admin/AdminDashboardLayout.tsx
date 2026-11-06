@@ -45,6 +45,18 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
         : [{ label: 'Danh sách nhân viên' }],
     };
   }
+  if (cleanPath.includes('/admin/package-categories')) {
+    const isDeep = segments.length > 2;
+    return {
+      title: 'Danh mục gói tập',
+      breadcrumbs: isDeep
+        ? [
+            { label: 'Danh mục gói tập', href: '/admin/package-categories' },
+            { label: 'Chi tiết danh mục' },
+          ]
+        : [{ label: 'Danh mục gói tập' }],
+    };
+  }
   if (cleanPath.includes('/admin/packages')) {
     const isDeep = segments.length > 2;
     return {
