@@ -45,6 +45,8 @@ const badgeVariants = cva(
           "border-transparent bg-[#4BC9F0] text-white",
         planning:
           "border-transparent bg-[#5B70B3] text-white",
+        upcoming:
+          "border-transparent bg-[#64748B] text-white",
       },
     },
     defaultVariants: {

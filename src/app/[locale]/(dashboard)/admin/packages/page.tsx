@@ -38,18 +38,19 @@ export default function AdminPackagesPage() {
 
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [activeDetailPackage, setActiveDetailPackage] = useState<PackageDetail | PackageSummary | null>(null);
+  const [isDetailEditing, setIsDetailEditing] = useState(false);
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deletingPackage, setDeletingPackage] = useState<PackageSummary | null>(null);
 
   const [isDiscontinueOpen, setIsDiscontinueOpen] = useState(false);
   const [discontinuingPackage, setDiscontinuingPackage] = useState<PackageSummary | null>(null);
+  const [isDeleteSuggestedDiscontinue, setIsDeleteSuggestedDiscontinue] = useState(false);
+  const [deleteBlockPackage, setDeleteBlockPackage] = useState<PackageSummary | null>(null);
 
-  // Conflict modal state (when editing in-use package)
   const [isConflictOpen, setIsConflictOpen] = useState(false);
   const [pendingUpdatePayload, setPendingUpdatePayload] = useState<UpdatePackagePayload | null>(null);
 
-  // Toast notification state
   const [toast, setToast] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -103,17 +104,14 @@ export default function AdminPackagesPage() {
       queryClient.invalidateQueries({ queryKey: ['admin-packages'] });
       showToast('success', res.message || 'Cập nhật gói tập thành công.');
       setIsFormOpen(false);
+      setIsDetailOpen(false);
+      setIsDetailEditing(false);
+      setActiveDetailPackage(null);
       setEditingPackage(null);
       setIsConflictOpen(false);
       setPendingUpdatePayload(null);
     },
     onError: (err: any) => {
-      // Kiểm tra nếu lỗi do gói đang có người sử dụng
-      const errCode = err?.response?.data?.error?.code || err?.code;
-      if (errCode === 'Package.InUse' || err?.response?.status === 409) {
-        setIsConflictOpen(true);
-        return;
-      }
       showToast('error', getErrorMessage(err));
     },
   });
@@ -133,9 +131,10 @@ export default function AdminPackagesPage() {
     onError: (err: any) => {
       const errCode = err?.response?.data?.error?.code || err?.code;
       if (errCode === 'Package.CannotDeleteInUse' || err?.response?.status === 409) {
+        const desc = err?.response?.data?.error?.description;
         showToast(
           'error',
-          'Gói tập đang có hội viên sử dụng, không thể xóa. Bạn có thể chọn Ngừng kinh doanh thay thế.'
+          desc || 'Gói tập này hiện đang có hội viên sử dụng, không thể xóa.'
         );
         setIsDeleteOpen(false);
         setDeletingPackage(null);
@@ -165,28 +164,55 @@ export default function AdminPackagesPage() {
     setIsFormOpen(true);
   };
 
-  const handleOpenEdit = (pkg: PackageSummary) => {
-    setEditingPackage(pkg);
-    setIsFormOpen(true);
+  const handleOpenEdit = async (pkg: PackageSummary) => {
+    try {
+      const res = await packageService.adminById(pkg.id);
+      setActiveDetailPackage(res.data);
+      setEditingPackage(res.data);
+    } catch {
+      setActiveDetailPackage(pkg);
+      setEditingPackage(pkg);
+    }
+    setIsDetailEditing(true);
+    setIsDetailOpen(true);
   };
 
   const handleOpenView = async (pkg: PackageSummary) => {
     try {
       const res = await packageService.adminById(pkg.id);
       setActiveDetailPackage(res.data);
+      setEditingPackage(res.data);
     } catch {
       setActiveDetailPackage(pkg);
+      setEditingPackage(pkg);
     }
+    setIsDetailEditing(false);
     setIsDetailOpen(true);
   };
 
+  const handleDetailSave = async (payload: UpdatePackagePayload) => {
+    const target = editingPackage || activeDetailPackage;
+    if (!target) return;
+    setEditingPackage(target);
+    setPendingUpdatePayload(payload);
+    await updateMutation.mutateAsync({
+      id: target.id,
+      payload,
+    });
+  };
+
   const handleOpenDelete = (pkg: PackageSummary) => {
+    if (pkg.activeMembersCount > 0) {
+      setDeleteBlockPackage(pkg);
+      return;
+    }
     setDeletingPackage(pkg);
     setIsDeleteOpen(true);
   };
 
   const handleOpenDiscontinue = (pkg: PackageSummary) => {
     setDiscontinuingPackage(pkg);
+    setIsDeleteSuggestedDiscontinue(false);
     setIsDiscontinueOpen(true);
   };
 
@@ -337,19 +363,20 @@ export default function AdminPackagesPage() {
       <PackageDetailDialog
         isOpen={isDetailOpen}
         packageData={activeDetailPackage}
+        initialIsEditing={isDetailEditing}
+        isSubmitting={updateMutation.isPending}
         onClose={() => {
           setIsDetailOpen(false);
           setActiveDetailPackage(null);
+          setEditingPackage(null);
+          setIsDetailEditing(false);
         }}
-        onEdit={(pkg) => {
-          setIsDetailOpen(false);
-          setActiveDetailPackage(null);
-          setEditingPackage(pkg);
-          setIsFormOpen(true);
-        }}
+        onSave={handleDetailSave}
         onDiscontinue={(pkg) => {
           setIsDetailOpen(false);
           setActiveDetailPackage(null);
+          setEditingPackage(null);
+          setIsDetailEditing(false);
           handleOpenDiscontinue(pkg as PackageSummary);
         }}
       />
@@ -378,18 +405,33 @@ export default function AdminPackagesPage() {
           if (discontinueMutation.isPending) return;
           setIsDiscontinueOpen(false);
           setDiscontinuingPackage(null);
+          setIsDeleteSuggestedDiscontinue(false);
         }}
         onConfirm={handleConfirmDiscontinue}
-        title="Xác nhận ngừng kinh doanh"
+        title={
+          isDeleteSuggestedDiscontinue
+            ? 'Không thể xóa gói tập'
+            : 'Xác nhận ngừng kinh doanh'
+        }
         description={
           discontinuingPackage ? (
-            <span>
-              Bạn có chắc muốn chuyển gói tập{' '}
-              <strong className="text-[#064343] font-semibold">
-                &quot;{discontinuingPackage.packageCode} - {discontinuingPackage.name}&quot;
-              </strong>{' '}
-              sang trạng thái ngừng kinh doanh? Gói sẽ không thể bán mới cho hội viên.
-            </span>
+            isDeleteSuggestedDiscontinue ? (
+              <span>
+                Gói tập{' '}
+                <strong className="text-[#064343] font-semibold">
+                  {discontinuingPackage.packageCode}
+                </strong>{' '}
+                hiện đang có hội viên sử dụng thẻ, bạn có muốn chuyển sang &quot;Ngừng kinh doanh&quot; không?
+              </span>
+            ) : (
+              <span>
+                Bạn có chắc muốn chuyển gói tập{' '}
+                <strong className="text-[#064343] font-semibold">
+                  {discontinuingPackage.packageCode}
+                </strong>{' '}
+                sang trạng thái ngừng kinh doanh? Gói sẽ không thể bán mới cho hội viên.
+              </span>
+            )
           ) : (
             'Bạn có chắc muốn ngừng kinh doanh gói tập này?'
           )
@@ -399,7 +441,20 @@ export default function AdminPackagesPage() {
         isLoading={discontinueMutation.isPending}
       />
 
-      {/* Confirm Delete Popup */}
+      <ConfirmDialog
+        isOpen={!!deleteBlockPackage}
+        size="sm"
+        type="warning"
+        singleButton
+        onClose={() => setDeleteBlockPackage(null)}
+        onConfirm={() => setDeleteBlockPackage(null)}
+        title="Không thể xóa gói tập"
+        description="Gói tập này hiện đang có hội viên sử dụng, không thể xóa."
+        confirmText="Đã hiểu"
+      />
+
+
+
       <ConfirmDialog
         isOpen={isDeleteOpen}
         size="sm"
@@ -410,21 +465,21 @@ export default function AdminPackagesPage() {
           setDeletingPackage(null);
         }}
         onConfirm={handleConfirmDelete}
-        title="Xác nhận xóa gói tập"
+        title="Xác nhận xóa gói?"
         description={
           deletingPackage ? (
             <span>
-              Bạn có chắc muốn xóa gói tập{' '}
+              Bạn có chắc chắn muốn xóa gói tập{' '}
               <strong className="text-[#064343] font-semibold">
-                &quot;{deletingPackage.packageCode}&quot;
+                &quot;{deletingPackage.name || deletingPackage.packageCode}&quot;
               </strong>{' '}
-              khỏi hệ thống?
+              không?
             </span>
           ) : (
-            'Bạn có chắc muốn xóa gói tập này chứ?'
+            'Bạn có chắc chắn muốn xóa gói tập này không?'
           )
         }
-        confirmText="Xác nhận xóa"
+        confirmText="Đồng ý"
         cancelText="Hủy bỏ"
         isLoading={deleteMutation.isPending}
       />

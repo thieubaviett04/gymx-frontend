@@ -1,13 +1,40 @@
-// ─── Enums / Constants ───────────────────────────────────────────────────────
 export type PackageStatus = 'ACTIVE' | 'INACTIVE' | 'DISCONTINUED';
+export type PackageFormStatus = PackageStatus | 'UPCOMING';
+export type ComputedPackageStatus = 'ACTIVE' | 'UPCOMING' | 'INACTIVE' | 'DISCONTINUED';
 export type PackageType = 'BASIC' | 'PRO' | 'ELITE' | 'CUSTOM';
 export type DurationUnit = 'DAY' | 'MONTH' | 'YEAR';
 
 export const PACKAGE_STATUS_LABELS: Record<PackageStatus, string> = {
-  ACTIVE: 'Đang hoạt động',
-  INACTIVE: 'Chưa kích hoạt',
-  DISCONTINUED: 'Ngừng kinh doanh',
+  ACTIVE: 'Đang bán',
+  INACTIVE: 'Tạm ngưng',
+  DISCONTINUED: 'Ngừng bán',
 };
+
+export function getPackageStatusBadge(
+  status?: PackageStatus | string | null,
+  effectiveStartDate?: string | null
+): { label: string; variant: 'active' | 'upcoming' | 'inactive' | 'discontinued' } {
+  const norm = (status || '').toUpperCase();
+  if (norm === 'DISCONTINUED') {
+    return { label: 'Ngừng bán', variant: 'discontinued' };
+  }
+  if (norm === 'INACTIVE') {
+    return { label: 'Tạm ngưng', variant: 'inactive' };
+  }
+  if (norm === 'UPCOMING') {
+    return { label: 'Chuẩn bị', variant: 'upcoming' };
+  }
+  if (effectiveStartDate) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const start = new Date(effectiveStartDate);
+    start.setHours(0, 0, 0, 0);
+    if (!isNaN(start.getTime()) && start > today) {
+      return { label: 'Chuẩn bị', variant: 'upcoming' };
+    }
+  }
+  return { label: 'Đang bán', variant: 'active' };
+}
 
 export const PACKAGE_DURATION_OPTIONS = [
   { value: 'ALL', label: 'Tất cả thời hạn' },
@@ -23,9 +50,12 @@ export const PACKAGE_SORT_OPTIONS = [
   { value: 'price_desc', label: 'Giá: Cao đến thấp' },
 ] as const;
 
-// ─── Backend DTOs ────────────────────────────────────────────────────────────
+export interface PackageCategoryLookup {
+  id: string;
+  code: string;
+  name: string;
+}
 
-/** DTO tóm tắt gói tập từ API GetPackages */
 export interface PackageSummary {
   id: string;
   packageCode: string;
@@ -33,57 +63,55 @@ export interface PackageSummary {
   price: number;
   durationMonths: number;
   durationDays: number;
-  maxCheckins: number | null;
   description: string | null;
   status: PackageStatus;
-  effectiveStartDate: string; // YYYY-MM-DD
-  effectiveEndDate: string | null; // YYYY-MM-DD
+  effectiveStartDate: string;
+  categoryId: string | null;
+  categoryCode: string | null;
+  categoryName: string | null;
   previousPackageId: string | null;
   previousPackageCode: string | null;
   activeMembersCount: number;
+  hasAnyPurchase?: boolean;
+  hasEverBeenPurchased?: boolean;
   createdDate: string;
 }
 
-/** DTO chi tiết gói tập từ API GetPackageById */
 export interface PackageDetail extends PackageSummary {
   lastModifiedDate: string | null;
 }
 
-/** Request payload tạo gói tập mới */
 export interface CreatePackagePayload {
   name: string;
   price: number;
+  status?: PackageStatus | string;
   durationMonths: number;
-  maxCheckins?: number | null;
   description?: string | null;
-  effectiveStartDate: string; // YYYY-MM-DD
-  effectiveEndDate?: string | null; // YYYY-MM-DD
+  categoryId?: string | null;
+  effectiveStartDate: string;
 }
 
-/** Request payload cập nhật gói tập */
 export interface UpdatePackagePayload {
   name: string;
   price: number;
   durationMonths: number;
-  maxCheckins?: number | null;
   description?: string | null;
-  status?: PackageStatus;
-  effectiveStartDate: string; // YYYY-MM-DD
-  effectiveEndDate?: string | null; // YYYY-MM-DD
+  categoryId?: string | null;
+  status?: PackageStatus | string;
+  effectiveStartDate: string;
   mode?: 'DISCONTINUE_ONLY' | 'DISCONTINUE_AND_CREATE' | null;
 }
 
-/** Query params tìm kiếm và lọc gói tập */
 export interface PackageQueryParams {
   search?: string;
   durationFilter?: string;
   status?: string;
   sortBy?: string;
+  categoryId?: string;
   pageIndex?: number;
   pageSize?: number;
 }
 
-/** Kết quả phân trang danh sách gói tập */
 export interface PagedPackageResult {
   items: PackageSummary[];
   pageIndex: number;
@@ -94,22 +122,18 @@ export interface PagedPackageResult {
   hasNextPage: boolean;
 }
 
-// ─── Form State & Errors ─────────────────────────────────────────────────────
-
 export interface PackageFormData {
   name: string;
   price: string | number;
   durationMonths: string | number;
-  maxCheckins: string | number;
+  categoryId: string;
   description: string;
-  status: PackageStatus;
+  status: PackageFormStatus;
   effectiveStartDate: string;
-  effectiveEndDate: string;
 }
 
 export type PackageFormErrors = Partial<Record<keyof PackageFormData | 'general', string>>;
 
-// ─── Legacy Types (Giữ nguyên để tương thích code cũ nếu có) ─────────────────
 export interface Package {
   id: string;
   name: string;

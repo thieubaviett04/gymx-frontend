@@ -1,86 +1,124 @@
 'use client';
 
-import React, { useState } from 'react';
-import { X, ArrowRight, Info } from 'lucide-react';
-import { Badge } from '@/components/ui';
-import { EditPencilIcon } from '@/components/ui/icons';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { X, Loader2 } from 'lucide-react';
+import { Badge, Tabs } from '@/components/ui';
+import { EditPencilIcon, FolderOpenIcon } from '@/components/ui/icons';
+import { packageService } from '@/lib/api/modules/packageService';
+import { usePackageForm } from '@/lib/hooks/usePackageForm';
 import {
-  formatVND,
-  formatDate,
-  formatDateTime,
-} from '@/lib/utils/formatters';
-import type { PackageDetail, PackageSummary } from '@/types/package';
+  getPackageStatusBadge,
+  type PackageDetail,
+  type PackageSummary,
+  type UpdatePackagePayload,
+} from '@/types/package';
+import {
+  PackageGeneralTab,
+  PackageMembersTab,
+  PackageHistoryTab,
+} from './tabs';
+import {
+  PackageInfoSection,
+  PackageDescriptionSection,
+} from './sections';
 
 interface PackageDetailDialogProps {
   isOpen: boolean;
   packageData: PackageDetail | PackageSummary | null;
   onClose: () => void;
-  onEdit?: (pkg: PackageDetail | PackageSummary) => void;
+  initialIsEditing?: boolean;
+  onSave?: (payload: UpdatePackagePayload) => Promise<void> | void;
+  isSubmitting?: boolean;
   onDiscontinue?: (pkg: PackageDetail | PackageSummary) => void;
 }
 
-function InfoItem({
-  label,
-  value,
-  isHighlight = false,
-  className = '',
-}: {
-  label: string;
-  value?: React.ReactNode;
-  isHighlight?: boolean;
-  className?: string;
-}) {
-  return (
-    <div className={`flex flex-col gap-1.5 min-w-0 ${className}`}>
-      <span className="text-[13px] font-medium text-[#64748B] leading-none">
-        {label}
-      </span>
-      <div
-        className={`text-[14px] leading-relaxed break-words ${
-          isHighlight
-            ? 'font-semibold text-[#064343]'
-            : 'font-medium text-[#011010]'
-        }`}
-      >
-        {value || '—'}
-      </div>
-    </div>
-  );
-}
+const DETAIL_TABS = [
+  { id: 'general', label: 'Thông tin chung' },
+  { id: 'members', label: 'Hội viên sử dụng' },
+  { id: 'history', label: 'Lịch sử' },
+] as const;
 
 export function PackageDetailDialog({
   isOpen,
   packageData,
   onClose,
-  onEdit,
-  onDiscontinue,
+  initialIsEditing = false,
+  onSave,
+  isSubmitting = false,
 }: PackageDetailDialogProps) {
   const [activeTab, setActiveTab] = useState<'general' | 'members' | 'history'>('general');
+  const [isEditing, setIsEditing] = useState(initialIsEditing);
+
+  const {
+    formData,
+    errors,
+    handleChange,
+    resetForm,
+    getUpdatePayload,
+  } = usePackageForm({ initialData: packageData, isEdit: true });
+
+  const { data: categoryData } = useQuery({
+    queryKey: ['admin-package-categories-lookup'],
+    queryFn: async () => {
+      const res = await packageService.categoryLookup();
+      return res.data;
+    },
+    enabled: isOpen,
+  });
+
+  const categories = categoryData || [];
+
+  useEffect(() => {
+    if (isOpen) {
+      setIsEditing(initialIsEditing);
+      setActiveTab('general');
+    }
+  }, [isOpen, initialIsEditing]);
 
   if (!isOpen || !packageData) return null;
 
-  const status = (packageData.status || '').toUpperCase();
-  const isActive = status === 'ACTIVE';
-  const isDiscontinued = status === 'DISCONTINUED';
+  const currentStatus = isEditing ? formData.status : packageData.status;
+  const currentStartDate = isEditing ? formData.effectiveStartDate : packageData.effectiveStartDate;
+  const statusBadge = getPackageStatusBadge(currentStatus, currentStartDate);
 
-  const durationText = packageData.durationMonths
-    ? `${packageData.durationMonths} tháng`
-    : packageData.durationDays
-    ? `${packageData.durationDays} ngày`
-    : '—';
+  const isPriceDurationDisabled = false;
+  const isStatusDisabled = false;
 
-  const descriptionItems = (packageData.description || '')
-    .split(/\r?\n/)
-    .map((s) => s.trim().replace(/^[-•*]\s*/, ''))
-    .filter(Boolean);
+  const handleClose = () => {
+    if (isSubmitting) return;
+    if (isEditing) {
+      resetForm();
+      setIsEditing(false);
+    }
+    onClose();
+  };
+
+  const handleCancelEdit = () => {
+    if (isSubmitting) return;
+    resetForm();
+    if (initialIsEditing) {
+      onClose();
+    } else {
+      setIsEditing(false);
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting || !onSave) return;
+    const payload = getUpdatePayload();
+    if (!payload) return;
+    await onSave(payload);
+  };
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Chi tiết gói tập"
+      aria-label={isEditing ? 'Chỉnh sửa gói tập' : 'Chi tiết gói tập'}
       className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-[1px] animate-in fade-in duration-200"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
@@ -89,31 +127,18 @@ export function PackageDetailDialog({
         <div className="pt-6 pb-4 pr-6 pl-0 flex items-center justify-between shrink-0 bg-white border-b border-[#F1F5F9]">
           <div className="flex items-center h-[28px] border-l-[4px] border-[#064343] pl-5">
             <h2 className="text-[20px] sm:text-[22px] font-bold text-[#011010] leading-none tracking-[-0.025em]">
-              Chi tiết gói tập
+              {isEditing ? 'Chỉnh sửa gói tập' : 'Chi tiết gói tập'}
             </h2>
           </div>
 
           <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-1.5">
-              <span className="text-[14px] font-medium text-[#64748B]">Mã gói tập:</span>
-              <span className="font-semibold text-[14px] text-[#064343]">
-                {packageData.packageCode}
-              </span>
-            </div>
-
-            <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
-
             <div className="flex items-center gap-2">
-              <span className="text-[14px] font-medium text-[#64748B] hidden sm:inline">Trạng thái:</span>
+              <span className="text-[13px] font-medium text-[#64748B] hidden sm:inline">Trạng thái:</span>
               <Badge
-                variant={isActive ? 'active' : isDiscontinued ? 'discontinued' : 'inactive'}
-                className="text-[13px] font-normal leading-[18px] px-3 py-[4px] rounded-[6px]"
+                variant={statusBadge.variant}
+                className="text-[13px] font-normal leading-[16px] px-2.5 py-[3px] rounded-[6px]"
               >
-                {isActive
-                  ? 'Đang hoạt động'
-                  : isDiscontinued
-                  ? 'Ngừng kinh doanh'
-                  : 'Chưa kích hoạt'}
+                {statusBadge.label}
               </Badge>
             </div>
 
@@ -121,8 +146,9 @@ export function PackageDetailDialog({
 
             <button
               type="button"
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-[#F5F5F5] hover:bg-[#E5E5E5] text-[#525252] flex items-center justify-center transition-colors cursor-pointer ml-1"
+              onClick={handleClose}
+              disabled={isSubmitting}
+              className="w-8 h-8 rounded-full bg-[#F5F5F5] hover:bg-[#E5E5E5] text-[#525252] flex items-center justify-center transition-colors cursor-pointer ml-1 disabled:opacity-50"
               aria-label="Đóng"
             >
               <X className="w-4 h-4" />
@@ -130,266 +156,91 @@ export function PackageDetailDialog({
           </div>
         </div>
 
-        <div className="px-6 py-5 flex items-center gap-2 overflow-x-auto shrink-0 bg-white">
-          <button
-            type="button"
-            onClick={() => setActiveTab('general')}
-            className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'general'
-                ? 'bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] font-semibold'
-                : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium'
-            }`}
-          >
-            Thông tin chung
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('members')}
-            className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'members'
-                ? 'bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] font-semibold'
-                : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium'
-            }`}
-          >
-            Hội viên sử dụng
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveTab('history')}
-            className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 transition-all cursor-pointer whitespace-nowrap ${
-              activeTab === 'history'
-                ? 'bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] font-semibold'
-                : 'bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium'
-            }`}
-          >
-            Lịch sử
-          </button>
+        <div className="px-6 py-5 shrink-0 bg-white">
+          <Tabs
+            tabs={DETAIL_TABS as unknown as { id: 'general' | 'members' | 'history'; label: string }[]}
+            activeTab={activeTab}
+            onChange={setActiveTab}
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 pt-1 pb-8 space-y-8">
           {activeTab === 'general' && (
-            <>
-              <div className="bg-white rounded-xl">
-                <div className="border-b border-[#F1F5F9] pb-2 mb-4">
-                  <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                    THÔNG TIN GÓI TẬP
-                  </h4>
-                </div>
-
-                <div className="pl-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-7 sm:gap-y-8">
-                  <InfoItem label="Tên gói tập" value={packageData.name} />
-
-                  <InfoItem
-                    label="Giá niêm yết"
-                    value={formatVND(packageData.price)}
-                    isHighlight
-                  />
-
-                  <InfoItem
-                    label="Thời hạn sử dụng"
-                    value={durationText}
-                  />
-
-                  <InfoItem
-                    label="Giới hạn check-in"
-                    value={
-                      packageData.maxCheckins
-                        ? `${packageData.maxCheckins} lượt / chu kỳ`
-                        : 'Không giới hạn'
-                    }
-                  />
-
-                  <InfoItem
-                    label="Ngày bắt đầu áp dụng"
-                    value={formatDate(packageData.effectiveStartDate)}
-                  />
-
-                  <InfoItem
-                    label="Ngày kết thúc áp dụng"
-                    value={
-                      packageData.effectiveEndDate
-                        ? formatDate(packageData.effectiveEndDate)
-                        : 'Vô thời hạn'
-                    }
-                  />
-
-                  <InfoItem
-                    label="Số hội viên đang dùng"
-                    value={`${packageData.activeMembersCount} hội viên`}
-                    isHighlight={packageData.activeMembersCount > 0}
-                  />
-
-                  <InfoItem
-                    label="Ngày tạo gói"
-                    value={formatDateTime(packageData.createdDate)}
-                  />
-
-                  <InfoItem
-                    label="Cập nhật gần nhất"
-                    value={
-                      'lastModifiedDate' in packageData && packageData.lastModifiedDate
-                        ? formatDateTime(packageData.lastModifiedDate)
-                        : formatDateTime(packageData.createdDate)
-                    }
-                  />
-                </div>
+            isEditing ? (
+              <div className="space-y-7">
+                <PackageInfoSection
+                  formData={formData}
+                  errors={errors}
+                  categories={categories}
+                  isEdit={true}
+                  isPriceDurationDisabled={isPriceDurationDisabled}
+                  isStatusDisabled={isStatusDisabled}
+                  onChangeField={handleChange}
+                />
+                <PackageDescriptionSection
+                  value={formData.description}
+                  onChange={(val) => handleChange('description', val)}
+                  disabled={isSubmitting}
+                />
               </div>
-
-              <div className="bg-white rounded-xl pt-2">
-                <div className="border-b border-[#F1F5F9] pb-2 mb-4">
-                  <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                    MÔ TẢ GÓI TẬP
-                  </h4>
-                </div>
-
-                {descriptionItems.length > 0 ? (
-                  <div className="pl-5">
-                    <div className="p-4 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0]">
-                      <ul className="space-y-2">
-                        {descriptionItems.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-start gap-2.5 text-[14px] text-[#202939] leading-relaxed"
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#064343] shrink-0 mt-2" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="pl-5">
-                    <div className="p-4 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center gap-3">
-                      <Info className="w-5 h-5 text-[#064343] shrink-0" />
-                      <p className="text-[13px] text-[#64748B] leading-relaxed">
-                        Chưa có mô tả chi tiết hoặc điều khoản bổ sung cho gói tập này.
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </>
+            ) : (
+              <PackageGeneralTab packageData={packageData} />
+            )
           )}
-
-          {activeTab === 'members' && (
-            <div className="bg-white rounded-xl flex-1 flex flex-col">
-              <div className="border-b border-[#F1F5F9] pb-2 mb-4">
-                <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                  DANH SÁCH HỘI VIÊN ĐANG SỬ DỤNG
-                </h4>
-              </div>
-
-              {packageData.activeMembersCount > 0 ? (
-                <div className="pl-5 space-y-4">
-                  <div className="p-4 rounded-[10px] bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
-                    <div>
-                      <span className="text-[13px] font-medium text-[#64748B] block">
-                        Số lượng hội viên hiện tại
-                      </span>
-                      <strong className="text-[24px] font-bold text-[#064343] block mt-0.5">
-                        {packageData.activeMembersCount} hội viên
-                      </strong>
-                    </div>
-                    <span className="text-[13px] text-[#525252]">
-                      Thẻ hội viên còn hiệu lực sử dụng tại phòng tập.
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <div className="w-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
-                  <img
-                    src="/images/empty-rating.svg"
-                    alt="Chưa có hội viên nào sử dụng gói tập này"
-                    className="w-[104px] h-[121px] object-contain mb-4"
-                  />
-                  <p className="text-[15px] text-[#202939] font-medium text-center">
-                    Chưa có hội viên nào sử dụng gói tập này
-                  </p>
-                  <p className="text-[13px] text-[#64748B] text-center mt-1">
-                    Khi có hội viên đăng ký và kích hoạt thẻ, thông tin sẽ được cập nhật tự động tại đây.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === 'history' && (
-            <div className="bg-white rounded-xl flex-1 flex flex-col">
-              <div className="border-b border-[#F1F5F9] pb-2 mb-4">
-                <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                  NHẬT KÝ THAY ĐỔI THÔNG TIN
-                </h4>
-              </div>
-
-              {packageData.previousPackageCode ? (
-                <div className="pl-5 space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-7 sm:gap-y-8">
-                    <InfoItem
-                      label="Gói tiền nhiệm thay thế"
-                      value={
-                        <span className="inline-flex items-center gap-1.5 font-semibold text-[#064343]">
-                          <span>{packageData.previousPackageCode}</span>
-                          <ArrowRight className="w-3.5 h-3.5 text-[#064343]" />
-                        </span>
-                      }
-                    />
-
-                    <InfoItem
-                      label="Ngày khởi tạo phiên bản"
-                      value={formatDateTime(packageData.createdDate)}
-                    />
-
-                    {'lastModifiedDate' in packageData && packageData.lastModifiedDate && (
-                      <InfoItem
-                        label="Cập nhật gần nhất"
-                        value={formatDateTime(packageData.lastModifiedDate)}
-                      />
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="w-full flex-1 flex flex-col items-center justify-center py-12 sm:py-16">
-                  <img
-                    src="/images/empty-rating.svg"
-                    alt="Chưa có thay đổi nào gần đây"
-                    className="w-[104px] h-[121px] object-contain mb-4"
-                  />
-                  <p className="text-[15px] text-[#202939] font-medium text-center">
-                    Chưa có thay đổi nào gần đây
-                  </p>
-                  <p className="text-[13px] text-[#64748B] text-center mt-1">
-                    Gói tập đang ở phiên bản ban đầu được tạo lúc {formatDateTime(packageData.createdDate)}.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+          {activeTab === 'members' && <PackageMembersTab packageData={packageData} />}
+          {activeTab === 'history' && <PackageHistoryTab packageData={packageData} />}
         </div>
 
         <div className="h-[72px] px-6 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-end gap-3 shrink-0">
-          <button
-            type="button"
-            onClick={onClose}
-            className="h-[40px] px-5 min-w-[80px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] font-medium leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center"
-          >
-            <span>Đóng</span>
-          </button>
+          {!isEditing ? (
+            <>
+              <button
+                type="button"
+                onClick={onClose}
+                className="h-[40px] px-5 min-w-[80px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] font-medium leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center"
+              >
+                <span>Đóng</span>
+              </button>
 
-          {onEdit && (
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                onEdit(packageData);
-              }}
-              className="h-[40px] px-5 min-w-[120px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] font-medium leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <EditPencilIcon className="w-4 h-4" color="#FFFFFF" />
-              <span>Chỉnh sửa</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => setIsEditing(true)}
+                className="h-[40px] px-5 min-w-[120px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] font-medium leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <EditPencilIcon className="w-4 h-4" color="#FFFFFF" />
+                <span>Chỉnh sửa</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={handleCancelEdit}
+                disabled={isSubmitting}
+                className="h-[40px] px-5 min-w-[80px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] font-medium leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-50"
+              >
+                <span>Hủy</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={isSubmitting}
+                className="h-[40px] px-5 min-w-[120px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] font-medium leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Đang lưu...</span>
+                  </>
+                ) : (
+                  <>
+                    <FolderOpenIcon className="w-4 h-4 text-white" />
+                    <span>Lưu thay đổi</span>
+                  </>
+                )}
+              </button>
+            </>
           )}
         </div>
       </div>

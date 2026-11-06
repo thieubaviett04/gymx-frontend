@@ -5,6 +5,7 @@ import type {
   CreatePackagePayload,
   MemberPackage,
   Package,
+  PackageCategoryLookup,
   PackageDetail,
   PackageQueryParams,
   PagedPackageResult,
@@ -53,6 +54,9 @@ export const packageService = {
   /** [Admin] Ngừng kinh doanh gói tập */
   discontinue: (id: string) =>
     apiClient.patch<unknown, ApiResponse<null>>(ENDPOINTS.adminPackages.discontinue(id)),
+
+  categoryLookup: () =>
+    apiClient.get<unknown, ApiResponse<PackageCategoryLookup[]>>(ENDPOINTS.adminPackageCategories.lookup),
 };
 
 export default packageService;

@@ -65,6 +65,15 @@ export const ENDPOINTS = {
     discontinue:    (id: string) => `${V1}/admin/packages/${id}/discontinue`,
   },
 
+  adminPackageCategories: {
+    list:           `${V1}/admin/package-categories`,
+    lookup:         `${V1}/admin/package-categories/lookup`,
+    byId:           (id: string) => `${V1}/admin/package-categories/${id}`,
+    create:         `${V1}/admin/package-categories`,
+    update:         (id: string) => `${V1}/admin/package-categories/${id}`,
+    delete:         (id: string) => `${V1}/admin/package-categories/${id}`,
+  },
+
   // ─── Attendance ───────────────────────────────────────────────────────────
   attendance: {
     list:           `${V1}/attendance`,

@@ -4,7 +4,7 @@ import React from 'react';
 import { EmptySearchState } from '@/components/shared';
 import { Badge, EditPencilIcon, EyeViewIcon, TrashBinIcon } from '@/components/ui';
 import { formatVND, formatPackageDuration } from '@/lib/utils/formatters';
-import type { PackageSummary } from '@/types/package';
+import { getPackageStatusBadge, type PackageSummary } from '@/types/package';
 
 interface PackageTableProps {
   items: PackageSummary[];
@@ -67,7 +67,7 @@ export function PackageTable({
               Thời hạn
             </th>
             <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[11%]">
-              Check-in tối đa
+              Loại hình
             </th>
             <th className="py-2.5 px-3 text-[13px] font-medium leading-[17px] text-[#0A0A0A] relative select-none whitespace-nowrap after:content-[''] after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-[1px] after:h-[16px] after:bg-[#CDD5DF] w-[10%]">
               Đang sử dụng
@@ -83,11 +83,7 @@ export function PackageTable({
         <tbody className="text-[14px] leading-[18px]">
           {items.map((pkg, idx) => {
             const stt = (pageIndex - 1) * pageSize + idx + 1;
-            const statusUpper = (pkg.status || '').toUpperCase();
-            const isActive = statusUpper === 'ACTIVE';
-            const isDiscontinued = statusUpper === 'DISCONTINUED';
-
-            // Row background: #F0F5F5 (soft primary teal tint) đồng nhất cho tất cả các dòng
+            const statusBadge = getPackageStatusBadge(pkg.status, pkg.effectiveStartDate);
             const rowBg = 'bg-[#F0F5F5]';
 
             return (
@@ -95,12 +91,10 @@ export function PackageTable({
                 key={pkg.id}
                 className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
               >
-                {/* 1. STT */}
                 <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">
                   {stt}
                 </td>
 
-                {/* 2. Mã gói (dùng chung font thông thường như các cột khác) */}
                 <td className="py-[11px] px-[10px] text-[#064343] font-normal">
                   <span>{pkg.packageCode}</span>
                   {pkg.previousPackageCode && (
@@ -110,52 +104,34 @@ export function PackageTable({
                   )}
                 </td>
 
-                {/* 3. Tên gói tập (chỉ hiển thị tên gói tập, không mô tả) */}
                 <td className="py-[11px] px-[10px] text-[#202939] font-normal truncate max-w-[260px]" title={pkg.name}>
                   {pkg.name}
                 </td>
 
-                {/* 4. Giá niêm yết */}
                 <td className="py-[11px] px-[10px] text-[#064343] font-normal">
                   {formatVND(pkg.price)}
                 </td>
 
-                {/* 5. Thời hạn */}
                 <td className="py-[11px] px-[10px] text-[#202939] font-normal">
                   {formatPackageDuration(pkg.durationMonths, pkg.durationDays)}
                 </td>
 
-                {/* 6. Check-in tối đa */}
                 <td className="py-[11px] px-[10px] text-[#202939] font-normal">
-                  {pkg.maxCheckins ? `${pkg.maxCheckins} lượt` : 'Không giới hạn'}
+                  {pkg.categoryName || 'Chưa phân loại'}
                 </td>
 
-                {/* 7. Hội viên đang sử dụng (text thông thường, không dùng badge) */}
                 <td className="py-[11px] px-[10px] text-[#202939] font-normal">
                   {pkg.activeMembersCount} hội viên
                 </td>
 
-                {/* 8. Trạng thái (3 màu chuẩn Figma Node 1437:1446) */}
                 <td className="py-[11px] px-[10px]">
-                  {isActive ? (
-                    <Badge variant="active">
-                      Hoạt động
-                    </Badge>
-                  ) : isDiscontinued ? (
-                    <Badge variant="discontinued">
-                      Đang khóa
-                    </Badge>
-                  ) : (
-                    <Badge variant="inactive">
-                      Chưa kích hoạt
-                    </Badge>
-                  )}
+                  <Badge variant={statusBadge.variant}>
+                    {statusBadge.label}
+                  </Badge>
                 </td>
 
-                {/* 9. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
                 <td className="py-2 px-[10px] rounded-r-[6px]">
                   <div className="flex items-center gap-[10px]">
-                    {/* Xem chi tiết (Eye màu #FFB800) */}
                     <button
                       type="button"
                       onClick={() => onView(pkg)}
@@ -166,7 +142,6 @@ export function PackageTable({
                       <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
                     </button>
 
-                    {/* Chỉnh sửa (Figma Node 1440:11107 edit-pencil màu #064343) */}
                     <button
                       type="button"
                       onClick={() => onEdit(pkg)}
@@ -177,7 +152,6 @@ export function PackageTable({
                       <EditPencilIcon className="w-[18px] h-[18px]" color="#064343" />
                     </button>
 
-                    {/* Xóa gói tập (Figma Node 1438:11028 trash màu #EE464C) */}
                     <button
                       type="button"
                       onClick={() => onDelete(pkg)}
