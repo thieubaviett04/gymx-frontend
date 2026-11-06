@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { X, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -32,6 +33,12 @@ export function Dialog({
   showCloseButton = true,
   size = 'md',
 }: DialogProps) {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Đóng dialog khi bấm phím Escape
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,13 +56,13 @@ export function Dialog({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
@@ -82,7 +89,8 @@ export function Dialog({
         )}
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -181,12 +189,12 @@ export function DialogFooter({
 function QuestionMarkIllustration({ className = 'text-[#EF4444]' }: { className?: string }) {
   return (
     <svg
-      width="86"
-      height="86"
+      width="64"
+      height="64"
       viewBox="0 0 86 86"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={cn('w-[86px] h-[86px] shrink-0', className)}
+      className={cn('w-[64px] h-[64px] shrink-0', className)}
     >
       <path
         d="M42.832 67.3555C40.9765 67.3555 39.4727 65.8516 39.4727 63.9961C39.4727 62.1406 40.9765 60.6367 42.832 60.6367C44.6876 60.6367 46.1914 62.1406 46.1914 63.9961C46.1914 65.8516 44.6876 67.3555 42.832 67.3555ZM46.1914 52.2383V47.7274C52.6871 46.156 57.1875 40.2626 56.9309 33.5983C56.6521 26.3416 50.6983 20.441 43.3766 20.1667C39.4648 20.0185 35.7708 21.42 32.9783 24.1094C30.2337 26.753 28.7227 30.3 28.7227 34.0977C28.7227 35.9532 30.2265 37.457 32.082 37.457C33.9376 37.457 35.4414 35.9532 35.4414 34.0977C35.4414 32.1424 36.2215 30.3138 37.6388 28.949C39.1046 27.5377 41.0513 26.8035 43.1247 26.8802C46.9571 27.0246 50.0724 30.0887 50.2174 33.8569C50.3519 37.3685 47.9282 40.4713 44.4527 41.2337C41.5204 41.8774 39.4727 44.4113 39.4727 47.3967V52.2383C39.4727 54.0938 40.9765 55.5977 42.832 55.5977C44.6876 55.5977 46.1914 54.0938 46.1914 52.2383ZM65.2493 79.8029C66.8365 78.8416 67.3437 76.7762 66.3824 75.1896C65.4205 73.6025 63.3551 73.0953 61.7685 74.0565C56.1258 77.4743 49.6354 79.2812 43 79.2812C22.9947 79.2812 6.71875 63.0053 6.71875 43C6.71875 22.9947 22.9947 6.71875 43 6.71875C63.0053 6.71875 79.2812 22.9947 79.2812 43C79.2812 50.1538 77.1541 57.1166 73.1294 63.1372C72.098 64.6791 72.5126 66.7656 74.0545 67.797C75.5971 68.8285 77.6836 68.4138 78.7144 66.8712C83.4811 59.7424 86 51.4877 86 43C86 31.5145 81.5272 20.7159 73.4056 12.5944C65.2841 4.47282 54.4855 0 43 0C31.5145 0 20.7159 4.47282 12.5944 12.5944C4.47282 20.7159 0 31.5145 0 43C0 54.4855 4.47282 65.2841 12.5944 73.4056C20.7159 81.5272 50.863 86 43 86C50.863 86 58.5568 83.8571 65.2493 79.8029Z"
@@ -217,6 +225,7 @@ export interface ConfirmDialogProps {
   confirmText?: string;
   isLoading?: boolean;
   icon?: React.ReactNode;
+  singleButton?: boolean;
 }
 
 export function ConfirmDialog({
@@ -233,6 +242,7 @@ export function ConfirmDialog({
   confirmText,
   isLoading = false,
   icon,
+  singleButton = false,
 }: ConfirmDialogProps) {
   // Tự động phân giải type theo state Figma 51:376
   const resolvedType: ConfirmType =
@@ -309,14 +319,16 @@ export function ConfirmDialog({
 
       {/* Footer: 2 Buttons chuẩn Figma #51:375 (Regular font, NO shadow, NO hover glow, kéo dài khoảng đệm dưới pb-[52px]) */}
       <DialogFooter className="gap-3 pb-[52px] pt-5 px-6 justify-center flex items-center">
-        <button
-          type="button"
-          disabled={isLoading}
-          onClick={onClose}
-          className="min-w-[84px] h-[44px] px-4 rounded-[8px] border border-[#E5E5E5] bg-white text-[14px] font-normal text-[#525252] cursor-pointer disabled:opacity-50 shadow-none outline-none select-none transition-none"
-        >
-          {cancelText}
-        </button>
+        {!singleButton && (
+          <button
+            type="button"
+            disabled={isLoading}
+            onClick={onClose}
+            className="min-w-[84px] h-[44px] px-4 rounded-[8px] border border-[#E5E5E5] bg-white text-[14px] font-normal text-[#525252] cursor-pointer disabled:opacity-50 shadow-none outline-none select-none transition-none"
+          >
+            {cancelText}
+          </button>
+        )}
 
         <button
           type="button"

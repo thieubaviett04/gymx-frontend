@@ -44,7 +44,6 @@ export function PackageToolbar({
   const [localSearch, setLocalSearch] = useState(searchValue);
   const [isFocused, setIsFocused] = useState(false);
 
-  // Debounce search 350ms
   useEffect(() => {
     const timer = setTimeout(() => {
       if (localSearch !== searchValue) {
@@ -54,7 +53,6 @@ export function PackageToolbar({
     return () => clearTimeout(timer);
   }, [localSearch, onSearchChange, searchValue]);
 
-  // Sync external search changes
   useEffect(() => {
     setLocalSearch(searchValue);
   }, [searchValue]);
@@ -75,9 +73,7 @@ export function PackageToolbar({
 
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 mb-5">
-      {/* Search & Filters */}
       <div className="flex flex-wrap items-center gap-3 flex-1">
-        {/* Search input matching GymX standard */}
         <div className="relative w-full sm:w-[320px] lg:w-[360px] h-[44px]">
           <Search
             className={cn(
@@ -114,14 +110,13 @@ export function PackageToolbar({
           )}
         </div>
 
-        {/* Dropdown Thời hạn */}
         <div className="min-w-[175px] sm:w-[190px]">
           <Select
             value={selectedDuration || 'ALL'}
             onValueChange={(val) => onDurationChange(val)}
           >
             <SelectTrigger className="w-full h-[44px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
-              <SelectValue placeholder="Thời hạn gói" />
+              <SelectValue placeholder="Chọn thời hạn" />
             </SelectTrigger>
             <SelectContent>
               {PACKAGE_DURATION_OPTIONS.map((opt) => (
@@ -133,14 +128,13 @@ export function PackageToolbar({
           </Select>
         </div>
 
-        {/* Dropdown Trạng thái */}
         <div className="min-w-[185px] sm:w-[200px]">
           <Select
             value={selectedStatus || 'ALL'}
             onValueChange={(val) => onStatusChange(val)}
           >
             <SelectTrigger className="w-full h-[44px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
-              <SelectValue placeholder="Trạng thái" />
+              <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">Tất cả trạng thái</SelectItem>
@@ -153,14 +147,13 @@ export function PackageToolbar({
           </Select>
         </div>
 
-        {/* Dropdown Sắp xếp */}
         <div className="min-w-[175px] sm:w-[190px]">
           <Select
             value={selectedSort || 'latest'}
             onValueChange={(val) => onSortChange(val)}
           >
             <SelectTrigger className="w-full h-[44px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
-              <SelectValue placeholder="Sắp xếp theo" />
+              <SelectValue placeholder="Chọn thứ tự sắp xếp" />
             </SelectTrigger>
             <SelectContent>
               {PACKAGE_SORT_OPTIONS.map((sort) => (
@@ -172,7 +165,6 @@ export function PackageToolbar({
           </Select>
         </div>
 
-        {/* Reset filter button (nền trắng chữ đỏ, font regular, icon thùng rác 20px) */}
         {hasFilter && (
           <button
             type="button"
@@ -186,7 +178,6 @@ export function PackageToolbar({
         )}
       </div>
 
-      {/* Button Thêm mới gói tập - font regular, icon 20px */}
       <div className="shrink-0 self-end lg:self-auto">
         <button
           type="button"

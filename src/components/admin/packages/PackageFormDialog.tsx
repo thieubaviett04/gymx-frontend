@@ -1,30 +1,23 @@
 'use client';
 
 import React from 'react';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui';
+import { useQuery } from '@tanstack/react-query';
+import { X, Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui';
 import { usePackageForm } from '@/lib/hooks/usePackageForm';
-import { formatVND } from '@/lib/utils/formatters';
 import { FolderOpenIcon } from '@/components/ui/icons';
-import type {
-  CreatePackagePayload,
-  PackageDetail,
-  PackageStatus,
-  PackageSummary,
-  UpdatePackagePayload,
+import { packageService } from '@/lib/api/modules/packageService';
+import {
+  getPackageStatusBadge,
+  type CreatePackagePayload,
+  type PackageDetail,
+  type PackageSummary,
+  type UpdatePackagePayload,
 } from '@/types/package';
+import {
+  PackageInfoSection,
+  PackageDescriptionSection,
+} from './sections';
 
 interface PackageFormDialogProps {
   isOpen: boolean;
@@ -52,6 +45,19 @@ export function PackageFormDialog({
     getUpdatePayload,
   } = usePackageForm({ initialData, isEdit });
 
+  const { data: categoryData } = useQuery({
+    queryKey: ['admin-package-categories-lookup'],
+    queryFn: async () => {
+      const res = await packageService.categoryLookup();
+      return res.data;
+    },
+    enabled: isOpen,
+  });
+
+  const categories = categoryData || [];
+
+  if (!isOpen) return null;
+
   const handleClose = () => {
     if (isSubmitting) return;
     resetForm();
@@ -73,240 +79,109 @@ export function PackageFormDialog({
     }
   };
 
-  const parsedPrice = Number(formData.price);
-  const showPricePreview = !isNaN(parsedPrice) && parsedPrice > 0;
+  const statusBadge = getPackageStatusBadge(formData.status, formData.effectiveStartDate);
+
+  const isPriceDurationDisabled = false;
+  const isStatusDisabled = false;
 
   return (
-    <Dialog isOpen={isOpen} onClose={handleClose} size="xl">
-      <form onSubmit={handleSubmit} noValidate>
-        <DialogHeader>
-          <DialogTitle>
-            {isEdit ? 'Chỉnh sửa gói tập' : 'Thêm gói tập mới'}
-          </DialogTitle>
-          <DialogDescription>
-            {isEdit
-              ? `Cập nhật thông tin chi tiết cho gói tập ${initialData?.packageCode || ''}`
-              : 'Điền đầy đủ thông tin bên dưới để khởi tạo một gói tập mới trong hệ thống.'}
-          </DialogDescription>
-        </DialogHeader>
-
-        <DialogContent className="space-y-4 py-2">
-          {/* 1. Tên gói tập */}
-          <div>
-            <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-              Tên gói tập <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              placeholder="VD: Gói Tập Pro 6 Tháng Không Giới Hạn"
-              maxLength={100}
-              className={`w-full h-[42px] px-3.5 rounded-[8px] bg-white border text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] outline-none transition-all ${
-                errors.name
-                  ? 'border-red-500 ring-2 ring-red-100'
-                  : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15'
-              }`}
-            />
-            {errors.name && (
-              <p className="mt-1 text-[12px] text-red-500 font-medium">{errors.name}</p>
-            )}
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={isEdit ? 'Chỉnh sửa gói tập' : 'Thêm gói tập mới'}
+      className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-[1px] animate-in fade-in duration-200"
+      onClick={handleClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full sm:w-[880px] max-w-full bg-white h-full shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] border-l border-[#E2E8F0] flex flex-col overflow-hidden animate-in slide-in-from-right duration-300"
+      >
+        <div className="pt-6 pb-4 pr-6 pl-0 flex items-center justify-between shrink-0 bg-white border-b border-[#F1F5F9]">
+          <div className="flex items-center h-[28px] border-l-[4px] border-[#064343] pl-5 min-w-0">
+            <h2 className="text-[20px] sm:text-[22px] font-bold text-[#011010] leading-none tracking-[-0.025em]">
+              {isEdit ? 'Chỉnh sửa gói tập' : 'Thêm gói tập mới'}
+            </h2>
           </div>
 
-          {/* 2. Giá niêm yết & Thời hạn (Grid 2 cột) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-                Giá niêm yết (VNĐ) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="1000"
-                value={formData.price}
-                onChange={(e) => handleChange('price', e.target.value)}
-                placeholder="VD: 1500000"
-                className={`w-full h-[42px] px-3.5 rounded-[8px] bg-white border text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] outline-none transition-all ${
-                  errors.price
-                    ? 'border-red-500 ring-2 ring-red-100'
-                    : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15'
-                }`}
-              />
-              {showPricePreview && (
-                <p className="mt-1 text-[12px] text-[#064343] font-medium">
-                  {formatVND(parsedPrice)}
-                </p>
-              )}
-              {errors.price && (
-                <p className="mt-1 text-[12px] text-red-500 font-medium">{errors.price}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-                Thời hạn (Tháng) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                min="1"
-                max="120"
-                value={formData.durationMonths}
-                onChange={(e) => handleChange('durationMonths', e.target.value)}
-                placeholder="VD: 1, 3, 6, 12"
-                className={`w-full h-[42px] px-3.5 rounded-[8px] bg-white border text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] outline-none transition-all ${
-                  errors.durationMonths
-                    ? 'border-red-500 ring-2 ring-red-100'
-                    : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15'
-                }`}
-              />
-              {errors.durationMonths && (
-                <p className="mt-1 text-[12px] text-red-500 font-medium">
-                  {errors.durationMonths}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* 3. Check-in tối đa & Trạng thái */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-                Lượt check-in tối đa (Tùy chọn)
-              </label>
-              <input
-                type="number"
-                min="1"
-                value={formData.maxCheckins}
-                onChange={(e) => handleChange('maxCheckins', e.target.value)}
-                placeholder="Để trống nếu không giới hạn"
-                className={`w-full h-[42px] px-3.5 rounded-[8px] bg-white border text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] outline-none transition-all ${
-                  errors.maxCheckins
-                    ? 'border-red-500 ring-2 ring-red-100'
-                    : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15'
-                }`}
-              />
-              {errors.maxCheckins && (
-                <p className="mt-1 text-[12px] text-red-500 font-medium">
-                  {errors.maxCheckins}
-                </p>
-              )}
-            </div>
-
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             {isEdit && (
-              <div>
-                <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-                  Trạng thái kinh doanh
-                </label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(val) => handleChange('status', val as PackageStatus)}
-                >
-                  <SelectTrigger className="w-full h-[42px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="ACTIVE">Đang hoạt động</SelectItem>
-                    <SelectItem value="INACTIVE">Chưa kích hoạt</SelectItem>
-                    <SelectItem value="DISCONTINUED">Ngừng kinh doanh</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
-          {/* 4. Ngày áp dụng (Từ ngày – Đến ngày) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-                Ngày bắt đầu áp dụng <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                value={formData.effectiveStartDate}
-                onChange={(e) => handleChange('effectiveStartDate', e.target.value)}
-                className={`w-full h-[42px] px-3.5 rounded-[8px] bg-white border text-[14px] text-[#0A0A0A] outline-none transition-all ${
-                  errors.effectiveStartDate
-                    ? 'border-red-500 ring-2 ring-red-100'
-                    : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15'
-                }`}
-              />
-              {errors.effectiveStartDate && (
-                <p className="mt-1 text-[12px] text-red-500 font-medium">
-                  {errors.effectiveStartDate}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-                Ngày kết thúc áp dụng (Tùy chọn)
-              </label>
-              <input
-                type="date"
-                value={formData.effectiveEndDate}
-                min={formData.effectiveStartDate || undefined}
-                onChange={(e) => handleChange('effectiveEndDate', e.target.value)}
-                className={`w-full h-[42px] px-3.5 rounded-[8px] bg-white border text-[14px] text-[#0A0A0A] outline-none transition-all ${
-                  errors.effectiveEndDate
-                    ? 'border-red-500 ring-2 ring-red-100'
-                    : 'border-[#E2E8F0] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15'
-                }`}
-              />
-              {errors.effectiveEndDate && (
-                <p className="mt-1 text-[12px] text-red-500 font-medium">
-                  {errors.effectiveEndDate}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* 5. Mô tả chi tiết */}
-          <div>
-            <label className="block text-[13px] font-medium text-[#0A0A0A] mb-1.5">
-              Mô tả chi tiết & Quyền lợi gói tập
-            </label>
-            <textarea
-              rows={3}
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-              placeholder="VD: Bao gồm quyền sử dụng toàn bộ phòng tập tạ, phòng xông hơi và nước uống miễn phí..."
-              className="w-full p-3 rounded-[8px] bg-white border border-[#E2E8F0] text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] outline-none focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/15 transition-all resize-none"
-            />
-          </div>
-        </DialogContent>
-
-        <DialogFooter className="mt-4 pt-3 border-t border-[#F1F5F9] flex items-center justify-end gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-            className="h-[40px] px-4 text-[#525252] border-[#E5E5E5] hover:bg-slate-50 cursor-pointer font-normal text-[14px]"
-          >
-            <span>Hủy bỏ</span>
-          </Button>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="h-[40px] px-5 bg-[#064343] hover:bg-[#053737] text-white font-normal text-[14px] leading-[20px] rounded-[8px] shadow-sm cursor-pointer flex items-center gap-2"
-          >
-            {isSubmitting ? (
-              <span className="flex items-center gap-2">
-                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Đang lưu...
-              </span>
-            ) : (
               <>
-                <FolderOpenIcon className="w-4 h-4 text-white" />
-                <span>{isEdit ? 'Cập nhật gói tập' : 'Tạo gói tập'}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[13px] font-medium text-[#64748B] hidden sm:inline">Trạng thái:</span>
+                  <Badge
+                    variant={statusBadge.variant}
+                    className="text-[13px] font-normal leading-[16px] px-2.5 py-[3px] rounded-[6px]"
+                  >
+                    {statusBadge.label}
+                  </Badge>
+                </div>
+
+                <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
               </>
             )}
-          </button>
-        </DialogFooter>
-      </form>
-    </Dialog>
+
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={isSubmitting}
+              className="w-8 h-8 rounded-full bg-[#F5F5F5] hover:bg-[#E5E5E5] text-[#525252] flex items-center justify-center transition-colors cursor-pointer ml-1 disabled:opacity-50"
+              aria-label="Đóng"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col flex-1 overflow-hidden">
+          <div className="p-6 overflow-y-auto space-y-7 flex-1">
+            <PackageInfoSection
+              formData={formData}
+              errors={errors}
+              categories={categories}
+              isEdit={isEdit}
+              isPriceDurationDisabled={isPriceDurationDisabled}
+              isStatusDisabled={isStatusDisabled}
+              onChangeField={handleChange}
+            />
+
+            <PackageDescriptionSection
+              value={formData.description}
+              onChange={(val) => handleChange('description', val)}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className="h-[72px] px-6 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-end gap-3 shrink-0">
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={isSubmitting}
+              className="h-[40px] px-5 min-w-[80px] bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] font-medium leading-[20px] text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer flex items-center justify-center disabled:opacity-50"
+            >
+              <span>Hủy</span>
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-[40px] px-5 min-w-[120px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[13px] font-medium leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
+                  <span>Đang lưu...</span>
+                </>
+              ) : (
+                <>
+                  <FolderOpenIcon className="w-4 h-4 text-white" />
+                  <span>{isEdit ? 'Lưu thay đổi' : 'Tạo gói tập'}</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 
 export default PackageFormDialog;
-

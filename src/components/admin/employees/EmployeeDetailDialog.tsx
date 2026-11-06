@@ -23,6 +23,7 @@ import {
   SelectValue,
   Alert,
   Badge,
+  Tabs,
 } from "@/components/ui";
 import type { EmployeeDetail, UpdateEmployeePayload } from "@/types/employee";
 import { SPECIALIZATION_OPTIONS } from "./CreateEmployeeForm";
@@ -479,67 +480,25 @@ export function EmployeeDetailDialog({
           </div>
         </div>
 
-        {/* Divider phân cách rõ ràng giữa Metadata bar và Tabs (#1415:2010) */}
         <div className="mx-6 h-[1px] bg-[#E2E8F0] my-4" />
 
-        {/* 3. Hệ thống Tabs chuẩn Figma #1415:2011 */}
-        <div className="px-6 pb-5 flex items-center gap-2 overflow-x-auto shrink-0 bg-white">
-          <button
-            type="button"
-            onClick={() => setActiveTab("general")}
-            className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 font-semibold transition-all cursor-pointer ${
-              activeTab === "general"
-                ? "bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)]"
-                : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium"
-            }`}
-          >
-            Thông tin chung
-          </button>
-
-          {isTrainer && (
-            <button
-              type="button"
-              onClick={() => setActiveTab("trainer")}
-              className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 transition-all cursor-pointer ${
-                activeTab === "trainer"
-                  ? "bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] font-semibold"
-                  : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium"
-              }`}
-            >
-              Chuyên môn & Đánh giá
-            </button>
-          )}
-
-          {!isEditing && (
-            <>
-              <button
-                type="button"
-                onClick={() => setActiveTab("schedule")}
-                className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 transition-all cursor-pointer ${
-                  activeTab === "schedule"
-                    ? "bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] font-semibold"
-                    : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium"
-                }`}
-              >
-                Lịch sử
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab("notes")}
-                className={`px-4 py-2 rounded-[8px] text-[13px] leading-5 transition-all cursor-pointer ${
-                  activeTab === "notes"
-                    ? "bg-[#064343] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] font-semibold"
-                    : "bg-[#F8FAFC] border border-[#E2E8F0] text-[#202939] hover:bg-slate-100 font-medium"
-                }`}
-              >
-                Ghi chú
-              </button>
-            </>
-          )}
+        <div className="px-6 pb-5 shrink-0 bg-white">
+          <Tabs
+            tabs={[
+              { id: "general", label: "Thông tin chung" },
+              ...(isTrainer ? [{ id: "trainer", label: "Chuyên môn & Đánh giá" }] : []),
+              ...(!isEditing
+                ? [
+                    { id: "schedule", label: "Lịch sử" },
+                    { id: "notes", label: "Ghi chú" },
+                  ]
+                : []),
+            ]}
+            activeTab={activeTab}
+            onChange={(tabId) => setActiveTab(tabId as any)}
+          />
         </div>
 
-        {/* 4. Nội dung chi tiết (View Mode vs. In-Place Edit Mode) */}
         <div className="flex-1 overflow-y-auto px-6 pt-5 pb-8 space-y-8">
           {activeTab === "general" && (
             <>
