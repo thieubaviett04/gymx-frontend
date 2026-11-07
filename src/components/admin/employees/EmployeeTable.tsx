@@ -112,22 +112,22 @@ export function EmployeeTable({
             return (
               <tr
                 key={emp.id}
-                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
+                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group h-[43px]`}
               >
                 {/* 1. STT */}
-                <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle rounded-l-[6px] text-[#202939] font-normal">
                   {stt}
                 </td>
 
                 {/* 2. Mã NV tách riêng ngay sau STT theo chuẩn Figma */}
-                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#064343] font-normal">
                   {emp.employeeCode}
                 </td>
 
-                {/* 3. Họ & Tên kèm Avatar 32x32px */}
-                <td className="py-[11px] px-[10px]">
+                {/* 3. Họ & Tên kèm Avatar 28x28px */}
+                <td className="h-[43px] px-[10px] py-0 align-middle">
                   <div className="flex items-center gap-[10px]">
-                    <div className="relative w-[32px] h-[32px] rounded-full overflow-hidden bg-slate-200 shrink-0 flex items-center justify-center">
+                    <div className="relative w-[28px] h-[28px] rounded-full overflow-hidden bg-slate-200 shrink-0 flex items-center justify-center">
                       <span className="font-semibold text-xs text-[#064343]">
                         {emp.fullName?.charAt(0)?.toUpperCase() || 'U'}
                       </span>
@@ -150,22 +150,22 @@ export function EmployeeTable({
                 </td>
 
                 {/* 4. Vai trò (Text chuẩn Figma 1346:6555) */}
-                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {formatPosition(emp.position)}
                 </td>
 
                 {/* 5. Số điện thoại */}
-                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {emp.phoneNumber || '—'}
                 </td>
 
                 {/* 6. Email */}
-                <td className="py-[11px] px-[10px] text-[#353945] font-normal truncate max-w-[220px]">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#353945] font-normal truncate max-w-[220px]">
                   {emp.email}
                 </td>
 
                 {/* 7. Trạng thái (Badge chuẩn GymX Figma Node 1437:1446) */}
-                <td className="py-[11px] px-[10px]">
+                <td className="h-[43px] px-[10px] py-0 align-middle">
                   {isActive ? (
                     <Badge variant="active">
                       Đang làm
@@ -178,7 +178,7 @@ export function EmployeeTable({
                 </td>
 
                 {/* 8. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
-                <td className="py-2 px-[10px] rounded-r-[6px]">
+                <td className="h-[43px] px-[10px] py-0 align-middle rounded-r-[6px]">
                   <div className="flex items-center gap-[10px]">
                     {/* Xem chi tiết */}
                     <button

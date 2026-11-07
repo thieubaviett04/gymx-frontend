@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Search, Settings, LogOut, ChevronRight } from 'lucide-react';
+import { Search, Settings, LogOut, ChevronRight } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { NotificationBell } from '@/components/shared';
 import {
@@ -76,25 +76,13 @@ export function AdminHeader({
   return (
     <>
       {/* Topbar matching Figma node 3067:123816 & 1329:14605 */}
-      <header className="sticky top-0 z-30 bg-transparent px-4 md:px-8 py-3.5 md:py-4 transition-all">
+      <header className="sticky top-0 z-30 bg-transparent px-4 md:px-8 pt-3.5 md:pt-4 pb-0 transition-all">
         <div className="flex items-center justify-between gap-4">
           {/* Left: Hamburger & Title with Breadcrumb per Figma 3067:123816 */}
-          <div className="flex flex-col gap-1.5 min-w-0">
-            <div className="flex items-center gap-2.5">
-              {onToggleSidebar && (
-                <button
-                  type="button"
-                  onClick={onToggleSidebar}
-                  className="p-1 -ml-1 rounded-lg text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0 inline-flex items-center justify-center"
-                  aria-label="Mở menu điều hướng"
-                >
-                  <Menu className="w-6 h-6 text-white" />
-                </button>
-              )}
-              <h1 className="text-[20px] md:text-[22px] font-semibold tracking-tight text-white font-heading truncate drop-shadow-xs leading-none flex items-center">
-                {title}
-              </h1>
-            </div>
+          <div className="flex flex-col gap-1 min-w-0">
+            <h1 className="text-[20px] md:text-[22px] font-semibold tracking-tight text-white font-heading truncate drop-shadow-xs leading-[26px] md:leading-[28px] pt-0.5 pb-0 flex items-center">
+              {title}
+            </h1>
 
             {/* Breadcrumb list aligned directly under title */}
             {breadcrumbs && breadcrumbs.length > 0 && (

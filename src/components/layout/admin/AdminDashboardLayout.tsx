@@ -45,6 +45,18 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
         : [{ label: 'Danh sách nhân viên' }],
     };
   }
+  if (cleanPath.includes('/admin/package-categories')) {
+    const isDeep = segments.length > 2;
+    return {
+      title: 'Danh mục gói tập',
+      breadcrumbs: isDeep
+        ? [
+            { label: 'Danh mục gói tập', href: '/admin/package-categories' },
+            { label: 'Chi tiết danh mục' },
+          ]
+        : [{ label: 'Danh mục gói tập' }],
+    };
+  }
   if (cleanPath.includes('/admin/packages')) {
     const isDeep = segments.length > 2;
     return {
@@ -148,7 +160,7 @@ export function AdminDashboardLayout({
           onToggleSidebar={() => setMobileMenuOpen(!isMobileMenuOpen)}
           actions={actions}
         />
-        <main className="flex-1 p-4 md:p-6 lg:p-8 pb-10 w-full flex flex-col">
+        <main className="flex-1 px-4 md:px-6 lg:px-8 pt-4 md:pt-[26px] pb-10 w-full flex flex-col">
           {children}
         </main>
       </div>

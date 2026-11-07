@@ -89,13 +89,13 @@ export function PackageTable({
             return (
               <tr
                 key={pkg.id}
-                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group`}
+                className={`${rowBg} transition-colors hover:bg-[#E3EDED] group h-[43px]`}
               >
-                <td className="py-[11px] px-[10px] rounded-l-[6px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle rounded-l-[6px] text-[#202939] font-normal">
                   {stt}
                 </td>
 
-                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#064343] font-normal">
                   <span>{pkg.packageCode}</span>
                   {pkg.previousPackageCode && (
                     <span className="block text-[11px] text-[#64748B]">
@@ -104,33 +104,33 @@ export function PackageTable({
                   )}
                 </td>
 
-                <td className="py-[11px] px-[10px] text-[#202939] font-normal truncate max-w-[260px]" title={pkg.name}>
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal truncate max-w-[260px]" title={pkg.name}>
                   {pkg.name}
                 </td>
 
-                <td className="py-[11px] px-[10px] text-[#064343] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#064343] font-normal">
                   {formatVND(pkg.price)}
                 </td>
 
-                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {formatPackageDuration(pkg.durationMonths, pkg.durationDays)}
                 </td>
 
-                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {pkg.categoryName || 'Chưa phân loại'}
                 </td>
 
-                <td className="py-[11px] px-[10px] text-[#202939] font-normal">
+                <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {pkg.activeMembersCount} hội viên
                 </td>
 
-                <td className="py-[11px] px-[10px]">
+                <td className="h-[43px] px-[10px] py-0 align-middle">
                   <Badge variant={statusBadge.variant}>
                     {statusBadge.label}
                   </Badge>
                 </td>
 
-                <td className="py-2 px-[10px] rounded-r-[6px]">
+                <td className="h-[43px] px-[10px] py-0 align-middle rounded-r-[6px]">
                   <div className="flex items-center gap-[10px]">
                     <button
                       type="button"

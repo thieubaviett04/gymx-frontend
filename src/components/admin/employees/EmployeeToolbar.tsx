@@ -58,7 +58,7 @@ export function EmployeeToolbar({
       {/* Search & Filters (Figma Container #1346:6501) */}
       <div className="flex flex-wrap items-center gap-3 flex-1">
         {/* Search Input matching Figma Node 1346:6502 */}
-        <div className="relative w-full sm:w-[380px] lg:w-[420px] h-[44px]">
+        <div className="relative w-full sm:w-[380px] lg:w-[420px] h-[48px]">
           <Search
             className={cn(
               "absolute left-[14px] top-1/2 -translate-y-1/2 w-5 h-5 transition-colors pointer-events-none stroke-[2.2]",
@@ -73,7 +73,7 @@ export function EmployeeToolbar({
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Tìm theo tên, SĐT, mã NV..."
             className={cn(
-              "w-full h-[44px] pl-[44px] pr-9 rounded-[8px] bg-white text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] transition-all outline-none",
+              "w-full h-[48px] pl-[44px] pr-9 rounded-[8px] bg-white text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] transition-all outline-none",
               isFocused || localSearch
                 ? "border-2 border-[#064343] ring-4 ring-[#064343]/20 shadow-md font-medium"
                 : "border border-[#E2E8F0] hover:border-[#CBD5E1] shadow-2xs"
@@ -99,7 +99,7 @@ export function EmployeeToolbar({
             value={selectedPosition || "ALL"}
             onValueChange={(val) => onPositionChange(val === "ALL" ? "" : val)}
           >
-            <SelectTrigger className="w-full h-[44px] px-3.5 rounded-[8px] border-[#E2E8F0] text-[14px] text-[#2F3D50]">
+            <SelectTrigger className="w-full h-[48px] px-3.5 rounded-[8px] border-[#E2E8F0] text-[14px] text-[#2F3D50]">
               <SelectValue placeholder="Tất cả vai trò" />
             </SelectTrigger>
             <SelectContent className="min-w-[245px]">
@@ -119,7 +119,7 @@ export function EmployeeToolbar({
             value={selectedStatus || "ALL"}
             onValueChange={(val) => onStatusChange(val === "ALL" ? "" : val)}
           >
-            <SelectTrigger className="w-full h-[44px] px-3.5 rounded-[8px] border-[#E2E8F0] text-[14px] text-[#2F3D50]">
+            <SelectTrigger className="w-full h-[48px] px-3.5 rounded-[8px] border-[#E2E8F0] text-[14px] text-[#2F3D50]">
               <SelectValue placeholder="Tất cả trạng thái" />
             </SelectTrigger>
             <SelectContent className="min-w-[195px]">
@@ -138,7 +138,7 @@ export function EmployeeToolbar({
           <button
             type="button"
             onClick={handleResetFilter}
-            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            className="h-[48px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
             title="Xóa bộ lọc"
           >
             <TrashBinIcon className="w-5 h-5" color="#EE464C" />
@@ -151,7 +151,7 @@ export function EmployeeToolbar({
       <button
         type="button"
         onClick={onAddNew}
-        className="h-[44px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
+        className="h-[48px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
       >
         <Plus className="w-5 h-5 text-white stroke-[2]" />
         <span>Thêm nhân viên</span>
