@@ -237,6 +237,7 @@ export default function AdminPackageCategoriesPage() {
       )}
 
       <CategoryFormDialog
+        key={isFormOpen ? 'open' : 'closed'}
         isOpen={isFormOpen}
         isSubmitting={createMutation.isPending}
         onClose={() => setIsFormOpen(false)}

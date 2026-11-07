@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Lock } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -41,18 +40,10 @@ export function CategoryInfoSection({
         </h4>
       </div>
 
-      <div className="px-5 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+      <div className={`px-5 grid grid-cols-1 ${isEdit ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-x-6 gap-y-5`}>
         <div className="flex flex-col gap-1.5 min-w-0">
-          <label className="text-[13px] font-medium text-[#202939] flex items-center justify-between">
-            <span className="flex items-center gap-1">
-              Mã danh mục <span className="text-[#EE0033]">*</span>
-            </span>
-            {isEdit && (
-              <span className="text-[11px] text-[#64748B] flex items-center gap-1 font-normal">
-                <Lock className="w-3 h-3 text-[#64748B]" />
-                Không thể thay đổi
-              </span>
-            )}
+          <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
+            Mã danh mục <span className="text-[#EE0033]">*</span>
           </label>
           <div
             className={`h-[42px] px-3.5 py-2 rounded-[8px] flex items-center transition-all ${
@@ -110,7 +101,7 @@ export function CategoryInfoSection({
         </div>
 
         {isEdit && (
-          <div className="flex flex-col gap-1.5 min-w-0 md:col-span-2">
+          <div className="flex flex-col gap-1.5 min-w-0">
             <label className="text-[13px] font-medium text-[#202939]">
               Trạng thái hoạt động
             </label>

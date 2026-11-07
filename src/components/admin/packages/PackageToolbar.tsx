@@ -74,7 +74,7 @@ export function PackageToolbar({
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 mb-5">
       <div className="flex flex-wrap items-center gap-3 flex-1">
-        <div className="relative w-full sm:w-[320px] lg:w-[360px] h-[44px]">
+        <div className="relative w-full sm:w-[320px] lg:w-[360px] h-[48px]">
           <Search
             className={cn(
               'absolute left-[14px] top-1/2 -translate-y-1/2 w-5 h-5 transition-colors pointer-events-none stroke-[2.2]',
@@ -89,7 +89,7 @@ export function PackageToolbar({
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Tìm theo tên hoặc mã gói tập..."
             className={cn(
-              'w-full h-[44px] pl-[44px] pr-9 rounded-[8px] bg-white text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] transition-all outline-none',
+              'w-full h-[48px] pl-[44px] pr-9 rounded-[8px] bg-white text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] transition-all outline-none',
               isFocused || localSearch
                 ? 'border-2 border-[#064343] ring-4 ring-[#064343]/20 shadow-md font-medium'
                 : 'border border-[#E2E8F0] hover:border-[#CBD5E1] shadow-2xs'
@@ -115,7 +115,7 @@ export function PackageToolbar({
             value={selectedDuration || 'ALL'}
             onValueChange={(val) => onDurationChange(val)}
           >
-            <SelectTrigger className="w-full h-[44px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
+            <SelectTrigger className="w-full h-[48px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
               <SelectValue placeholder="Chọn thời hạn" />
             </SelectTrigger>
             <SelectContent>
@@ -133,7 +133,7 @@ export function PackageToolbar({
             value={selectedStatus || 'ALL'}
             onValueChange={(val) => onStatusChange(val)}
           >
-            <SelectTrigger className="w-full h-[44px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
+            <SelectTrigger className="w-full h-[48px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
               <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
             <SelectContent>
@@ -152,7 +152,7 @@ export function PackageToolbar({
             value={selectedSort || 'latest'}
             onValueChange={(val) => onSortChange(val)}
           >
-            <SelectTrigger className="w-full h-[44px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
+            <SelectTrigger className="w-full h-[48px] px-3.5 bg-white border border-[#E2E8F0] rounded-[8px] text-[14px] text-[#0A0A0A] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-2 focus:ring-[#064343]/20 data-[state=open]:border-[#064343] data-[state=open]:ring-2 data-[state=open]:ring-[#064343]/20 cursor-pointer">
               <SelectValue placeholder="Chọn thứ tự sắp xếp" />
             </SelectTrigger>
             <SelectContent>
@@ -169,7 +169,7 @@ export function PackageToolbar({
           <button
             type="button"
             onClick={handleResetFilters}
-            className="h-[44px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
+            className="h-[48px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
             title="Xóa bộ lọc"
           >
             <TrashBinIcon className="w-5 h-5" color="#EE464C" />
@@ -182,7 +182,7 @@ export function PackageToolbar({
         <button
           type="button"
           onClick={onAddNew}
-          className="h-[44px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
+          className="h-[48px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
         >
           <Plus className="w-5 h-5 text-white stroke-[2]" />
           <span>Thêm gói tập</span>

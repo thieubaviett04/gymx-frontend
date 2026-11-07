@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Textarea } from '@/components/ui';
 
 interface CategoryDescriptionSectionProps {
   value: string;
@@ -25,24 +26,16 @@ export function CategoryDescriptionSection({
         <label className="text-[13px] font-medium text-[#202939]">
           Mô tả chi tiết danh mục
         </label>
-        <div className="relative">
-          <textarea
-            rows={5}
-            maxLength={500}
-            disabled={disabled}
-            placeholder="Nhập mô tả"
-            value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
-            className={`w-full resize-none rounded-[8px] border px-3.5 pt-3 pb-8 text-[14px] text-[#202939] leading-relaxed outline-none transition-all placeholder:text-[#9EA5C0] ${
-              disabled
-                ? 'bg-slate-100 border-slate-200 cursor-not-allowed text-slate-500'
-                : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
-            }`}
-          />
-          <span className="absolute bottom-2.5 right-3 text-[13px] text-[#9EA5C0] pointer-events-none select-none">
-            {(value || '').length}/500
-          </span>
-        </div>
+        <Textarea
+          rows={4}
+          autoResize
+          minHeight={110}
+          maxLength={500}
+          disabled={disabled}
+          placeholder="Nhập mô tả"
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+        />
       </div>
     </div>
   );

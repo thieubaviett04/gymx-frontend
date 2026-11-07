@@ -91,7 +91,7 @@ export function PackageInfoSection({
               <SelectItem value="none">Chưa phân loại</SelectItem>
               {categories.map((cat) => (
                 <SelectItem key={cat.id} value={cat.id}>
-                  {cat.name} ({cat.code})
+                  {cat.name}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -39,6 +39,12 @@ export function CategoryFormDialog({
     getUpdatePayload,
   } = useCategoryForm({ initialData, isEdit });
 
+  React.useEffect(() => {
+    if (isOpen && !isEdit) {
+      resetForm();
+    }
+  }, [isOpen, isEdit, resetForm]);
+
   if (!isOpen) return null;
 
   const handleClose = () => {
@@ -59,6 +65,7 @@ export function CategoryFormDialog({
       const payload = getCreatePayload();
       if (!payload) return;
       await onSubmit(payload);
+      resetForm();
     }
   };
 

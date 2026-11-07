@@ -49,7 +49,7 @@ export function CategoryDetailInfo({ category }: CategoryDetailInfoProps) {
           </h4>
         </div>
 
-        <div className="px-5 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+        <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
           <InfoItem
             label="Mã danh mục"
             value={category.code}
