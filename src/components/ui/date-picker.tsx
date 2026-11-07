@@ -14,6 +14,10 @@ interface DatePickerProps {
   disabled?: boolean;
   className?: string;
   id?: string;
+  minDate?: Date;
+  disabledDays?: (date: Date) => boolean;
+  hasError?: boolean;
+  error?: boolean | string;
   onFocus?: () => void;
 }
 
@@ -68,9 +72,14 @@ export function DatePicker({
   disabled = false,
   className,
   id,
+  minDate,
+  disabledDays,
+  hasError = false,
+  error,
   onFocus,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
+  const isError = Boolean(hasError || error);
 
   // Parse YYYY-MM-DD string to Date object
   const selectedDate = React.useMemo(() => {
@@ -116,9 +125,11 @@ export function DatePicker({
   return (
     <Popover
       open={open}
-      onOpenChange={(isOpen) => {
-        setOpen(isOpen);
-        if (isOpen && onFocus) onFocus();
+      onOpenChange={(nextOpen) => {
+        setOpen(nextOpen);
+        if (nextOpen) {
+          onFocus?.();
+        }
       }}
     >
       <PopoverTrigger asChild>
@@ -126,10 +137,19 @@ export function DatePicker({
           id={id}
           type="button"
           disabled={disabled}
-          onFocus={onFocus}
+          onClick={() => {
+            onFocus?.();
+          }}
+          onFocus={() => {
+            onFocus?.();
+          }}
           className={cn(
-            'flex h-[44px] w-full items-center justify-between rounded-[8px] border border-[#CDD5DF] bg-white px-3.5 py-2 text-[14px] text-[#2F3D50] shadow-2xs transition-all hover:border-[#064343] focus:outline-none focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-50 disabled:border-slate-200 disabled:text-slate-400',
-            open && 'border-[#064343] ring-1 ring-[#064343]',
+            'flex h-[42px] w-full items-center justify-between rounded-[8px] border px-3.5 py-2 text-[14px] text-[#2F3D50] shadow-2xs transition-colors focus:outline-none cursor-pointer disabled:cursor-not-allowed disabled:bg-[#F8FAFC] disabled:border-[#E2E8F0] disabled:text-[#94A3B8] disabled:opacity-60 disabled:select-none',
+            isError
+              ? 'border-[#EE464C] bg-[#FFF5F5] hover:border-[#EE464C] focus:border-[#EE464C]'
+              : 'border-[#E2E8F0] bg-slate-50 hover:border-[#064343] focus:border-[#064343] focus:bg-white',
+            open && !isError && 'border-[#064343] bg-white ring-1 ring-[#064343]',
+            open && isError && 'border-[#EE464C] ring-1 ring-[#EE464C]',
             className
           )}
         >
@@ -156,6 +176,9 @@ export function DatePicker({
         side="bottom"
         sideOffset={6}
         avoidCollisions={false}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+        }}
         className="w-[var(--radix-popover-trigger-width)] min-w-[280px] p-3.5 bg-white border border-[#E2E8F0] rounded-[10px] shadow-[0px_10px_30px_rgba(0,0,0,0.12)] z-50"
       >
         <Calendar
@@ -166,16 +189,35 @@ export function DatePicker({
           captionLayout="label"
           locale={vi}
           className="w-full"
+          disabled={(date) => {
+            if (disabledDays && disabledDays(date)) return true;
+            if (minDate) {
+              const d = new Date(date);
+              d.setHours(0, 0, 0, 0);
+              const min = new Date(minDate);
+              min.setHours(0, 0, 0, 0);
+              return d < min;
+            }
+            return false;
+          }}
         />
 
         <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs px-1">
-          <button
-            type="button"
-            onClick={() => handleSelect(new Date())}
-            className="text-[#064343] font-medium hover:underline cursor-pointer"
-          >
-            Hôm nay
-          </button>
+          {(!minDate || (() => {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            const min = new Date(minDate);
+            min.setHours(0, 0, 0, 0);
+            return now >= min;
+          })()) && (
+            <button
+              type="button"
+              onClick={() => handleSelect(new Date())}
+              className="text-[#064343] font-medium hover:underline cursor-pointer"
+            >
+              Hôm nay
+            </button>
+          )}
           {value && (
             <button
               type="button"

@@ -13,15 +13,30 @@ import type {
 } from '@/types/package';
 import { validatePackageForm } from '@/lib/utils/validators';
 
-const getTodayString = () => new Date().toISOString().split('T')[0];
+const getTodayString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const getTomorrowString = () => {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 const resolveInitialStatus = (data?: PackageDetail | PackageSummary | null): PackageFormStatus => {
   if (!data) return 'ACTIVE';
-  const todayStr = getTodayString();
-  if (data.status === 'ACTIVE' && data.effectiveStartDate && data.effectiveStartDate > todayStr) {
-    return 'UPCOMING';
-  }
-  return (data.status as PackageFormStatus) || 'ACTIVE';
+  const norm = (data.status || '').toUpperCase();
+  if (norm === 'PENDING' || norm === 'UPCOMING') return 'PENDING';
+  if (norm === 'INACTIVE') return 'INACTIVE';
+  if (norm === 'DISCONTINUED') return 'DISCONTINUED';
+  return 'ACTIVE';
 };
 
 const INITIAL_PACKAGE_FORM: PackageFormData = {
@@ -77,63 +92,62 @@ export function usePackageForm({ initialData, isEdit = false }: UsePackageFormOp
 
   const handleChange = useCallback(
     <K extends keyof PackageFormData>(field: K, value: PackageFormData[K]) => {
+      const todayStr = getTodayString();
+      let nextStatus = formData.status;
+      let nextDate = formData.effectiveStartDate;
+
+      if (field === 'status') {
+        const statusVal = value as PackageFormStatus;
+        nextStatus = statusVal;
+        if (statusVal === 'PENDING') {
+          const isFuture = formData.effectiveStartDate && formData.effectiveStartDate > todayStr;
+          nextDate = isFuture ? formData.effectiveStartDate : getTomorrowString();
+        } else if (statusVal === 'ACTIVE') {
+          const isFuture = formData.effectiveStartDate && formData.effectiveStartDate > todayStr;
+          nextDate = isFuture ? todayStr : formData.effectiveStartDate;
+        } else if (statusVal === 'INACTIVE' || statusVal === 'DISCONTINUED') {
+          nextDate = formData.effectiveStartDate;
+        }
+      } else if (field === 'effectiveStartDate') {
+        nextDate = String(value || '');
+      }
+
       setFormData((prev) => {
-        const todayStr = getTodayString();
-
         if (field === 'status') {
-          const statusVal = value as PackageFormStatus;
-          if (statusVal === 'UPCOMING') {
-            const isFuture = prev.effectiveStartDate && prev.effectiveStartDate > todayStr;
-            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
-            return {
-              ...prev,
-              status: 'UPCOMING',
-              effectiveStartDate: isFuture ? prev.effectiveStartDate : tomorrow,
-            };
-          }
-          if (statusVal === 'ACTIVE') {
-            const isFuture = prev.effectiveStartDate && prev.effectiveStartDate > todayStr;
-            return {
-              ...prev,
-              status: 'ACTIVE',
-              effectiveStartDate: isFuture ? todayStr : prev.effectiveStartDate,
-            };
-          }
-          return { ...prev, status: statusVal };
+          return { ...prev, status: nextStatus, effectiveStartDate: nextDate };
         }
-
         if (field === 'effectiveStartDate') {
-          const dateVal = String(value);
-          if (!isEdit) {
-            if (dateVal > todayStr && prev.status === 'ACTIVE') {
-              return {
-                ...prev,
-                effectiveStartDate: dateVal,
-                status: 'UPCOMING',
-              };
-            }
-            if (dateVal <= todayStr && prev.status === 'UPCOMING') {
-              return {
-                ...prev,
-                effectiveStartDate: dateVal,
-                status: 'ACTIVE',
-              };
-            }
-          }
-          return { ...prev, effectiveStartDate: dateVal };
+          return { ...prev, effectiveStartDate: nextDate };
         }
-
         return { ...prev, [field]: value };
       });
 
       setErrors((prev) => {
-        if (!prev[field]) return prev;
-        const copy = { ...prev };
-        delete copy[field];
-        return copy;
+        const updated = {
+          ...prev,
+          [field]: undefined,
+        };
+
+        if (field === 'status' || field === 'effectiveStartDate') {
+          if (nextStatus === 'INACTIVE' || nextStatus === 'DISCONTINUED') {
+            updated.effectiveStartDate = undefined;
+          } else if (!nextDate) {
+            updated.effectiveStartDate = 'Vui lòng chọn ngày bắt đầu áp dụng.';
+          } else if (!isEdit && nextDate < todayStr) {
+            updated.effectiveStartDate = 'Ngày bắt đầu áp dụng không được chọn ngày ở quá khứ.';
+          } else if (nextStatus === 'PENDING' && nextDate <= todayStr) {
+            updated.effectiveStartDate = 'Trạng thái chưa áp dụng không thể chọn ngày hiện tại, quá khứ';
+          } else if (nextStatus === 'ACTIVE' && nextDate > todayStr) {
+            updated.effectiveStartDate = 'Trạng thái đang áp dụng không thể chọn ngày tương lai';
+          } else {
+            updated.effectiveStartDate = undefined;
+          }
+        }
+
+        return updated;
       });
     },
-    [isEdit]
+    [formData.effectiveStartDate, formData.status, isEdit]
   );
 
   const resetForm = useCallback(() => {
@@ -164,11 +178,11 @@ export function usePackageForm({ initialData, isEdit = false }: UsePackageFormOp
     return {
       name: formData.name.trim(),
       price: Number(formData.price),
-      status: formData.status === 'UPCOMING' ? 'ACTIVE' : formData.status,
+      status: formData.status,
       durationMonths: Number(formData.durationMonths),
       categoryId: formData.categoryId ? formData.categoryId : null,
       description: formData.description.trim() || null,
-      effectiveStartDate: formData.effectiveStartDate,
+      effectiveStartDate: formData.effectiveStartDate.split('T')[0],
     };
   }, [formData, validate]);
 
@@ -181,18 +195,28 @@ export function usePackageForm({ initialData, isEdit = false }: UsePackageFormOp
         durationMonths: Number(formData.durationMonths),
         categoryId: formData.categoryId ? formData.categoryId : null,
         description: formData.description.trim() || null,
-        status: (formData.status === 'UPCOMING' ? 'ACTIVE' : formData.status) as PackageStatus,
-        effectiveStartDate: formData.effectiveStartDate,
+        status: formData.status,
+        effectiveStartDate: formData.effectiveStartDate.split('T')[0],
         mode: mode || null,
       };
     },
     [formData, validate]
   );
 
+  const clearError = useCallback((field: keyof PackageFormData) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const copy = { ...prev };
+      delete copy[field];
+      return copy;
+    });
+  }, []);
+
   return {
     formData,
     errors,
     setErrors,
+    clearError,
     handleChange,
     resetForm,
     validate,

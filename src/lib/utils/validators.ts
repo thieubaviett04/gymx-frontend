@@ -289,16 +289,19 @@ export function validatePackageForm(
     }
   }
 
-  if (!form.effectiveStartDate) {
-    errors.effectiveStartDate = 'Vui lòng chọn ngày bắt đầu áp dụng.';
-  } else if (!isEdit) {
-    const todayStr = new Date().toISOString().split('T')[0];
-    if (form.effectiveStartDate < todayStr) {
-      errors.effectiveStartDate = 'Ngày bắt đầu áp dụng không được chọn ngày ở quá khứ.';
-    } else if (form.status === 'UPCOMING' && form.effectiveStartDate <= todayStr) {
-      errors.effectiveStartDate = 'Gói ở trạng thái Chuẩn bị phải có ngày bắt đầu ở tương lai.';
-    } else if (form.status === 'ACTIVE' && form.effectiveStartDate > todayStr) {
-      errors.effectiveStartDate = 'Gói ở trạng thái Đang bán không được chọn ngày bắt đầu ở tương lai.';
+  if (form.status !== 'INACTIVE' && form.status !== 'DISCONTINUED') {
+    if (!form.effectiveStartDate) {
+      errors.effectiveStartDate = 'Vui lòng chọn ngày bắt đầu áp dụng.';
+    } else {
+      const d = new Date();
+      const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      if (!isEdit && form.effectiveStartDate < todayStr) {
+        errors.effectiveStartDate = 'Ngày bắt đầu áp dụng không được chọn ngày ở quá khứ.';
+      } else if ((form.status === 'PENDING' || (form.status as string) === 'UPCOMING') && form.effectiveStartDate <= todayStr) {
+        errors.effectiveStartDate = 'Trạng thái chưa áp dụng không thể chọn ngày hiện tại, quá khứ';
+      } else if (form.status === 'ACTIVE' && form.effectiveStartDate > todayStr) {
+        errors.effectiveStartDate = 'Trạng thái đang áp dụng không thể chọn ngày tương lai';
+      }
     }
   }
 

@@ -5,3 +5,4 @@ export * from './useEmployeeDetailForm';
 export * from './useCreateEmployeeForm';
 export * from './usePackageForm';
 export * from './useCategoryForm';
+export * from './usePenaltyRuleForm';

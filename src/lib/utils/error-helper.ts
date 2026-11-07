@@ -1,5 +1,7 @@
 import type { FormErrors } from './validators';
 import type { EmployeeFormErrors } from '@/types/employee';
+import type { PenaltyRuleFormErrors } from '@/types/penaltyRule';
+import type { PackageFormErrors } from '@/types/package';
 
 /**
  * Trích xuất message thông báo lỗi thân thiện từ Error, AxiosError hoặc string
@@ -206,6 +208,120 @@ export function parseEmployeeBackendError(err: unknown): {
     /(cccd|căn cước).*(tồn tại|sử dụng|đã có|trùng|exists|duplicate|already)/i.test(rawDesc)
   ) {
     fieldErrors.nationalId = formatErrorMessage(rawDesc || 'Số CCCD này đã tồn tại trong hệ thống.');
+  }
+
+  return {
+    fieldErrors,
+    generalError: formattedMsg,
+  };
+}
+
+export function parsePenaltyRuleBackendError(err: unknown): {
+  fieldErrors: PenaltyRuleFormErrors;
+  generalError: string;
+} {
+  const errObj = err as {
+    response?: {
+      data?: {
+        errors?: Record<string, unknown>;
+        error?: { code?: string; description?: string; message?: string };
+        code?: string;
+        message?: string;
+        detail?: string;
+        title?: string;
+      };
+    };
+    message?: string;
+  };
+
+  const data = errObj?.response?.data;
+  const fieldErrors: PenaltyRuleFormErrors = {};
+
+  if (data?.errors && typeof data.errors === 'object') {
+    for (const [key, msgs] of Object.entries(data.errors)) {
+      const msg = Array.isArray(msgs) ? msgs[0] : String(msgs);
+      const lowerKey = key.toLowerCase();
+      if (lowerKey === 'name') fieldErrors.name = msg;
+      else if (lowerKey === 'fineamount') fieldErrors.fineAmount = msg;
+      else if (lowerKey === 'severitylevel') fieldErrors.severityLevel = msg;
+      else if (lowerKey === 'effectivedate' || lowerKey === 'effectivefrom') fieldErrors.effectiveDate = msg;
+      else if (lowerKey === 'status') fieldErrors.status = msg;
+      else if (lowerKey === 'violationtype' || lowerKey === 'targetaudience') fieldErrors.violationType = msg;
+      else if (lowerKey === 'description') fieldErrors.description = msg;
+      else fieldErrors.general = msg;
+    }
+  }
+
+  const rawDesc =
+    data?.error?.description ||
+    data?.error?.message ||
+    data?.detail ||
+    data?.message ||
+    data?.title ||
+    errObj?.message ||
+    '';
+
+  const formattedMsg = formatErrorMessage(rawDesc);
+  if (/chưa áp dụng|đang áp dụng|ngày tương lai|hiện tại|quá khứ|chờ áp dụng|ngày hiệu lực|ngày bắt đầu/i.test(rawDesc) || /effectivedate|effectivefrom/i.test(rawDesc)) {
+    fieldErrors.effectiveDate = rawDesc;
+  } else if (/tiền phạt/i.test(rawDesc)) {
+    fieldErrors.fineAmount = rawDesc;
+  }
+
+  return {
+    fieldErrors,
+    generalError: formattedMsg,
+  };
+}
+
+export function parsePackageBackendError(err: unknown): {
+  fieldErrors: PackageFormErrors;
+  generalError: string;
+} {
+  const errObj = err as {
+    response?: {
+      data?: {
+        errors?: Record<string, unknown>;
+        error?: { code?: string; description?: string; message?: string };
+        code?: string;
+        message?: string;
+        detail?: string;
+        title?: string;
+      };
+    };
+    message?: string;
+  };
+
+  const data = errObj?.response?.data;
+  const fieldErrors: PackageFormErrors = {};
+
+  if (data?.errors && typeof data.errors === 'object') {
+    for (const [key, msgs] of Object.entries(data.errors)) {
+      const msg = Array.isArray(msgs) ? msgs[0] : String(msgs);
+      const lowerKey = key.toLowerCase();
+      if (lowerKey === 'name') fieldErrors.name = msg;
+      else if (lowerKey === 'price') fieldErrors.price = msg;
+      else if (lowerKey === 'durationmonths') fieldErrors.durationMonths = msg;
+      else if (lowerKey === 'categoryid') fieldErrors.categoryId = msg;
+      else if (lowerKey === 'status') fieldErrors.status = msg;
+      else if (lowerKey === 'effectivestartdate') fieldErrors.effectiveStartDate = msg;
+      else if (lowerKey === 'description') fieldErrors.description = msg;
+      else fieldErrors.general = msg;
+    }
+  }
+
+  const rawDesc =
+    data?.error?.description ||
+    data?.error?.message ||
+    data?.detail ||
+    data?.message ||
+    data?.title ||
+    errObj?.message ||
+    '';
+
+  const formattedMsg = formatErrorMessage(rawDesc);
+  if (/chưa áp dụng|đang áp dụng|ngày tương lai|hiện tại|quá khứ|chờ áp dụng|ngày hiệu lực|ngày bắt đầu/i.test(rawDesc) || /effectivestartdate/i.test(rawDesc)) {
+    fieldErrors.effectiveStartDate = rawDesc;
   }
 
   return {

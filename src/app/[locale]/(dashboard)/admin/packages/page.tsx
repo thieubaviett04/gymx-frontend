@@ -167,8 +167,15 @@ export default function AdminPackagesPage() {
   const handleOpenEdit = async (pkg: PackageSummary) => {
     try {
       const res = await packageService.adminById(pkg.id);
-      setActiveDetailPackage(res.data);
-      setEditingPackage(res.data);
+      const detail: PackageDetail = {
+        ...pkg,
+        ...res.data,
+        categoryId: res.data?.categoryId ?? pkg.categoryId,
+        categoryName: res.data?.categoryName ?? pkg.categoryName,
+        categoryCode: res.data?.categoryCode ?? pkg.categoryCode,
+      };
+      setActiveDetailPackage(detail);
+      setEditingPackage(detail);
     } catch {
       setActiveDetailPackage(pkg);
       setEditingPackage(pkg);
@@ -180,8 +187,15 @@ export default function AdminPackagesPage() {
   const handleOpenView = async (pkg: PackageSummary) => {
     try {
       const res = await packageService.adminById(pkg.id);
-      setActiveDetailPackage(res.data);
-      setEditingPackage(res.data);
+      const detail: PackageDetail = {
+        ...pkg,
+        ...res.data,
+        categoryId: res.data?.categoryId ?? pkg.categoryId,
+        categoryName: res.data?.categoryName ?? pkg.categoryName,
+        categoryCode: res.data?.categoryCode ?? pkg.categoryCode,
+      };
+      setActiveDetailPackage(detail);
+      setEditingPackage(detail);
     } catch {
       setActiveDetailPackage(pkg);
       setEditingPackage(pkg);
