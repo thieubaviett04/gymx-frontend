@@ -18,6 +18,7 @@ import {
   PackageInfoSection,
   PackageDescriptionSection,
 } from './sections';
+import { parsePackageBackendError } from '@/lib/utils/error-helper';
 
 interface PackageFormDialogProps {
   isOpen: boolean;
@@ -39,6 +40,8 @@ export function PackageFormDialog({
   const {
     formData,
     errors,
+    setErrors,
+    clearError,
     handleChange,
     resetForm,
     getCreatePayload,
@@ -52,6 +55,8 @@ export function PackageFormDialog({
       return res.data;
     },
     enabled: isOpen,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
   const categories = categoryData || [];
@@ -68,18 +73,26 @@ export function PackageFormDialog({
     e.preventDefault();
     if (isSubmitting) return;
 
-    if (isEdit) {
-      const payload = getUpdatePayload();
-      if (!payload) return;
-      await onSubmit(payload);
-    } else {
-      const payload = getCreatePayload();
-      if (!payload) return;
-      await onSubmit(payload);
+    try {
+      if (isEdit) {
+        const payload = getUpdatePayload();
+        if (!payload) return;
+        await onSubmit(payload);
+      } else {
+        const payload = getCreatePayload();
+        if (!payload) return;
+        await onSubmit(payload);
+      }
+      resetForm();
+    } catch (err: unknown) {
+      const { fieldErrors } = parsePackageBackendError(err);
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors((prev) => ({ ...prev, ...fieldErrors }));
+      }
     }
   };
 
-  const statusBadge = getPackageStatusBadge(formData.status, formData.effectiveStartDate);
+  const statusBadge = getPackageStatusBadge(formData.status);
 
   const isPriceDurationDisabled = false;
   const isStatusDisabled = false;
@@ -142,6 +155,7 @@ export function PackageFormDialog({
               isPriceDurationDisabled={isPriceDurationDisabled}
               isStatusDisabled={isStatusDisabled}
               onChangeField={handleChange}
+              onClearError={clearError}
             />
 
             <PackageDescriptionSection

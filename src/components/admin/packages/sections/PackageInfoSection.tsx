@@ -25,6 +25,7 @@ interface PackageInfoSectionProps {
   isPriceDurationDisabled?: boolean;
   isStatusDisabled?: boolean;
   onChangeField: <K extends keyof PackageFormData>(field: K, value: PackageFormData[K]) => void;
+  onClearError?: (field: keyof PackageFormData) => void;
 }
 
 export function PackageInfoSection({
@@ -35,7 +36,13 @@ export function PackageInfoSection({
   isPriceDurationDisabled = false,
   isStatusDisabled = false,
   onChangeField,
+  onClearError,
 }: PackageInfoSectionProps) {
+  const isDateDisabled =
+    isPriceDurationDisabled ||
+    formData.status === 'INACTIVE' ||
+    formData.status === 'DISCONTINUED';
+
   return (
     <div className="bg-white">
       <div className="border-b border-[#F1F5F9] pb-2 mb-4">
@@ -77,7 +84,11 @@ export function PackageInfoSection({
             Loại hình gói tập
           </label>
           <Select
-            value={formData.categoryId || undefined}
+            value={
+              categories.find(
+                (c) => c.id.toLowerCase() === (formData.categoryId || '').toLowerCase()
+              )?.id || (formData.categoryId ? formData.categoryId : 'none')
+            }
             onValueChange={(val) => onChangeField('categoryId', val === 'none' ? '' : val)}
           >
             <SelectTrigger
@@ -157,15 +168,15 @@ export function PackageInfoSection({
             <SelectContent>
               {!isEdit ? (
                 <>
-                  <SelectItem value="ACTIVE">Đang bán</SelectItem>
-                  <SelectItem value="UPCOMING">Chuẩn bị</SelectItem>
+                  <SelectItem value="ACTIVE">Đang áp dụng</SelectItem>
+                  <SelectItem value="PENDING">Chờ áp dụng</SelectItem>
                 </>
               ) : (
                 <>
-                  <SelectItem value="ACTIVE">Đang bán</SelectItem>
-                  <SelectItem value="UPCOMING">Chuẩn bị</SelectItem>
+                  <SelectItem value="ACTIVE">Đang áp dụng</SelectItem>
+                  <SelectItem value="PENDING">Chờ áp dụng</SelectItem>
                   <SelectItem value="INACTIVE">Tạm ngưng</SelectItem>
-                  <SelectItem value="DISCONTINUED">Ngừng bán</SelectItem>
+                  <SelectItem value="DISCONTINUED">Ngừng áp dụng</SelectItem>
                 </>
               )}
             </SelectContent>
@@ -210,22 +221,25 @@ export function PackageInfoSection({
         </div>
 
         <div className="flex flex-col gap-1.5 min-w-0">
-          <label className={`text-[13px] font-medium flex items-center gap-1 ${isPriceDurationDisabled ? 'text-[#94A3B8]' : 'text-[#202939]'}`}>
-            Thời gian bắt đầu <span className={isPriceDurationDisabled ? 'text-[#CBD5E1]' : 'text-[#EE0033]'}>*</span>
+          <label className={`text-[13px] font-medium flex items-center gap-1 ${isDateDisabled ? 'text-[#94A3B8]' : 'text-[#202939]'}`}>
+            Thời gian bắt đầu <span className={isDateDisabled ? 'text-[#CBD5E1]' : 'text-[#EE0033]'}>*</span>
           </label>
           <DatePicker
             value={formData.effectiveStartDate}
-            disabled={isPriceDurationDisabled}
+            disabled={isDateDisabled}
             onChange={(val) => onChangeField('effectiveStartDate', val)}
+            onFocus={() => onClearError?.('effectiveStartDate')}
+            hasError={Boolean(errors.effectiveStartDate)}
+            error={errors.effectiveStartDate}
             placeholder="Chọn ngày bắt đầu"
-            className={`h-[42px] ${
-              isPriceDurationDisabled
+            className={
+              isDateDisabled
                 ? 'bg-[#F8FAFC] border-[#E2E8F0] opacity-50 cursor-not-allowed select-none text-[#94A3B8]'
-                : 'bg-slate-50 border-slate-200 focus:bg-white'
-            } ${errors.effectiveStartDate ? 'border-red-400 bg-red-50/20' : ''}`}
+                : ''
+            }
           />
-          {errors.effectiveStartDate && !isPriceDurationDisabled && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+          {errors.effectiveStartDate && !isDateDisabled && (
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5">
               {errors.effectiveStartDate}
             </p>
           )}

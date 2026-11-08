@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { X, Loader2 } from 'lucide-react';
 import { Badge, Tabs } from '@/components/ui';
@@ -9,6 +9,7 @@ import { packageService } from '@/lib/api/modules/packageService';
 import { usePackageForm } from '@/lib/hooks/usePackageForm';
 import {
   getPackageStatusBadge,
+  type PackageCategoryLookup,
   type PackageDetail,
   type PackageSummary,
   type UpdatePackagePayload,
@@ -22,6 +23,7 @@ import {
   PackageInfoSection,
   PackageDescriptionSection,
 } from './sections';
+import { parsePackageBackendError } from '@/lib/utils/error-helper';
 
 interface PackageDetailDialogProps {
   isOpen: boolean;
@@ -53,6 +55,8 @@ export function PackageDetailDialog({
   const {
     formData,
     errors,
+    setErrors,
+    clearError,
     handleChange,
     resetForm,
     getUpdatePayload,
@@ -65,9 +69,29 @@ export function PackageDetailDialog({
       return res.data;
     },
     enabled: isOpen,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 
-  const categories = categoryData || [];
+  const categories = useMemo(() => {
+    const list: PackageCategoryLookup[] = [...(categoryData || [])];
+    const catId = packageData?.categoryId;
+    const catName = packageData?.categoryName;
+    if (catId && catName) {
+      const exists = list.some(
+        (c) => c.id.toLowerCase() === catId.toLowerCase() || c.name.toLowerCase() === catName.toLowerCase()
+      );
+      if (!exists) {
+        list.push({
+          id: catId,
+          code: packageData.categoryCode || '',
+          name: catName,
+        });
+        list.sort((a, b) => a.name.localeCompare(b.name));
+      }
+    }
+    return list;
+  }, [categoryData, packageData]);
 
   useEffect(() => {
     if (isOpen) {
@@ -78,9 +102,9 @@ export function PackageDetailDialog({
 
   if (!isOpen || !packageData) return null;
 
-  const currentStatus = isEditing ? formData.status : packageData.status;
-  const currentStartDate = isEditing ? formData.effectiveStartDate : packageData.effectiveStartDate;
-  const statusBadge = getPackageStatusBadge(currentStatus, currentStartDate);
+  const statusBadge = isEditing
+    ? getPackageStatusBadge(formData.status)
+    : getPackageStatusBadge(packageData.status, packageData.effectiveStartDate);
 
   const isPriceDurationDisabled = false;
   const isStatusDisabled = false;
@@ -109,7 +133,14 @@ export function PackageDetailDialog({
     if (isSubmitting || !onSave) return;
     const payload = getUpdatePayload();
     if (!payload) return;
-    await onSave(payload);
+    try {
+      await onSave(payload);
+    } catch (err: unknown) {
+      const { fieldErrors } = parsePackageBackendError(err);
+      if (Object.keys(fieldErrors).length > 0) {
+        setErrors((prev) => ({ ...prev, ...fieldErrors }));
+      }
+    }
   };
 
   return (
@@ -176,6 +207,7 @@ export function PackageDetailDialog({
                   isPriceDurationDisabled={isPriceDurationDisabled}
                   isStatusDisabled={isStatusDisabled}
                   onChangeField={handleChange}
+                  onClearError={clearError}
                 />
                 <PackageDescriptionSection
                   value={formData.description}

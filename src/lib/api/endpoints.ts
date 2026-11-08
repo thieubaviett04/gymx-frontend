@@ -104,4 +104,13 @@ export const ENDPOINTS = {
     delete:         (id: string) => `${V1}/admin/employees/${id}`,
     me:             `${V1}/employees/me`,
   },
+
+  adminPenaltyRules: {
+    list:           `${V1}/admin/penalty-rules`,
+    byId:           (id: string) => `${V1}/admin/penalty-rules/${id}`,
+    create:         `${V1}/admin/penalty-rules`,
+    update:         (id: string) => `${V1}/admin/penalty-rules/${id}`,
+    delete:         (id: string) => `${V1}/admin/penalty-rules/${id}`,
+    discontinue:    (id: string) => `${V1}/admin/penalty-rules/${id}/discontinue`,
+  },
 } as const;

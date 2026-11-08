@@ -1,13 +1,14 @@
-export type PackageStatus = 'ACTIVE' | 'INACTIVE' | 'DISCONTINUED';
-export type PackageFormStatus = PackageStatus | 'UPCOMING';
-export type ComputedPackageStatus = 'ACTIVE' | 'UPCOMING' | 'INACTIVE' | 'DISCONTINUED';
+export type PackageStatus = 'ACTIVE' | 'PENDING' | 'INACTIVE' | 'DISCONTINUED';
+export type PackageFormStatus = PackageStatus;
+export type ComputedPackageStatus = PackageStatus;
 export type PackageType = 'BASIC' | 'PRO' | 'ELITE' | 'CUSTOM';
 export type DurationUnit = 'DAY' | 'MONTH' | 'YEAR';
 
 export const PACKAGE_STATUS_LABELS: Record<PackageStatus, string> = {
-  ACTIVE: 'Đang bán',
+  ACTIVE: 'Đang áp dụng',
+  PENDING: 'Chờ áp dụng',
   INACTIVE: 'Tạm ngưng',
-  DISCONTINUED: 'Ngừng bán',
+  DISCONTINUED: 'Ngừng áp dụng',
 };
 
 export function getPackageStatusBadge(
@@ -16,24 +17,26 @@ export function getPackageStatusBadge(
 ): { label: string; variant: 'active' | 'upcoming' | 'inactive' | 'discontinued' } {
   const norm = (status || '').toUpperCase();
   if (norm === 'DISCONTINUED') {
-    return { label: 'Ngừng bán', variant: 'discontinued' };
+    return { label: 'Ngừng áp dụng', variant: 'discontinued' };
   }
   if (norm === 'INACTIVE') {
-    return { label: 'Tạm ngưng', variant: 'inactive' };
+    return { label: 'Tạm ngưng', variant: 'upcoming' };
   }
-  if (norm === 'UPCOMING') {
-    return { label: 'Chuẩn bị', variant: 'upcoming' };
-  }
-  if (effectiveStartDate) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const start = new Date(effectiveStartDate);
-    start.setHours(0, 0, 0, 0);
-    if (!isNaN(start.getTime()) && start > today) {
-      return { label: 'Chuẩn bị', variant: 'upcoming' };
+  if (norm === 'PENDING' || norm === 'UPCOMING') {
+    if (effectiveStartDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const datePart = effectiveStartDate.split('T')[0];
+      const [y, m, d] = datePart.split('-').map(Number);
+      const eff = new Date(y, m - 1, d);
+      eff.setHours(0, 0, 0, 0);
+      if (!isNaN(eff.getTime()) && eff <= today) {
+        return { label: 'Đang áp dụng', variant: 'active' };
+      }
     }
+    return { label: 'Chờ áp dụng', variant: 'inactive' };
   }
-  return { label: 'Đang bán', variant: 'active' };
+  return { label: 'Đang áp dụng', variant: 'active' };
 }
 
 export const PACKAGE_DURATION_OPTIONS = [
