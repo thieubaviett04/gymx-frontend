@@ -107,10 +107,16 @@ export const ENDPOINTS = {
 
   adminPenaltyRules: {
     list:           `${V1}/admin/penalty-rules`,
+    lookup:         `${V1}/admin/penalty-rules/lookup`,
     byId:           (id: string) => `${V1}/admin/penalty-rules/${id}`,
     create:         `${V1}/admin/penalty-rules`,
     update:         (id: string) => `${V1}/admin/penalty-rules/${id}`,
     delete:         (id: string) => `${V1}/admin/penalty-rules/${id}`,
     discontinue:    (id: string) => `${V1}/admin/penalty-rules/${id}/discontinue`,
+  },
+
+  adminViolations: {
+    employeesLookup: `${V1}/admin/violations/employees-lookup`,
+    create:          `${V1}/admin/violations`,
   },
 } as const;

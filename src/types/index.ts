@@ -11,3 +11,4 @@ export type * from './attendance';
 export type * from './employee';
 export type * from './packageCategory';
 export type * from './penaltyRule';
+export type * from './violation';
