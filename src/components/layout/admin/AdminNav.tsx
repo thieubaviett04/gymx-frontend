@@ -4,6 +4,7 @@ import React from 'react';
 import { Link, usePathname } from '@/i18n/routing';
 import {
   AlertTriangle,
+  Banknote,
   Dumbbell,
   FileText,
   Layers,
@@ -52,6 +53,11 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     label: 'Quản lý nội quy',
     href: '/admin/rules',
     icon: FileText,
+  },
+  {
+    label: 'Quản lý bảng lương',
+    href: '/admin/payroll',
+    icon: Banknote,
   },
   {
     label: 'Lịch sử tài chính',

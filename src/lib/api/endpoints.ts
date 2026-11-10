@@ -119,4 +119,29 @@ export const ENDPOINTS = {
     employeesLookup: `${V1}/admin/violations/employees-lookup`,
     create:          `${V1}/admin/violations`,
   },
+
+  adminPayroll: {
+    formulas: {
+      list: `${V1}/admin/payroll/formulas`,
+      lookup: `${V1}/admin/payroll/formulas/lookup`,
+      byId: (id: string) => `${V1}/admin/payroll/formulas/${id}`,
+      create: `${V1}/admin/payroll/formulas`,
+      update: (id: string) => `${V1}/admin/payroll/formulas/${id}`,
+      toggleStatus: (id: string) => `${V1}/admin/payroll/formulas/${id}/status`,
+    },
+    periods: {
+      list: `${V1}/admin/payroll/periods`,
+      byId: (id: string) => `${V1}/admin/payroll/periods/${id}`,
+      calculate: `${V1}/admin/payroll/periods/calculate`,
+      lock: (id: string) => `${V1}/admin/payroll/periods/${id}/lock`,
+    },
+    payslips: {
+      list: `${V1}/admin/payroll/payslips`,
+      byId: (id: string) => `${V1}/admin/payroll/payslips/${id}`,
+    },
+  },
+
+  staffPayroll: {
+    myPayslips: `${V1}/staff/payroll/my-payslips`,
+  },
 } as const;

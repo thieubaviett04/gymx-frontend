@@ -329,3 +329,60 @@ export function parsePackageBackendError(err: unknown): {
     generalError: formattedMsg,
   };
 }
+
+export function parseSalaryFormulaBackendError(err: unknown): {
+  fieldErrors: Record<string, string>;
+  generalError: string;
+  isCannotModifyInUse?: boolean;
+} {
+  const fieldErrors: Record<string, string> = {};
+  if (!err || typeof err !== 'object') {
+    return { fieldErrors, generalError: 'Đã có lỗi xảy ra. Vui lòng thử lại.' };
+  }
+
+  const errObj = err as any;
+  const data = errObj.response?.data;
+  const errorCode = data?.error?.code || data?.code;
+
+  let isCannotModifyInUse = false;
+
+  if (errorCode === 'SalaryFormula.NameAlreadyExists') {
+    fieldErrors.name = 'Tên công thức tính lương đã tồn tại trong hệ thống.';
+  } else if (errorCode === 'SalaryFormula.CannotModifyInUse') {
+    isCannotModifyInUse = true;
+  }
+
+  if (data?.errors && typeof data.errors === 'object') {
+    for (const [key, msgs] of Object.entries(data.errors)) {
+      const msg = Array.isArray(msgs) ? msgs[0] : String(msgs);
+      const lowerKey = key.toLowerCase();
+      if (lowerKey === 'name') fieldErrors.name = msg;
+      else if (lowerKey === 'targetrole') fieldErrors.targetRole = msg;
+      else if (lowerKey === 'baseratetype') fieldErrors.baseRateType = msg;
+      else if (lowerKey === 'baserate') fieldErrors.baseRate = msg;
+      else if (lowerKey === 'standardworkdays') fieldErrors.standardWorkDays = msg;
+      else if (lowerKey === 'priceperptsession') fieldErrors.pricePerPtSession = msg;
+      else if (lowerKey === 'salescommissionpercent') fieldErrors.salesCommissionPercent = msg;
+      else if (lowerKey === 'effectivedate') fieldErrors.effectiveDate = msg;
+      else if (lowerKey === 'description') fieldErrors.description = msg;
+      else fieldErrors.general = msg;
+    }
+  }
+
+  const rawDesc =
+    data?.error?.description ||
+    data?.error?.message ||
+    data?.detail ||
+    data?.message ||
+    data?.title ||
+    errObj?.message ||
+    '';
+
+  const formattedMsg = formatErrorMessage(rawDesc);
+
+  return {
+    fieldErrors,
+    generalError: formattedMsg,
+    isCannotModifyInUse,
+  };
+}
