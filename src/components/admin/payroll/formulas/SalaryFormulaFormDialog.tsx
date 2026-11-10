@@ -134,8 +134,11 @@ export function SalaryFormulaFormDialog({
       newErrors.baseRate = 'Mức lương cơ bản không được âm.';
     }
 
-    if (formData.standardWorkDays < 1 || formData.standardWorkDays > 31) {
-      newErrors.standardWorkDays = 'Ngày công chuẩn phải từ 1 đến 31 ngày.';
+    const maxUnits = formData.baseRateType === 'HOURLY' ? 500 : formData.baseRateType === 'PER_SHIFT' ? 100 : 31;
+    const unitText = formData.baseRateType === 'HOURLY' ? 'giờ' : formData.baseRateType === 'PER_SHIFT' ? 'ca' : 'ngày';
+
+    if (formData.standardWorkDays < 1 || formData.standardWorkDays > maxUnits) {
+      newErrors.standardWorkDays = `Số ${unitText} chuẩn phải từ 1 đến ${maxUnits} ${unitText}.`;
     }
 
     if (formData.targetRole !== 'RECEPTIONIST' && formData.pricePerPtSession < 0) {
@@ -237,7 +240,7 @@ export function SalaryFormulaFormDialog({
                     clearError('name');
                     setFormData((prev) => ({ ...prev, name: e.target.value }));
                   }}
-                  placeholder="Ví dụ: Chính sách lương Huấn luyện viên 2026"
+                  placeholder="Nhập"
                   className={cn(
                     'w-full h-[42px] px-3.5 rounded-[8px] border text-[14px] text-[#202939] placeholder-[#9EA5C0] outline-none transition-colors',
                     isReadOnly && 'bg-slate-100 cursor-not-allowed text-[#64748B]',
@@ -269,7 +272,7 @@ export function SalaryFormulaFormDialog({
                         isReadOnly && 'bg-slate-100 cursor-not-allowed'
                       )}
                     >
-                      <SelectValue placeholder="Chọn đối tượng" />
+                      <SelectValue placeholder="Chọn" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
                       <SelectItem value="ALL" className="text-[14px] py-2 cursor-pointer">
@@ -330,7 +333,7 @@ export function SalaryFormulaFormDialog({
                     setFormData((prev) => ({ ...prev, description: e.target.value }))
                   }
                   rows={2}
-                  placeholder="Ghi chú thêm về điều kiện áp dụng mức lương..."
+                  placeholder="Nhập"
                   className={cn(
                     'w-full p-3 rounded-[8px] border border-[#E2E8F0] text-[14px] text-[#202939] placeholder-[#9EA5C0] outline-none transition-colors focus:border-[#064343] resize-none',
                     isReadOnly && 'bg-slate-100 cursor-not-allowed text-[#64748B]'
@@ -360,7 +363,7 @@ export function SalaryFormulaFormDialog({
                         isReadOnly && 'bg-slate-100 cursor-not-allowed'
                       )}
                     >
-                      <SelectValue placeholder="Chọn hình thức" />
+                      <SelectValue placeholder="Chọn" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
                       <SelectItem value="MONTHLY" className="text-[14px] py-2 cursor-pointer">
@@ -462,7 +465,7 @@ export function SalaryFormulaFormDialog({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-                    Thù lao mỗi buổi dạy PT (VNĐ/buổi)
+                    Thù lao mỗi buổi dạy PT (VNĐ)
                   </label>
                   <div
                     className={cn(
@@ -490,7 +493,7 @@ export function SalaryFormulaFormDialog({
                       className="w-full bg-transparent text-[14px] text-[#202939] outline-none disabled:cursor-not-allowed font-medium"
                     />
                     <span className="text-[13px] font-medium text-[#064343] shrink-0 ml-2">
-                      ₫/buổi
+                      ₫
                     </span>
                   </div>
                   {isTrainerDisabled && (

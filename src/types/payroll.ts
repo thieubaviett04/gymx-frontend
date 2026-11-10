@@ -59,7 +59,7 @@ export type PagedSalaryFormulaResult = PagedResult<SalaryFormulaDto>;
 
 export const TARGET_ROLE_LABELS: Record<TargetRole, string> = {
   ALL: 'Tất cả nhân viên',
-  TRAINER: 'Huấn luyện viên (PT)',
+  TRAINER: 'Huấn luyện viên',
   RECEPTIONIST: 'Lễ tân',
 };
 

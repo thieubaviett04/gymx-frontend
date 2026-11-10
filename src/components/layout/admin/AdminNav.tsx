@@ -5,6 +5,7 @@ import { Link, usePathname } from '@/i18n/routing';
 import {
   AlertTriangle,
   Banknote,
+  Calculator,
   Dumbbell,
   FileText,
   Layers,
@@ -55,6 +56,11 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     icon: FileText,
   },
   {
+    label: 'Công thức tính lương',
+    href: '/admin/payroll/formulas',
+    icon: Calculator,
+  },
+  {
     label: 'Quản lý bảng lương',
     href: '/admin/payroll',
     icon: Banknote,
@@ -89,6 +95,9 @@ export function AdminNav({
         effectivePath === '/admin/dashboard' ||
         effectivePath === '/'
       );
+    }
+    if (href === '/admin/payroll') {
+      return effectivePath === '/admin/payroll';
     }
     return effectivePath === href || effectivePath.startsWith(`${href}/`);
   };

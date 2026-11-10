@@ -9,6 +9,7 @@ import type { SalaryFormulaDto } from '@/types/payroll';
 import {
   TARGET_ROLE_LABELS,
   BASE_RATE_TYPE_UNITS,
+  BASE_RATE_TYPE_LABELS,
   FORMULA_STATUS_LABELS,
 } from '@/types/payroll';
 
@@ -43,7 +44,7 @@ export function FormulaTable({
     {
       key: 'name',
       header: 'Tên công thức',
-      width: 'w-[24%]',
+      width: 'w-[20%]',
       truncate: true,
       pr: 'pr-4',
       render: (formula) => (
@@ -59,7 +60,7 @@ export function FormulaTable({
     {
       key: 'targetRole',
       header: 'Đối tượng',
-      width: 'w-[14%]',
+      width: 'w-[12%]',
       className: 'whitespace-nowrap',
       render: (formula) => (
         <span className="text-[14px] font-normal text-[#202939]">
@@ -70,7 +71,7 @@ export function FormulaTable({
     {
       key: 'baseRate',
       header: 'Lương cơ bản',
-      width: 'w-[14%]',
+      width: 'w-[12%]',
       className: 'whitespace-nowrap',
       render: (formula) => (
         <span className="font-medium text-[#064343]">
@@ -82,25 +83,20 @@ export function FormulaTable({
       ),
     },
     {
-      key: 'pricePerPtSession',
-      header: 'Thù lao PT',
-      width: 'w-[11%]',
+      key: 'baseRateType',
+      header: 'Hình thức lương',
+      width: 'w-[13%]',
       className: 'whitespace-nowrap',
-      render: (formula) => {
-        if (formula.targetRole === 'RECEPTIONIST') {
-          return <span className="text-[#94A3B8]">—</span>;
-        }
-        return (
-          <span className="text-[14px] font-normal text-[#202939]">
-            {formatVND(formula.pricePerPtSession)}/buổi
-          </span>
-        );
-      },
+      render: (formula) => (
+        <span className="text-[14px] font-normal text-[#202939]">
+          {BASE_RATE_TYPE_LABELS[formula.baseRateType] || formula.baseRateType}
+        </span>
+      ),
     },
     {
       key: 'salesCommissionPercent',
       header: 'Hoa hồng',
-      width: 'w-[9%]',
+      width: 'w-[8%]',
       className: 'whitespace-nowrap',
       render: (formula) => (
         <span className="text-[14px] font-normal text-[#202939]">
@@ -111,7 +107,7 @@ export function FormulaTable({
     {
       key: 'effectiveDate',
       header: 'Ngày hiệu lực',
-      width: 'w-[10%]',
+      width: 'w-[11%]',
       className: 'whitespace-nowrap',
       render: (formula) => formatDate(formula.effectiveDate),
     },
