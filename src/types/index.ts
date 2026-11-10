@@ -12,3 +12,4 @@ export type * from './employee';
 export type * from './packageCategory';
 export type * from './penaltyRule';
 export type * from './violation';
+export type * from './payroll';
