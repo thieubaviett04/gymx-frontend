@@ -5,11 +5,18 @@ import type {
   CreatePenaltyRulePayload,
   PagedPenaltyRuleResult,
   PenaltyRuleDetail,
+  PenaltyRuleLookupItem,
   PenaltyRuleQueryParams,
   UpdatePenaltyRulePayload,
-} from '@/types/penaltyRule';
+} from '@/types';
 
 export const penaltyRuleService = {
+  lookup: (targetAudience?: string) =>
+    apiClient.get<unknown, ApiResponse<PenaltyRuleLookupItem[]>>(
+      ENDPOINTS.adminPenaltyRules.lookup,
+      { params: targetAudience ? { targetAudience } : undefined }
+    ),
+
   list: (params?: PenaltyRuleQueryParams) =>
     apiClient.get<unknown, ApiResponse<PagedPenaltyRuleResult>>(
       ENDPOINTS.adminPenaltyRules.list,

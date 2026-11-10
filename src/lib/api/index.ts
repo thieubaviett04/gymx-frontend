@@ -3,6 +3,7 @@ export { default as memberService } from './modules/memberService';
 export { default as packageService } from './modules/packageService';
 export { default as packageCategoryService } from './modules/packageCategoryService';
 export { default as penaltyRuleService } from './modules/penaltyRuleService';
+export { default as violationService } from './modules/violationService';
 export { default as attendanceService } from './modules/attendanceService';
 export { default as trainerService } from './modules/trainerService';
 export { default as employeeService } from './modules/employeeService';
