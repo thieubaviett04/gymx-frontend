@@ -116,8 +116,12 @@ export const ENDPOINTS = {
   },
 
   adminViolations: {
-    employeesLookup: `${V1}/admin/violations/employees-lookup`,
+    list:            `${V1}/admin/violations`,
+    byId:            (id: string) => `${V1}/admin/violations/${id}`,
     create:          `${V1}/admin/violations`,
+    delete:          (id: string) => `${V1}/admin/violations/${id}`,
+    uploadEvidence:  `${V1}/admin/violations/upload-evidence`,
+    employeesLookup: `${V1}/admin/violations/employees-lookup`,
   },
 
   adminPayroll: {
