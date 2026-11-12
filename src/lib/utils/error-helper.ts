@@ -386,3 +386,57 @@ export function parseSalaryFormulaBackendError(err: unknown): {
     isCannotModifyInUse,
   };
 }
+
+
+export function parsePayrollPeriodBackendError(err: unknown): {
+  generalError: string;
+  isPeriodAlreadyConfirmed?: boolean;
+  isNoActiveFormula?: boolean;
+} {
+  if (!err || typeof err !== 'object') {
+    return { generalError: 'Đã có lỗi xảy ra. Vui lòng thử lại.' };
+  }
+
+  const errObj = err as any;
+  const data = errObj.response?.data;
+  const errorCode = data?.error?.code || data?.code;
+
+  if (errorCode === 'Payroll.PeriodAlreadyConfirmed') {
+    return {
+      generalError: 'Kỳ tính lương này đã được chốt và khóa. Không thể tính lại hoặc sửa đổi.',
+      isPeriodAlreadyConfirmed: true,
+    };
+  }
+
+  if (errorCode === 'Payroll.NoActiveEmployeesFound') {
+    return {
+      generalError: 'Không tìm thấy nhân viên nào đang hoạt động để tính lương.',
+    };
+  }
+
+  if (errorCode === 'Payroll.NoActiveFormulaFound') {
+    return {
+      generalError: 'Chưa có công thức tính lương khả dụng cho nhân viên. Vui lòng thiết lập công thức trước.',
+      isNoActiveFormula: true,
+    };
+  }
+
+  if (errorCode === 'Violation.PayrollPeriodClosed') {
+    return {
+      generalError: 'Thời gian vi phạm thuộc kỳ tính lương đã chốt. Không thể tạo hoặc chỉnh sửa biên bản.',
+    };
+  }
+
+  const rawDesc =
+    data?.error?.description ||
+    data?.error?.message ||
+    data?.detail ||
+    data?.message ||
+    data?.title ||
+    errObj?.message ||
+    '';
+
+  return {
+    generalError: formatErrorMessage(rawDesc),
+  };
+}
