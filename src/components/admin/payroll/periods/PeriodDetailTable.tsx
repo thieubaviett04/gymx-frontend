@@ -33,7 +33,7 @@ export function PeriodDetailTable({
     {
       key: 'employeeName',
       header: 'Họ và tên',
-      width: 'w-[18%]',
+      width: 'w-[16%]',
       truncate: true,
       pr: 'pr-4',
       render: (item: PayslipSummaryDto) => (
@@ -56,7 +56,7 @@ export function PeriodDetailTable({
     {
       key: 'position',
       header: 'Chức vụ',
-      width: 'w-[12%]',
+      width: 'w-[11%]',
       className: 'whitespace-nowrap',
       render: (item: PayslipSummaryDto) => (
         <span className="text-[14px] font-normal text-[#202939]">
@@ -67,7 +67,7 @@ export function PeriodDetailTable({
     {
       key: 'workedShifts',
       header: 'Công thực tế',
-      width: 'w-[11%]',
+      width: 'w-[10%]',
       className: 'whitespace-nowrap',
       render: (item: PayslipSummaryDto) => {
         if (!item.workedShifts || item.workedShifts <= 0) {
@@ -84,7 +84,7 @@ export function PeriodDetailTable({
     {
       key: 'baseSalary',
       header: 'Lương cứng',
-      width: 'w-[12%]',
+      width: 'w-[11%]',
       className: 'whitespace-nowrap',
       render: (item: PayslipSummaryDto) => (
         <span className="text-[14px] text-[#202939]">
@@ -93,32 +93,35 @@ export function PeriodDetailTable({
       ),
     },
     {
-      key: 'ptTeachingAmount',
-      header: 'Dạy PT 1:1',
-      width: 'w-[11%]',
+      key: 'remunerationAndCommission',
+      header: 'Thù lao & Hoa hồng',
+      width: 'w-[14%]',
       className: 'whitespace-nowrap',
       render: (item: PayslipSummaryDto) => {
-        if (item.position !== 'TRAINER') {
-          return <span className="text-[14px] text-[#64748B]">—</span>;
-        }
-        const amount = item.ptTeachingAmount ?? (item.bonusAmount && !item.commissionAmount ? item.bonusAmount : 0);
+        const pt = item.ptTeachingAmount ?? 0;
+        const comm = item.commissionAmount ?? 0;
+        const total = pt + comm;
         return (
           <span className="text-[14px] text-[#202939]">
-            {amount > 0 ? formatVND(amount) : '—'}
+            {total > 0 ? formatVND(total) : '—'}
           </span>
         );
       },
     },
     {
-      key: 'commissionAmount',
-      header: 'Hoa hồng bán gói',
+      key: 'bonus',
+      header: 'Thưởng',
       width: 'w-[11%]',
       className: 'whitespace-nowrap',
       render: (item: PayslipSummaryDto) => {
-        const commAmount = item.commissionAmount ?? 0;
+        const pt = item.ptTeachingAmount ?? 0;
+        const comm = item.commissionAmount ?? 0;
+        const kpi = item.kpiBonusAmount ?? (item as any).kpiBonus ?? 0;
+        const diff = Math.max(0, (item.bonusAmount ?? 0) - (pt + comm));
+        const bonus = kpi > 0 ? kpi : diff;
         return (
-          <span className="text-[14px] text-[#202939]">
-            {commAmount > 0 ? formatVND(commAmount) : '—'}
+          <span className={`text-[14px] ${bonus > 0 ? 'text-[#064343] font-medium' : 'text-[#64748B]'}`}>
+            {bonus > 0 ? `+${formatVND(bonus)}` : '—'}
           </span>
         );
       },
@@ -137,7 +140,7 @@ export function PeriodDetailTable({
     {
       key: 'totalSalary',
       header: 'Thực nhận',
-      width: 'w-[13%]',
+      width: 'w-[12%]',
       className: 'whitespace-nowrap',
       render: (item: PayslipSummaryDto) => (
         <span className="font-semibold text-[#064343] text-[14px]">

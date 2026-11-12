@@ -96,10 +96,10 @@ export function FormulaPagination({
               key={`page-${page}`}
               type="button"
               onClick={() => onPageChange(Number(page))}
-              className={`w-[40px] h-[40px] flex items-center justify-center border border-[#CDD5DF] text-[14px] font-semibold transition-colors cursor-pointer select-none ${
+              className={`w-[40px] h-[40px] flex items-center justify-center border text-[14px] font-semibold transition-colors cursor-pointer select-none ${
                 isCurrent
-                  ? 'bg-[#E3EDED] text-[#064343] border-[#064343] z-10'
-                  : 'bg-white text-[#2F3D50] hover:bg-slate-50'
+                  ? 'bg-[#064343] text-white border-[#064343] z-10'
+                  : 'bg-white text-[#2F3D50] border-[#CDD5DF] hover:bg-slate-50'
               }`}
             >
               {page}

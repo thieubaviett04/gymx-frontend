@@ -9,6 +9,7 @@ import type {
   PayslipDetailDto,
   PayslipQueryParams,
   PayslipSummaryDto,
+  UpdateKpiBonusRequest,
 } from '@/types/payroll';
 
 export const payrollPeriodService = {
@@ -43,6 +44,12 @@ export const payrollPeriodService = {
   getPayslipById: (id: string) =>
     apiClient.get<unknown, ApiResponse<PayslipDetailDto>>(
       ENDPOINTS.adminPayroll.payslips.byId(id)
+    ),
+
+  updateKpiBonus: (id: string, payload: UpdateKpiBonusRequest) =>
+    apiClient.patch<unknown, ApiResponse<PayslipDetailDto>>(
+      ENDPOINTS.adminPayroll.payslips.updateKpiBonus(id),
+      payload
     ),
 
   getMyPayslips: () =>
