@@ -160,6 +160,11 @@ export interface CalculatePayrollRequest {
   year: number;
 }
 
+export interface UpdateKpiBonusRequest {
+  kpiBonusAmount: number;
+  note?: string;
+}
+
 export interface PayrollPeriodQueryParams {
   pageIndex?: number;
   pageSize?: number;

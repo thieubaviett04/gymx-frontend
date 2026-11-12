@@ -55,7 +55,10 @@ export function PayslipDetailModal({
   const isTrainer = payslip.position === 'TRAINER';
   const ptAmount = payslip.ptTeachingAmount ?? (isTrainer ? payslip.bonusAmount : 0);
   const commAmount = payslip.commissionAmount ?? (!isTrainer ? payslip.bonusAmount : 0);
-  const kpiBonus = payslip.kpiBonusAmount ?? (payslip as any).kpiBonus ?? (payslip as any).bonusKpi ?? 0;
+  const kpiBonus =
+    payslip.kpiBonusAmount ??
+    (payslip as any).kpiBonus ??
+    Math.max(0, (payslip.bonusAmount ?? 0) - (ptAmount + commAmount));
 
   const month = periodMonth ?? new Date().getMonth() + 1;
   const year = periodYear ?? new Date().getFullYear();
@@ -182,7 +185,7 @@ export function PayslipDetailModal({
               />
 
               <InfoItem
-                label="Thưởng KPI"
+                label="Khen thưởng"
                 value={kpiBonus > 0 ? formatVND(kpiBonus) : '—'}
               />
 

@@ -138,6 +138,12 @@ export const ENDPOINTS = {
     payslips: {
       list: `${V1}/admin/payroll/payslips`,
       byId: (id: string) => `${V1}/admin/payroll/payslips/${id}`,
+      updateKpiBonus: (id: string) => `${V1}/admin/payroll/payslips/${id}/kpi-bonus`,
+    },
+    bonuses: {
+      list: `${V1}/admin/payroll/bonuses`,
+      employeesLookup: `${V1}/admin/payroll/bonuses/employees-lookup`,
+      byId: (id: string) => `${V1}/admin/payroll/bonuses/${id}`,
     },
   },
 

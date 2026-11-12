@@ -6,6 +6,7 @@ export { default as penaltyRuleService } from './modules/penaltyRuleService';
 export { default as violationService } from './modules/violationService';
 export { default as salaryFormulaService } from './modules/salaryFormulaService';
 export { default as payrollPeriodService } from './modules/payrollPeriodService';
+export { default as payrollBonusService } from './modules/payrollBonusService';
 export { default as attendanceService } from './modules/attendanceService';
 export { default as trainerService } from './modules/trainerService';
 export { default as employeeService } from './modules/employeeService';
