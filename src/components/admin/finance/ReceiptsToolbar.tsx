@@ -137,7 +137,7 @@ export function ReceiptsToolbar({
       <div className="w-full sm:w-[135px] shrink-0">
         <Select value={month} onValueChange={handleMonthChange}>
           <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] border border-slate-200 shadow-none hover:border-slate-300 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
-            <SelectValue placeholder="Chọn tháng" />
+            <SelectValue placeholder="Chọn" />
           </SelectTrigger>
           <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg min-w-[135px]">
             <SelectItem value="ALL" className="text-[14px] py-2 cursor-pointer">
@@ -155,7 +155,7 @@ export function ReceiptsToolbar({
       <div className="w-full sm:w-[125px] shrink-0">
         <Select value={year} onValueChange={handleYearChange}>
           <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] border border-slate-200 shadow-none hover:border-slate-300 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
-            <SelectValue placeholder="Chọn năm" />
+            <SelectValue placeholder="Chọn" />
           </SelectTrigger>
           <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg min-w-[125px]">
             <SelectItem value="ALL" className="text-[14px] py-2 cursor-pointer">

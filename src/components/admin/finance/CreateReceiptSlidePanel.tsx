@@ -61,8 +61,8 @@ export function CreateReceiptSlidePanel({
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
   const [amount, setAmount] = useState<number | ''>('');
-  const [paymentMethod, setPaymentMethod] = useState('Tiền mặt');
-  const [category, setCategory] = useState('SERVICE_FEE');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [category, setCategory] = useState('');
   const [receiptDate, setReceiptDate] = useState(todayStr);
   const [note, setNote] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -78,8 +78,10 @@ export function CreateReceiptSlidePanel({
   const validate = () => {
     const err: Record<string, string> = {};
     if (!customerName.trim()) err.customerName = 'Vui lòng nhập tên người nộp / khách hàng.';
-    if (!amount || Number(amount) <= 0) err.amount = 'Số tiền thu phải lớn hơn 0.';
+    if (!category) err.category = 'Vui lòng chọn danh mục khoản thu.';
+    if (!paymentMethod) err.paymentMethod = 'Vui lòng chọn phương thức thanh toán.';
     if (!receiptDate) err.receiptDate = 'Vui lòng chọn ngày thu tiền.';
+    if (!amount || Number(amount) <= 0) err.amount = 'Số tiền thu phải lớn hơn 0.';
     setErrors(err);
     return Object.keys(err).length === 0;
   };
@@ -103,8 +105,8 @@ export function CreateReceiptSlidePanel({
       setCustomerPhone('');
       setAmount('');
       setNote('');
-      setCategory('SERVICE_FEE');
-      setPaymentMethod('Tiền mặt');
+      setCategory('');
+      setPaymentMethod('');
       setReceiptDate(getLocalDateString());
       setErrors({});
     } catch {
@@ -178,7 +180,7 @@ export function CreateReceiptSlidePanel({
                       clearErrors();
                       setCustomerName(e.target.value);
                     }}
-                    placeholder="Nhập tên người nộp / hội viên"
+                    placeholder="Nhập"
                     className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed"
                   />
                 </div>
@@ -209,7 +211,7 @@ export function CreateReceiptSlidePanel({
                       clearErrors();
                       setCustomerPhone(e.target.value);
                     }}
-                    placeholder="Nhập số điện thoại (tự nhận diện hội viên)"
+                    placeholder="Nhập"
                     className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed"
                   />
                 </div>
@@ -241,8 +243,16 @@ export function CreateReceiptSlidePanel({
                       setCategory(val);
                     }}
                   >
-                    <SelectTrigger className="h-[42px] w-full rounded-[8px] border-slate-200 bg-slate-50 px-3.5 text-[14px] text-[#202939] shadow-none focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
-                      <SelectValue placeholder="Chọn danh mục" />
+                    <SelectTrigger
+                      className={cn(
+                        'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
+                        errors.category
+                          ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
+                          : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
+                        !category && 'text-slate-400'
+                      )}
+                    >
+                      <SelectValue placeholder="Chọn" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
                       {RECEIPT_CATEGORIES.map((c) => (
@@ -252,6 +262,11 @@ export function CreateReceiptSlidePanel({
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.category && (
+                    <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
+                      {errors.category}
+                    </p>
+                  )}
                 </div>
 
                 <div
@@ -269,8 +284,16 @@ export function CreateReceiptSlidePanel({
                       setPaymentMethod(val);
                     }}
                   >
-                    <SelectTrigger className="h-[42px] w-full rounded-[8px] border-slate-200 bg-slate-50 px-3.5 text-[14px] text-[#202939] shadow-none focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
-                      <SelectValue placeholder="Chọn phương thức" />
+                    <SelectTrigger
+                      className={cn(
+                        'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
+                        errors.paymentMethod
+                          ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
+                          : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
+                        !paymentMethod && 'text-slate-400'
+                      )}
+                    >
+                      <SelectValue placeholder="Chọn" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
                       {PAYMENT_METHODS.map((pm) => (
@@ -280,6 +303,11 @@ export function CreateReceiptSlidePanel({
                       ))}
                     </SelectContent>
                   </Select>
+                  {errors.paymentMethod && (
+                    <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
+                      {errors.paymentMethod}
+                    </p>
+                  )}
                 </div>
 
                 <div
@@ -296,7 +324,7 @@ export function CreateReceiptSlidePanel({
                       clearErrors();
                       setReceiptDate(val);
                     }}
-                    placeholder="Chọn ngày"
+                    placeholder="Chọn"
                     className="h-[42px] bg-slate-50 border-slate-200"
                   />
                   {errors.receiptDate && (
@@ -364,7 +392,7 @@ export function CreateReceiptSlidePanel({
                 disabled={isSubmitting}
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Nhập nội dung ghi chú diễn giải cho khoản thu..."
+                placeholder="Nhập"
                 className="w-full p-3 bg-slate-50 border border-slate-200 rounded-[8px] text-[14px] text-[#202939] placeholder:text-slate-400 outline-none resize-none focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]"
               />
             </div>

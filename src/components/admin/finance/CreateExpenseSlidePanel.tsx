@@ -37,7 +37,7 @@ export function CreateExpenseSlidePanel({
 }: CreateExpenseSlidePanelProps) {
   const todayStr = getLocalDateString();
 
-  const [category, setCategory] = useState<ExpenseCategory | ''>('UTILITIES');
+  const [category, setCategory] = useState<ExpenseCategory | ''>('');
   const [amount, setAmount] = useState<number | ''>('');
   const [expenseDate, setExpenseDate] = useState<string>(todayStr);
   const [description, setDescription] = useState<string>('');
@@ -76,7 +76,7 @@ export function CreateExpenseSlidePanel({
 
       setDescription('');
       setAmount('');
-      setCategory('UTILITIES');
+      setCategory('');
       setExpenseDate(getLocalDateString());
       setErrors({});
     } catch {
@@ -138,8 +138,16 @@ export function CreateExpenseSlidePanel({
                     setCategory(val as ExpenseCategory);
                   }}
                 >
-                  <SelectTrigger className="h-[42px] w-full rounded-[8px] border-slate-200 bg-slate-50 px-3.5 text-[14px] text-[#202939] shadow-none focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
-                    <SelectValue placeholder="Chọn danh mục chi..." />
+                  <SelectTrigger
+                    className={cn(
+                      'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
+                      errors.category
+                        ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
+                        : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
+                      !category && 'text-slate-400'
+                    )}
+                  >
+                    <SelectValue placeholder="Chọn" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
                     {Object.entries(EXPENSE_CATEGORY_LABELS).map(([catKey, label]) => (
@@ -170,7 +178,7 @@ export function CreateExpenseSlidePanel({
                     clearErrors();
                     setExpenseDate(val);
                   }}
-                  placeholder="Chọn ngày"
+                  placeholder="Chọn"
                   className="h-[42px] bg-slate-50 border-slate-200"
                 />
                 {errors.expenseDate && (
@@ -248,7 +256,7 @@ export function CreateExpenseSlidePanel({
                   clearErrors();
                   setDescription(e.target.value);
                 }}
-                placeholder="Nhập chi tiết nội dung khoản chi vận hành..."
+                placeholder="Nhập"
                 className={cn(
                   'w-full p-3.5 rounded-[8px] text-[14px] text-[#202939] placeholder:text-slate-400 outline-none resize-none transition-colors border',
                   errors.description

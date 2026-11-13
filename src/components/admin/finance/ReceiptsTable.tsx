@@ -35,9 +35,9 @@ export function getReferenceTypeLabel(type?: string | null): string {
 
 export function getCustomerDisplayName(item: InvoiceSummaryDto): string {
   if (item.customerName) {
-    return item.memberCode ? `${item.customerName} (${item.memberCode})` : item.customerName;
+    return item.customerName;
   }
-  return item.memberCode ? `Hội viên ${item.memberCode}` : 'Khách vãng lai';
+  return 'Khách vãng lai';
 }
 
 export function ReceiptsTable({
@@ -186,11 +186,11 @@ export function ReceiptsTable({
           <button
             type="button"
             onClick={() => onView?.(item)}
-            className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-[#064343] transition-colors cursor-pointer"
+            className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
             title="Xem chi tiết phiếu thu"
             aria-label="Xem chi tiết"
           >
-            <EyeViewIcon className="w-4 h-4" />
+            <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
           </button>
         </div>
       ),

@@ -106,10 +106,13 @@ export function ReceiptDetailSlidePanel({
               <InfoItem label="Ngày lập phiếu" value={formatDate(invoice.issuedAt)} />
               <InfoItem label="Người lập phiếu" value={invoice.creatorName || 'Hệ thống'} />
               <InfoItem label="Người nộp / Khách hàng" value={getCustomerDisplayName(invoice)} />
-              <InfoItem label="Mã hội viên" value={invoice.memberCode || '— (Khách vãng lai)'} />
               <InfoItem
                 label="Số điện thoại"
                 value={formatPhoneNumber(invoice.customerPhone) || invoice.customerPhone || '—'}
+              />
+              <InfoItem
+                label="Ngày thanh toán"
+                value={invoice.paidAt ? formatDate(invoice.paidAt) : 'Chưa thu'}
               />
             </div>
           </div>
@@ -121,7 +124,7 @@ export function ReceiptDetailSlidePanel({
               </h4>
             </div>
 
-            <div className="px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
+            <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
               <InfoItem
                 label="Nguồn thu"
                 value={getReferenceTypeLabel(invoice.referenceType)}
@@ -134,10 +137,6 @@ export function ReceiptDetailSlidePanel({
                     +{formatVND(invoice.totalAmount)}
                   </span>
                 }
-              />
-              <InfoItem
-                label="Ngày thanh toán"
-                value={invoice.paidAt ? formatDate(invoice.paidAt) : 'Chưa thu'}
               />
             </div>
           </div>
