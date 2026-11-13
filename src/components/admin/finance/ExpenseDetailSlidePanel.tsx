@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { X, Loader2, AlertTriangle } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 import { Badge, TrashBinIcon } from '@/components/ui';
 import { financeService } from '@/lib/api';
 import { formatDate, formatDateTime, formatVND } from '@/lib/utils/formatters';
@@ -163,9 +163,8 @@ export function ExpenseDetailSlidePanel({
             {!isConfirmed && (
               <div className="bg-white rounded-xl">
                 <div className="border-b border-[#F1F5F9] pb-2 mb-4">
-                  <h4 className="text-[13px] font-semibold text-[#EE464C] tracking-[-0.0074em] uppercase flex items-center gap-1.5">
-                    <AlertTriangle className="w-4 h-4 text-[#EE464C]" />
-                    <span>THÔNG TIN HỦY PHIẾU CHI</span>
+                  <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
+                    THÔNG TIN HỦY PHIẾU CHI
                   </h4>
                 </div>
 
@@ -175,16 +174,6 @@ export function ExpenseDetailSlidePanel({
                     label="Thời điểm hủy"
                     value={detail.cancelledAt ? formatDateTime(detail.cancelledAt) : '—'}
                   />
-                  <div className="col-span-1 sm:col-span-2">
-                    <InfoItem
-                      label="Lý do hủy"
-                      value={
-                        <span className="italic text-[#EE464C]">
-                          &quot;{detail.cancellationReason || 'Không ghi rõ lý do'}&quot;
-                        </span>
-                      }
-                    />
-                  </div>
                 </div>
               </div>
             )}
