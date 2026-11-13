@@ -408,9 +408,12 @@ export function SalaryFormulaFormDialog({
                       }}
                       className="w-full bg-transparent text-[14px] text-[#202939] outline-none disabled:cursor-not-allowed font-medium"
                     />
-                    <span className="text-[13px] font-medium text-[#064343] shrink-0 ml-2">
-                      ₫
-                    </span>
+                    <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                      <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                      <span className="text-[13px] font-semibold text-[#064343]">
+                        VND
+                      </span>
+                    </div>
                   </div>
                   {errors.baseRate && (
                     <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1">
@@ -492,9 +495,12 @@ export function SalaryFormulaFormDialog({
                       }}
                       className="w-full bg-transparent text-[14px] text-[#202939] outline-none disabled:cursor-not-allowed font-medium"
                     />
-                    <span className="text-[13px] font-medium text-[#064343] shrink-0 ml-2">
-                      ₫
-                    </span>
+                    <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                      <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                      <span className="text-[13px] font-semibold text-[#064343]">
+                        VND
+                      </span>
+                    </div>
                   </div>
                   {isTrainerDisabled && (
                     <p className="text-[12px] text-[#64748B] mt-1">

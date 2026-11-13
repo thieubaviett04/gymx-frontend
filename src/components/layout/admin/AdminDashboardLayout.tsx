@@ -93,16 +93,28 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
         : [{ label: 'Quản lý nội quy' }],
     };
   }
+  if (cleanPath.includes('/admin/kpi')) {
+    const isDeep = segments.length > 2;
+    return {
+      title: 'Quản lý KPI',
+      breadcrumbs: isDeep
+        ? [
+            { label: 'Quản lý KPI', href: '/admin/kpi' },
+            { label: 'Chi tiết KPI' },
+          ]
+        : [{ label: 'Quản lý KPI' }],
+    };
+  }
   if (cleanPath.includes('/admin/finance')) {
     const isDeep = segments.length > 2;
     return {
-      title: 'Lịch sử tài chính',
+      title: 'Khoản thu & chi',
       breadcrumbs: isDeep
         ? [
-            { label: 'Lịch sử tài chính', href: '/admin/finance' },
+            { label: 'Khoản thu & chi', href: '/admin/finance' },
             { label: 'Chi tiết giao dịch' },
           ]
-        : [{ label: 'Lịch sử tài chính' }],
+        : [{ label: 'Khoản thu & chi' }],
     };
   }
   if (cleanPath.includes('/admin/settings')) {

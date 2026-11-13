@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui';
+import { cn } from '@/lib/utils';
 import type {
   PenaltyRuleFormData,
   PenaltyRuleFormErrors,
@@ -53,21 +54,23 @@ export function RuleInfoSection({
       </div>
 
       <div className="px-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
-        <div className="flex flex-col gap-1.5 min-w-0 sm:col-span-2">
+        <div className="flex flex-col gap-1.5 min-w-0 sm:col-span-2" onClick={() => onClearError?.('name')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Tên quy định <span className="text-[#EE0033]">*</span>
           </label>
           <div
-            className={`h-[42px] px-3.5 py-2 bg-slate-50 border rounded-[8px] flex items-center transition-all ${
+            className={cn(
+              'h-[42px] px-3.5 py-2 rounded-[8px] flex items-center transition-colors border',
               errors.name
-                ? 'border-red-400 bg-red-50/20'
-                : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
-            }`}
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+            )}
           >
             <input
               type="text"
               disabled={disabled}
               value={formData.name}
+              onFocus={() => onClearError?.('name')}
               onChange={(e) => onChangeField('name', e.target.value)}
               placeholder="Nhập tên quy định vi phạm..."
               maxLength={150}
@@ -75,7 +78,7 @@ export function RuleInfoSection({
             />
           </div>
           {errors.name && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.name}
             </p>
           )}
@@ -104,7 +107,7 @@ export function RuleInfoSection({
           </Select>
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError?.('severityLevel')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Mức độ vi phạm <span className="text-[#EE0033]">*</span>
           </label>
@@ -115,9 +118,13 @@ export function RuleInfoSection({
           >
             <SelectTrigger
               disabled={disabled}
-              className={`h-[42px] w-full rounded-[8px] bg-slate-50 px-3.5 py-2 text-[14px] text-[#2F3D50] shadow-none data-[placeholder]:text-[#697586] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] ${
-                errors.severityLevel ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
-              }`}
+              onFocus={() => onClearError?.('severityLevel')}
+              className={cn(
+                'h-[42px] w-full rounded-[8px] px-3.5 py-2 text-[14px] text-[#2F3D50] shadow-none cursor-pointer transition-colors',
+                errors.severityLevel
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                  : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
+              )}
             >
               <SelectValue placeholder="Chọn mức độ vi phạm" />
             </SelectTrigger>
@@ -128,13 +135,13 @@ export function RuleInfoSection({
             </SelectContent>
           </Select>
           {errors.severityLevel && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.severityLevel}
             </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError?.('fineAmount')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Số tiền phạt <span className="text-[#EE0033]">*</span>
           </label>
@@ -152,11 +159,12 @@ export function RuleInfoSection({
             </div>
           ) : (
             <div
-              className={`h-[42px] px-3.5 py-2 border rounded-[8px] flex items-center justify-between transition-all ${
+              className={cn(
+                'h-[42px] px-3.5 py-2 rounded-[8px] flex items-center justify-between transition-colors border',
                 errors.fineAmount
-                  ? 'border-red-400 bg-red-50/20'
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
                   : 'bg-slate-50 border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
-              }`}
+              )}
             >
               <input
                 type="number"
@@ -164,6 +172,7 @@ export function RuleInfoSection({
                 step="50000"
                 disabled={disabled}
                 value={formData.fineAmount}
+                onFocus={() => onClearError?.('fineAmount')}
                 onChange={(e) => onChangeField('fineAmount', e.target.value)}
                 placeholder="Nhập số tiền phạt"
                 className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none disabled:cursor-not-allowed disabled:text-[#94A3B8]"
@@ -177,13 +186,13 @@ export function RuleInfoSection({
             </div>
           )}
           {errors.fineAmount && formData.violationType !== 'MEMBER' && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.fineAmount}
             </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError?.('effectiveDate')}>
           <label className={`text-[13px] font-medium flex items-center gap-1 ${isDateDisabled ? 'text-[#94A3B8]' : 'text-[#202939]'}`}>
             Ngày bắt đầu áp dụng <span className={isDateDisabled ? 'text-[#CBD5E1]' : 'text-[#EE0033]'}>*</span>
           </label>
@@ -208,7 +217,7 @@ export function RuleInfoSection({
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0 sm:col-span-2">
+        <div className="flex flex-col gap-1.5 min-w-0 sm:col-span-2" onClick={() => onClearError?.('status')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Trạng thái áp dụng <span className="text-[#EE0033]">*</span>
           </label>
@@ -219,9 +228,13 @@ export function RuleInfoSection({
           >
             <SelectTrigger
               disabled={disabled}
-              className={`h-[42px] w-full rounded-[8px] bg-slate-50 px-3.5 py-2 text-[14px] text-[#2F3D50] shadow-none data-[placeholder]:text-[#697586] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] ${
-                errors.status ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
-              }`}
+              onFocus={() => onClearError?.('status')}
+              className={cn(
+                'h-[42px] w-full rounded-[8px] px-3.5 py-2 text-[14px] text-[#2F3D50] shadow-none cursor-pointer transition-colors',
+                errors.status
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                  : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
+              )}
             >
               <SelectValue placeholder="Chọn trạng thái" />
             </SelectTrigger>
@@ -241,7 +254,7 @@ export function RuleInfoSection({
             </SelectContent>
           </Select>
           {errors.status && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.status}
             </p>
           )}

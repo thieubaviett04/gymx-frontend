@@ -359,9 +359,12 @@ export function RewardDetailSlidePanel({
                         placeholder="Nhập"
                         className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none font-normal"
                       />
-                      <span className="text-[13px] font-medium text-[#64748B] ml-2">
-                        ₫
-                      </span>
+                      <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                        <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                        <span className="text-[13px] font-semibold text-[#064343]">
+                          VND
+                        </span>
+                      </div>
                     </div>
                     {errors.amount && (
                       <p className="text-xs text-red-500 mt-0.5">{errors.amount}</p>

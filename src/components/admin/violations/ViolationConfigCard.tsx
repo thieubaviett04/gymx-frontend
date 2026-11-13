@@ -273,8 +273,10 @@ export function ViolationConfigCard({
               <SelectTrigger
                 onFocus={clearErrors}
                 className={cn(
-                  'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] text-[14px] text-[#202939] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                  errors.periodId ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                  'h-[42px] px-3.5 rounded-[8px] text-[14px] text-[#202939] cursor-pointer transition-colors',
+                  errors.periodId
+                    ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
                 )}
               >
                 <SelectValue placeholder="Chọn" />
@@ -293,7 +295,7 @@ export function ViolationConfigCard({
               </SelectContent>
             </Select>
             {errors.periodId && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.periodId}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.periodId}</p>
             )}
           </div>
 
@@ -309,8 +311,10 @@ export function ViolationConfigCard({
               <SelectTrigger
                 onFocus={clearErrors}
                 className={cn(
-                  'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] text-[14px] text-[#202939] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                  errors.penaltyRuleId ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                  'h-[42px] px-3.5 rounded-[8px] text-[14px] text-[#202939] cursor-pointer transition-colors',
+                  errors.penaltyRuleId
+                    ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
                 )}
               >
                 <SelectValue placeholder="Chọn" />
@@ -324,7 +328,7 @@ export function ViolationConfigCard({
               </SelectContent>
             </Select>
             {errors.penaltyRuleId && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.penaltyRuleId}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.penaltyRuleId}</p>
             )}
           </div>
 
@@ -340,8 +344,10 @@ export function ViolationConfigCard({
               <SelectTrigger
                 onFocus={clearErrors}
                 className={cn(
-                  'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] text-[14px] text-[#202939] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                  errors.employeeId ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                  'h-[42px] px-3.5 rounded-[8px] text-[14px] text-[#202939] cursor-pointer transition-colors',
+                  errors.employeeId
+                    ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
                 )}
               >
                 <SelectValue placeholder="Chọn" />
@@ -358,7 +364,7 @@ export function ViolationConfigCard({
               </SelectContent>
             </Select>
             {errors.employeeId && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.employeeId}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.employeeId}</p>
             )}
           </div>
 
@@ -368,9 +374,9 @@ export function ViolationConfigCard({
             </label>
             <div
               className={cn(
-                'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center transition-all',
+                'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center transition-colors',
                 errors.fineAmount
-                  ? 'border-red-400 bg-red-50/20'
+                  ? 'border-[#EE464C] bg-[#FFF5F5]'
                   : 'border-slate-200'
               )}
             >
@@ -382,7 +388,7 @@ export function ViolationConfigCard({
               />
             </div>
             {errors.fineAmount && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.fineAmount}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.fineAmount}</p>
             )}
           </div>
 
@@ -402,7 +408,7 @@ export function ViolationConfigCard({
               disabledDays={(date) => date > new Date()}
             />
             {errors.occurredAt && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.occurredAt}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.occurredAt}</p>
             )}
           </div>
 
@@ -412,10 +418,10 @@ export function ViolationConfigCard({
             </label>
             <div
               className={cn(
-                'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between gap-2 transition-all',
+                'h-[42px] px-3.5 rounded-[8px] flex items-center justify-between gap-2 transition-colors border',
                 errors.evidenceUrl || uploadError
-                  ? 'border-red-400 bg-red-50/20'
-                  : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                  : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
               )}
             >
               <input
@@ -472,7 +478,7 @@ export function ViolationConfigCard({
               </button>
             </div>
             {(errors.evidenceUrl || uploadError) && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.evidenceUrl || uploadError}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.evidenceUrl || uploadError}</p>
             )}
           </div>
         </div>
@@ -483,10 +489,10 @@ export function ViolationConfigCard({
           </label>
           <div
             className={cn(
-              'min-h-[76px] p-3 bg-slate-50 border rounded-[8px] flex transition-all',
+              'min-h-[76px] p-3 rounded-[8px] flex transition-colors border',
               errors.note
-                ? 'border-red-400 bg-red-50/20'
-                : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
             )}
           >
             <textarea
@@ -504,7 +510,7 @@ export function ViolationConfigCard({
             />
           </div>
           {errors.note && (
-            <p className="text-xs text-red-500 mt-0.5">{errors.note}</p>
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.note}</p>
           )}
         </div>
       </div>

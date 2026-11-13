@@ -185,8 +185,10 @@ export function RewardConfigCard({
               <SelectTrigger
                 onFocus={clearErrors}
                 className={cn(
-                  'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] text-[14px] text-[#202939] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                  errors.rewardType ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                  'h-[42px] px-3.5 rounded-[8px] text-[14px] text-[#202939] cursor-pointer transition-colors',
+                  errors.rewardType
+                    ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
                 )}
               >
                 <SelectValue placeholder="Chọn" />
@@ -201,7 +203,7 @@ export function RewardConfigCard({
               </SelectContent>
             </Select>
             {errors.rewardType && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.rewardType}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.rewardType}</p>
             )}
           </div>
 
@@ -221,8 +223,10 @@ export function RewardConfigCard({
               <SelectTrigger
                 onFocus={clearErrors}
                 className={cn(
-                  'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] text-[14px] text-[#202939] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                  errors.periodId ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                  'h-[42px] px-3.5 rounded-[8px] text-[14px] text-[#202939] cursor-pointer transition-colors',
+                  errors.periodId
+                    ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
                 )}
               >
                 <SelectValue placeholder="Chọn" />
@@ -241,7 +245,7 @@ export function RewardConfigCard({
               </SelectContent>
             </Select>
             {errors.periodId && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.periodId}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.periodId}</p>
             )}
           </div>
 
@@ -260,8 +264,10 @@ export function RewardConfigCard({
               <SelectTrigger
                 onFocus={clearErrors}
                 className={cn(
-                  'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] text-[14px] text-[#202939] focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                  errors.targetId ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                  'h-[42px] px-3.5 rounded-[8px] text-[14px] text-[#202939] cursor-pointer transition-colors',
+                  errors.targetId
+                    ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
                 )}
               >
                 <SelectValue placeholder={isKpi ? 'Chọn' : 'Tất cả nhân sự'} />
@@ -280,7 +286,7 @@ export function RewardConfigCard({
               </SelectContent>
             </Select>
             {errors.targetId && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.targetId}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.targetId}</p>
             )}
           </div>
 
@@ -290,10 +296,10 @@ export function RewardConfigCard({
             </label>
             <div
               className={cn(
-                'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center transition-all',
+                'h-[42px] px-3.5 rounded-[8px] flex items-center transition-colors border',
                 errors.amount
-                  ? 'border-red-400 bg-red-50/20'
-                  : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                  : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
               )}
             >
               <input
@@ -312,12 +318,15 @@ export function RewardConfigCard({
                 placeholder="Nhập"
                 className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none font-normal"
               />
-              <span className="text-[13px] font-medium text-[#64748B] ml-2">
-                ₫
-              </span>
+              <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                <span className="text-[13px] font-semibold text-[#064343]">
+                  VND
+                </span>
+              </div>
             </div>
             {errors.amount && (
-              <p className="text-xs text-red-500 mt-0.5">{errors.amount}</p>
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">{errors.amount}</p>
             )}
           </div>
         </div>
@@ -328,10 +337,10 @@ export function RewardConfigCard({
           </label>
           <div
             className={cn(
-              'min-h-[76px] p-3 bg-slate-50 border rounded-[8px] flex transition-all',
+              'min-h-[76px] p-3 rounded-[8px] flex transition-colors border',
               errors.note
-                ? 'border-red-400 bg-red-50/20'
-                : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
             )}
           >
             <textarea

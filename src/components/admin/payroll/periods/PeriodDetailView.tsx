@@ -207,7 +207,7 @@ export function PeriodDetailView({
                     className="h-[48px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
                     title="Xóa bộ lọc"
                   >
-                    <TrashBinIcon className="w-4 h-4 text-[#EE464C]" color="#EE464C" />
+                    <TrashBinIcon className="w-5 h-5" color="#EE464C" />
                     <span>Xóa bộ lọc</span>
                   </button>
                 )}

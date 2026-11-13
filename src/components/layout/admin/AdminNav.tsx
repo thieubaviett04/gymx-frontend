@@ -78,7 +78,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     icon: Award,
   },
   {
-    label: 'Lịch sử tài chính',
+    label: 'Khoản thu & chi',
     href: '/admin/finance',
     icon: Receipt,
   },

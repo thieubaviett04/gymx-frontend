@@ -10,6 +10,7 @@ export { default as payrollBonusService } from './modules/payrollBonusService';
 export { default as attendanceService } from './modules/attendanceService';
 export { default as trainerService } from './modules/trainerService';
 export { default as employeeService } from './modules/employeeService';
+export { financeService } from './modules/financeService';
 export { default as kpiService } from './modules/kpiService';
 export { default as apiClient } from './core/client';
 export { ENDPOINTS } from './endpoints';

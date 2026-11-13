@@ -801,9 +801,12 @@ export function EmployeeDetailDialog({
                           placeholder="Nhập mức lương"
                           className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
                         />
-                        <span className="text-[13px] text-[#064343] font-semibold pl-2 select-none">
-                          VND
-                        </span>
+                        <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                          <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                          <span className="text-[13px] text-[#064343] font-semibold">
+                            VND
+                          </span>
+                        </div>
                       </div>
                       {errors.baseSalaryRate && (
                         <p className="text-xs text-red-500 mt-0.5">{errors.baseSalaryRate}</p>

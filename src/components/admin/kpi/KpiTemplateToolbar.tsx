@@ -60,7 +60,7 @@ export function KpiTemplateToolbar({
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 w-full sm:w-auto">
       <div className="relative w-full sm:w-[260px] md:w-[300px] lg:w-[340px] h-[48px] px-3.5 bg-slate-50 border border-slate-200 rounded-[8px] flex items-center transition-all focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343] shrink-0">
-        <Search className="w-4 h-4 text-[#697586] mr-2.5 shrink-0 pointer-events-none" />
+        <Search className="w-5 h-5 text-[#697586] mr-2.5 shrink-0 pointer-events-none stroke-[2.2]" />
         <input
           type="text"
           value={localSearch}
@@ -130,10 +130,11 @@ export function KpiTemplateToolbar({
         <button
           type="button"
           onClick={handleResetFilters}
-          className="h-[48px] px-3 text-[#64748B] hover:text-[#EE0033] hover:bg-red-50 rounded-[8px] border border-transparent hover:border-red-200 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+          className="h-[48px] px-5 min-w-[130px] bg-white border border-[#E2E8F0] active:scale-[0.98] text-[14px] font-normal leading-[20px] text-[#EE464C] rounded-[8px] shadow-2xs transition-transform flex items-center justify-center gap-2 cursor-pointer shrink-0"
           title="Xóa bộ lọc"
         >
-          <TrashBinIcon className="w-4 h-4 text-slate-500" />
+          <TrashBinIcon className="w-5 h-5" color="#EE464C" />
+          <span>Xóa bộ lọc</span>
         </button>
       )}
     </div>
