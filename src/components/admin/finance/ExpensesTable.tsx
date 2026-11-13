@@ -146,26 +146,26 @@ export function ExpensesTable({
       width: 'w-[5%]',
       align: 'right',
       render: (item: ExpenseSummaryDto) => (
-        <div className="flex items-center justify-end gap-1.5">
+        <div className="flex items-center justify-end gap-[10px]">
           <button
             type="button"
             onClick={() => onView(item)}
-            className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-[#064343] transition-colors cursor-pointer"
+            className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#FFB800]/15 transition-colors cursor-pointer"
             title="Xem chi tiết phiếu chi"
             aria-label="Xem chi tiết"
           >
-            <EyeViewIcon className="w-4 h-4" />
+            <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
           </button>
 
           {item.status === 'CONFIRMED' && (
             <button
               type="button"
               onClick={() => onCancel(item)}
-              className="w-8 h-8 rounded-full hover:bg-red-50 flex items-center justify-center text-slate-400 hover:text-[#EE464C] transition-colors cursor-pointer"
+              className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#EE464C]/10 transition-colors cursor-pointer"
               title="Hủy phiếu chi"
               aria-label="Hủy phiếu chi"
             >
-              <TrashBinIcon className="w-4 h-4 text-[#EE464C]" color="#EE464C" />
+              <TrashBinIcon className="w-[18px] h-[18px]" color="#EE464C" />
             </button>
           )}
         </div>

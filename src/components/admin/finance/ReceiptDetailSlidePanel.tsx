@@ -162,8 +162,12 @@ export function ReceiptDetailSlidePanel({
                       return `Ghi nhận khoản thu bán vé tập lượt trong ngày cho khách hàng theo phiếu thu ${invoice.invoiceNumber}.`;
                     case 'SERVICE_FEE':
                       return `Ghi nhận khoản thu phí dịch vụ & tiện ích hội viên theo phiếu thu ${invoice.invoiceNumber}.`;
+                    case 'RETAIL':
+                      return `Ghi nhận khoản thu từ bán lẻ quầy (nước uống, thực phẩm bổ sung, phụ kiện) theo phiếu thu ${invoice.invoiceNumber}.`;
+                    case 'OTHER':
+                      return `Ghi nhận khoản thu khác (thanh lý tài sản, thuê sảnh, hoàn ứng) theo phiếu thu ${invoice.invoiceNumber}.`;
                     default:
-                      return `Ghi nhận khoản thu từ bán lẻ quầy (nước uống, thực phẩm bổ sung) hoặc dịch vụ khác theo phiếu thu ${invoice.invoiceNumber}.`;
+                      return `Ghi nhận khoản thu theo phiếu thu ${invoice.invoiceNumber}.`;
                   }
                 })()}
               </p>

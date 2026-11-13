@@ -31,11 +31,10 @@ interface CreateReceiptSlidePanelProps {
 }
 
 const RECEIPT_CATEGORIES = [
-  { value: 'PACKAGE', label: 'Gói tập hội viên' },
-  { value: 'PT_SESSION', label: 'Dịch vụ PT 1:1' },
-  { value: 'DAY_TICKET', label: 'Vé tập theo ngày' },
-  { value: 'SERVICE_FEE', label: 'Phí dịch vụ & Tiện ích' },
-  { value: 'OTHER', label: 'Bán lẻ & Thu khác' },
+  { value: 'SERVICE_FEE', label: 'Phí dịch vụ & Tiện ích (thẻ, tủ locker, phạt...)' },
+  { value: 'DAY_TICKET', label: 'Thu bán vé tập ngày' },
+  { value: 'RETAIL', label: 'Thu bán lẻ quầy (nước, whey, phụ kiện...)' },
+  { value: 'OTHER', label: 'Thu khác (thanh lý tài sản, hoàn ứng, thuê sảnh...)' },
 ];
 
 const PAYMENT_METHODS = [
@@ -63,7 +62,7 @@ export function CreateReceiptSlidePanel({
   const [customerPhone, setCustomerPhone] = useState('');
   const [amount, setAmount] = useState<number | ''>('');
   const [paymentMethod, setPaymentMethod] = useState('Tiền mặt');
-  const [category, setCategory] = useState('PACKAGE');
+  const [category, setCategory] = useState('SERVICE_FEE');
   const [receiptDate, setReceiptDate] = useState(todayStr);
   const [note, setNote] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -104,7 +103,7 @@ export function CreateReceiptSlidePanel({
       setCustomerPhone('');
       setAmount('');
       setNote('');
-      setCategory('PACKAGE');
+      setCategory('SERVICE_FEE');
       setPaymentMethod('Tiền mặt');
       setReceiptDate(getLocalDateString());
       setErrors({});

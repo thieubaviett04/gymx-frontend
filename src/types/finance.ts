@@ -55,6 +55,7 @@ export type InvoiceReferenceType =
   | 'PACKAGE'
   | 'PT_SESSION'
   | 'DAY_TICKET'
+  | 'RETAIL'
   | 'SERVICE_FEE'
   | 'OTHER';
 

@@ -20,11 +20,12 @@ export const REFERENCE_TYPE_LABELS: Record<string, string> = {
   PACKAGE: 'Gói tập hội viên',
   PT_SESSION: 'Dịch vụ PT 1:1',
   DAY_TICKET: 'Vé tập theo ngày',
+  RETAIL: 'Bán lẻ quầy (nước, whey)',
   SERVICE_FEE: 'Phí dịch vụ & Tiện ích',
-  OTHER: 'Bán lẻ & Thu khác',
+  OTHER: 'Thu khác',
   // Tương thích ngược
   PT_PACKAGE: 'Dịch vụ PT 1:1',
-  GENERAL: 'Bán lẻ & Thu khác',
+  GENERAL: 'Thu khác',
 };
 
 export function getReferenceTypeLabel(type?: string | null): string {
