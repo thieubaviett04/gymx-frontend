@@ -122,7 +122,7 @@ export function CreateExpenseSlidePanel({
               </h4>
             </div>
 
-            <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
+            <div className="px-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
               <div
                 className="flex flex-col gap-1.5 min-w-0"
                 onClick={clearErrors}
@@ -170,30 +170,6 @@ export function CreateExpenseSlidePanel({
                 onPointerDown={clearErrors}
               >
                 <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-                  Ngày chi tiền <span className="text-[#EE0033]">*</span>
-                </label>
-                <DatePicker
-                  value={expenseDate}
-                  onChange={(val) => {
-                    clearErrors();
-                    setExpenseDate(val);
-                  }}
-                  placeholder="Chọn"
-                  className="h-[42px] bg-slate-50 border-slate-200"
-                />
-                {errors.expenseDate && (
-                  <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
-                    {errors.expenseDate}
-                  </p>
-                )}
-              </div>
-
-              <div
-                className="flex flex-col gap-1.5 min-w-0"
-                onClick={clearErrors}
-                onPointerDown={clearErrors}
-              >
-                <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                   Số tiền chi trả <span className="text-[#EE0033]">*</span>
                 </label>
                 <div
@@ -226,6 +202,30 @@ export function CreateExpenseSlidePanel({
                 {errors.amount && (
                   <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
                     {errors.amount}
+                  </p>
+                )}
+              </div>
+
+              <div
+                className="flex flex-col gap-1.5 min-w-0"
+                onClick={clearErrors}
+                onPointerDown={clearErrors}
+              >
+                <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
+                  Ngày chi tiền <span className="text-[#EE0033]">*</span>
+                </label>
+                <DatePicker
+                  value={expenseDate}
+                  onChange={(val) => {
+                    clearErrors();
+                    setExpenseDate(val);
+                  }}
+                  placeholder="Chọn"
+                  className="h-[42px] bg-slate-50 border-slate-200"
+                />
+                {errors.expenseDate && (
+                  <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
+                    {errors.expenseDate}
                   </p>
                 )}
               </div>

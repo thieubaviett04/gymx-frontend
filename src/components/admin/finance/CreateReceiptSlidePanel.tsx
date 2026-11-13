@@ -77,7 +77,7 @@ export function CreateReceiptSlidePanel({
 
   const validate = () => {
     const err: Record<string, string> = {};
-    if (!customerName.trim()) err.customerName = 'Vui lòng nhập tên người nộp / khách hàng.';
+    if (!customerName.trim()) err.customerName = 'Vui lòng nhập tên khách hàng.';
     if (!category) err.category = 'Vui lòng chọn danh mục khoản thu.';
     if (!paymentMethod) err.paymentMethod = 'Vui lòng chọn phương thức thanh toán.';
     if (!receiptDate) err.receiptDate = 'Vui lòng chọn ngày thu tiền.';
@@ -148,7 +148,7 @@ export function CreateReceiptSlidePanel({
           <div className="bg-white rounded-xl">
             <div className="border-b border-[#F1F5F9] pb-2 mb-4">
               <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                THÔNG TIN NGƯỜI NỘP TIỀN
+                THÔNG TIN KHÁCH HÀNG
               </h4>
             </div>
 
@@ -159,7 +159,7 @@ export function CreateReceiptSlidePanel({
                 onPointerDown={clearErrors}
               >
                 <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-                  Người nộp / Khách hàng <span className="text-[#EE0033]">*</span>
+                  Khách hàng <span className="text-[#EE0033]">*</span>
                 </label>
                 <div
                   className={cn(
@@ -226,113 +226,87 @@ export function CreateReceiptSlidePanel({
               </h4>
             </div>
 
-            <div className="px-5 space-y-5">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
-                <div
-                  className="flex flex-col gap-1.5 min-w-0"
-                  onClick={clearErrors}
-                  onPointerDown={clearErrors}
+            <div className="px-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
+              <div
+                className="flex flex-col gap-1.5 min-w-0"
+                onClick={clearErrors}
+                onPointerDown={clearErrors}
+              >
+                <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
+                  Danh mục khoản thu <span className="text-[#EE0033]">*</span>
+                </label>
+                <Select
+                  value={category}
+                  onValueChange={(val) => {
+                    clearErrors();
+                    setCategory(val);
+                  }}
                 >
-                  <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-                    Danh mục khoản thu <span className="text-[#EE0033]">*</span>
-                  </label>
-                  <Select
-                    value={category}
-                    onValueChange={(val) => {
-                      clearErrors();
-                      setCategory(val);
-                    }}
+                  <SelectTrigger
+                    className={cn(
+                      'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
+                      errors.category
+                        ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
+                        : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
+                      !category && 'text-slate-400'
+                    )}
                   >
-                    <SelectTrigger
-                      className={cn(
-                        'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
-                        errors.category
-                          ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
-                          : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                        !category && 'text-slate-400'
-                      )}
-                    >
-                      <SelectValue placeholder="Chọn" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
-                      {RECEIPT_CATEGORIES.map((c) => (
-                        <SelectItem key={c.value} value={c.value} className="text-[14px] py-2 cursor-pointer">
-                          {c.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.category && (
-                    <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
-                      {errors.category}
-                    </p>
-                  )}
-                </div>
+                    <SelectValue placeholder="Chọn" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
+                    {RECEIPT_CATEGORIES.map((c) => (
+                      <SelectItem key={c.value} value={c.value} className="text-[14px] py-2 cursor-pointer">
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.category && (
+                  <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
+                    {errors.category}
+                  </p>
+                )}
+              </div>
 
-                <div
-                  className="flex flex-col gap-1.5 min-w-0"
-                  onClick={clearErrors}
-                  onPointerDown={clearErrors}
+              <div
+                className="flex flex-col gap-1.5 min-w-0"
+                onClick={clearErrors}
+                onPointerDown={clearErrors}
+              >
+                <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
+                  Phương thức thanh toán <span className="text-[#EE0033]">*</span>
+                </label>
+                <Select
+                  value={paymentMethod}
+                  onValueChange={(val) => {
+                    clearErrors();
+                    setPaymentMethod(val);
+                  }}
                 >
-                  <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-                    Phương thức thanh toán <span className="text-[#EE0033]">*</span>
-                  </label>
-                  <Select
-                    value={paymentMethod}
-                    onValueChange={(val) => {
-                      clearErrors();
-                      setPaymentMethod(val);
-                    }}
+                  <SelectTrigger
+                    className={cn(
+                      'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
+                      errors.paymentMethod
+                        ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
+                        : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
+                      !paymentMethod && 'text-slate-400'
+                    )}
                   >
-                    <SelectTrigger
-                      className={cn(
-                        'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] shadow-none cursor-pointer border transition-colors',
-                        errors.paymentMethod
-                          ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C]'
-                          : 'border-slate-200 bg-slate-50 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                        !paymentMethod && 'text-slate-400'
-                      )}
-                    >
-                      <SelectValue placeholder="Chọn" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
-                      {PAYMENT_METHODS.map((pm) => (
-                        <SelectItem key={pm.value} value={pm.value} className="text-[14px] py-2 cursor-pointer">
-                          {pm.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.paymentMethod && (
-                    <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
-                      {errors.paymentMethod}
-                    </p>
-                  )}
-                </div>
-
-                <div
-                  className="flex flex-col gap-1.5 min-w-0"
-                  onClick={clearErrors}
-                  onPointerDown={clearErrors}
-                >
-                  <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
-                    Ngày thu tiền <span className="text-[#EE0033]">*</span>
-                  </label>
-                  <DatePicker
-                    value={receiptDate}
-                    onChange={(val) => {
-                      clearErrors();
-                      setReceiptDate(val);
-                    }}
-                    placeholder="Chọn"
-                    className="h-[42px] bg-slate-50 border-slate-200"
-                  />
-                  {errors.receiptDate && (
-                    <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
-                      {errors.receiptDate}
-                    </p>
-                  )}
-                </div>
+                    <SelectValue placeholder="Chọn" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg">
+                    {PAYMENT_METHODS.map((pm) => (
+                      <SelectItem key={pm.value} value={pm.value} className="text-[14px] py-2 cursor-pointer">
+                        {pm.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.paymentMethod && (
+                  <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
+                    {errors.paymentMethod}
+                  </p>
+                )}
               </div>
 
               <div
@@ -373,6 +347,30 @@ export function CreateReceiptSlidePanel({
                 {errors.amount && (
                   <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
                     {errors.amount}
+                  </p>
+                )}
+              </div>
+
+              <div
+                className="flex flex-col gap-1.5 min-w-0"
+                onClick={clearErrors}
+                onPointerDown={clearErrors}
+              >
+                <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
+                  Ngày thu tiền <span className="text-[#EE0033]">*</span>
+                </label>
+                <DatePicker
+                  value={receiptDate}
+                  onChange={(val) => {
+                    clearErrors();
+                    setReceiptDate(val);
+                  }}
+                  placeholder="Chọn"
+                  className="h-[42px] bg-slate-50 border-slate-200"
+                />
+                {errors.receiptDate && (
+                  <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1 animate-in fade-in duration-200">
+                    {errors.receiptDate}
                   </p>
                 )}
               </div>

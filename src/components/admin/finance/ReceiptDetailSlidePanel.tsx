@@ -105,7 +105,7 @@ export function ReceiptDetailSlidePanel({
               <InfoItem label="Số phiếu thu" value={invoice.invoiceNumber} />
               <InfoItem label="Ngày lập phiếu" value={formatDate(invoice.issuedAt)} />
               <InfoItem label="Người lập phiếu" value={invoice.creatorName || 'Hệ thống'} />
-              <InfoItem label="Người nộp / Khách hàng" value={getCustomerDisplayName(invoice)} />
+              <InfoItem label="Khách hàng" value={getCustomerDisplayName(invoice)} />
               <InfoItem
                 label="Số điện thoại"
                 value={formatPhoneNumber(invoice.customerPhone) || invoice.customerPhone || '—'}
