@@ -151,6 +151,28 @@ export const ENDPOINTS = {
     },
   },
 
+  adminKpi: {
+    templates: {
+      list: `${V1}/admin/kpi-templates`,
+      lookup: `${V1}/admin/kpi-templates/lookup`,
+      byId: (id: string) => `${V1}/admin/kpi-templates/${id}`,
+      create: `${V1}/admin/kpi-templates`,
+      update: (id: string) => `${V1}/admin/kpi-templates/${id}`,
+      delete: (id: string) => `${V1}/admin/kpi-templates/${id}`,
+    },
+    employeeKpis: {
+      list: `${V1}/admin/employee-kpis`,
+      byId: (id: string) => `${V1}/admin/employee-kpis/${id}`,
+      assign: `${V1}/admin/employee-kpis/assign`,
+      update: (id: string) => `${V1}/admin/employee-kpis/${id}`,
+      delete: (id: string) => `${V1}/admin/employee-kpis/${id}`,
+    },
+  },
+
+  employeeKpi: {
+    myKpi: `${V1}/employees/my-kpi`,
+  },
+
   staffPayroll: {
     myPayslips: `${V1}/staff/payroll/my-payslips`,
   },

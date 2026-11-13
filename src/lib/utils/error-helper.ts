@@ -3,6 +3,15 @@ import type { EmployeeFormErrors } from '@/types/employee';
 import type { PenaltyRuleFormErrors } from '@/types/penaltyRule';
 import type { PackageFormErrors } from '@/types/package';
 
+export const KPI_ERROR_MESSAGES: Record<string, string> = {
+  'EmployeeKpi.EmptyEmployees': 'Chưa chọn nhân viên giao KPI.',
+  'EmployeeKpi.RoleMismatch': 'Chức vụ không khớp với mẫu KPI.',
+  'EmployeeKpi.NotFound': 'Phiếu KPI không tồn tại.',
+  'EmployeeKpi.AssignFailed': 'Giao chỉ tiêu KPI thất bại.',
+  'KpiTemplate.NotFound': 'Mẫu KPI không tồn tại.',
+  'KpiTemplate.NameExists': 'Tên mẫu KPI đã tồn tại.',
+};
+
 /**
  * Trích xuất message thông báo lỗi thân thiện từ Error, AxiosError hoặc string
  */
@@ -16,10 +25,23 @@ export function getErrorMessage(err: unknown): string {
           detail?: string;
           title?: string;
           error?: { description?: string; message?: string; code?: string };
+          errors?: Record<string, unknown>;
+          code?: string;
         };
       };
       message?: string;
     };
+
+    const code = axiosErr.response?.data?.error?.code || axiosErr.response?.data?.code;
+    if (code && KPI_ERROR_MESSAGES[code]) {
+      return KPI_ERROR_MESSAGES[code];
+    }
+
+    if (axiosErr.response?.data?.errors && typeof axiosErr.response.data.errors === 'object') {
+      const firstEntry = Object.values(axiosErr.response.data.errors)[0];
+      if (Array.isArray(firstEntry) && firstEntry.length > 0) return String(firstEntry[0]);
+      if (typeof firstEntry === 'string') return firstEntry;
+    }
 
     return (
       axiosErr.response?.data?.error?.description ??
@@ -437,6 +459,48 @@ export function parsePayrollPeriodBackendError(err: unknown): {
     '';
 
   return {
+    generalError: formatErrorMessage(rawDesc),
+  };
+}
+
+export function parseKpiBackendError(err: unknown): {
+  fieldErrors: Record<string, string>;
+  generalError: string;
+} {
+  const fieldErrors: Record<string, string> = {};
+  if (!err || typeof err !== 'object') {
+    return { fieldErrors, generalError: 'Đã có lỗi xảy ra. Vui lòng thử lại.' };
+  }
+
+  const errObj = err as any;
+  const data = errObj.response?.data;
+  const errorCode = data?.error?.code || data?.code;
+
+  if (errorCode && KPI_ERROR_MESSAGES[errorCode]) {
+    const message = KPI_ERROR_MESSAGES[errorCode];
+    if (errorCode === 'KpiTemplate.NameExists') {
+      fieldErrors.name = message;
+    }
+    if (errorCode === 'EmployeeKpi.EmptyEmployees' || errorCode === 'EmployeeKpi.RoleMismatch') {
+      fieldErrors.employeeIds = message;
+    }
+    return {
+      fieldErrors,
+      generalError: message,
+    };
+  }
+
+  const rawDesc =
+    data?.error?.description ||
+    data?.error?.message ||
+    data?.detail ||
+    data?.message ||
+    data?.title ||
+    errObj?.message ||
+    '';
+
+  return {
+    fieldErrors,
     generalError: formatErrorMessage(rawDesc),
   };
 }
