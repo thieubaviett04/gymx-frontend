@@ -46,7 +46,6 @@ export function ReceiptsToolbar({
 }: ReceiptsToolbarProps) {
   const [localSearch, setLocalSearch] = useState(search);
   const [prevSearch, setPrevSearch] = useState(search);
-  const [isFocused, setIsFocused] = useState(false);
 
   if (prevSearch !== search) {
     setPrevSearch(search);
@@ -88,25 +87,15 @@ export function ReceiptsToolbar({
 
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 w-full sm:w-auto">
-      {/* Search Input matching EmployeeToolbar standard */}
-      <div className="relative w-full sm:w-[240px] md:w-[280px] lg:w-[300px] h-[48px] shrink-0">
-        <Search
-          className={`absolute left-[14px] top-1/2 -translate-y-1/2 w-5 h-5 transition-colors pointer-events-none stroke-[2.2] ${
-            isFocused || localSearch ? 'text-[#064343]' : 'text-[#9EA5C0]'
-          }`}
-        />
+      {/* Search Input filled with bg-slate-50 matching Finance standard */}
+      <div className="relative w-full sm:w-[240px] md:w-[280px] lg:w-[300px] h-[48px] px-3.5 bg-slate-50 border border-slate-200 rounded-[8px] flex items-center transition-all focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343] shrink-0">
+        <Search className="w-5 h-5 text-[#697586] mr-2.5 shrink-0 pointer-events-none stroke-[2.2]" />
         <input
           type="text"
           value={localSearch}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           onChange={(e) => setLocalSearch(e.target.value)}
           placeholder="Tìm số phiếu, đối tượng, SĐT..."
-          className={`w-full h-[48px] pl-[44px] pr-9 rounded-[8px] bg-white text-[14px] text-[#0A0A0A] placeholder-[#9EA5C0] transition-all outline-none ${
-            isFocused || localSearch
-              ? 'border-2 border-[#064343] ring-4 ring-[#064343]/20 shadow-md font-medium'
-              : 'border border-[#E2E8F0] hover:border-[#CBD5E1] shadow-2xs'
-          }`}
+          className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
         />
         {localSearch && (
           <button
@@ -115,7 +104,7 @@ export function ReceiptsToolbar({
               setLocalSearch('');
               onSearchChange('');
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9EA5C0] hover:text-[#064343] p-0.5 cursor-pointer transition-colors"
+            className="text-[#697586] hover:text-[#202939] p-0.5 cursor-pointer ml-1 transition-colors"
             title="Xóa tìm kiếm"
           >
             <X className="w-4 h-4" />
@@ -125,7 +114,7 @@ export function ReceiptsToolbar({
 
       <div className="w-full sm:w-[170px] shrink-0">
         <Select value={status} onValueChange={onStatusChange}>
-          <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-white px-3.5 text-[14px] text-[#202939] border border-[#E2E8F0] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
+          <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] border border-slate-200 shadow-none hover:border-slate-300 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
             <SelectValue placeholder="Trạng thái" />
           </SelectTrigger>
           <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg min-w-[170px]">
@@ -147,7 +136,7 @@ export function ReceiptsToolbar({
 
       <div className="w-full sm:w-[135px] shrink-0">
         <Select value={month} onValueChange={handleMonthChange}>
-          <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-white px-3.5 text-[14px] text-[#202939] border border-[#E2E8F0] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
+          <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] border border-slate-200 shadow-none hover:border-slate-300 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
             <SelectValue placeholder="Chọn tháng" />
           </SelectTrigger>
           <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg min-w-[135px]">
@@ -165,7 +154,7 @@ export function ReceiptsToolbar({
 
       <div className="w-full sm:w-[125px] shrink-0">
         <Select value={year} onValueChange={handleYearChange}>
-          <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-white px-3.5 text-[14px] text-[#202939] border border-[#E2E8F0] shadow-2xs hover:border-[#CBD5E1] focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
+          <SelectTrigger className="h-[48px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] border border-slate-200 shadow-none hover:border-slate-300 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343] cursor-pointer">
             <SelectValue placeholder="Chọn năm" />
           </SelectTrigger>
           <SelectContent className="bg-white border-[#E2E8F0] shadow-lg rounded-lg min-w-[125px]">

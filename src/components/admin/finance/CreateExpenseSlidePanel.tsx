@@ -21,13 +21,20 @@ interface CreateExpenseSlidePanelProps {
   isSubmitting?: boolean;
 }
 
+const getLocalDateString = (d = new Date()) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export function CreateExpenseSlidePanel({
   isOpen,
   onClose,
   onSubmit,
   isSubmitting = false,
 }: CreateExpenseSlidePanelProps) {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateString();
 
   const [category, setCategory] = useState<ExpenseCategory | ''>('UTILITIES');
   const [amount, setAmount] = useState<number | ''>('');
@@ -54,21 +61,26 @@ export function CreateExpenseSlidePanel({
     return Object.keys(err).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!validate()) return;
 
-    await onSubmit({
-      category: category as ExpenseCategory,
-      amount: Number(amount),
-      expenseDate,
-      description: description.trim(),
-    });
+    try {
+      await onSubmit({
+        category: category as ExpenseCategory,
+        amount: Number(amount),
+        expenseDate,
+        description: description.trim(),
+      });
 
-    setDescription('');
-    setAmount('');
-    setCategory('UTILITIES');
-    setErrors({});
+      setDescription('');
+      setAmount('');
+      setCategory('UTILITIES');
+      setExpenseDate(getLocalDateString());
+      setErrors({});
+    } catch {
+      // Giữ nguyên dữ liệu trên form khi có lỗi
+    }
   };
 
   return (

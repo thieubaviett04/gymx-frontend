@@ -44,13 +44,20 @@ const PAYMENT_METHODS = [
   { value: 'Quẹt thẻ POS', label: 'Quẹt thẻ POS' },
 ];
 
+const getLocalDateString = (d = new Date()) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 export function CreateReceiptSlidePanel({
   isOpen,
   onClose,
   onSubmit,
   isSubmitting = false,
 }: CreateReceiptSlidePanelProps) {
-  const todayStr = new Date().toISOString().split('T')[0];
+  const todayStr = getLocalDateString();
 
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -79,27 +86,34 @@ export function CreateReceiptSlidePanel({
     return Object.keys(err).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (!validate()) return;
 
-    await onSubmit({
-      customerName: customerName.trim(),
-      customerPhone: customerPhone.trim() || undefined,
-      memberCode: memberCode.trim() || undefined,
-      amount: Number(amount),
-      paymentMethod,
-      category,
-      receiptDate,
-      note: note.trim() || undefined,
-    });
+    try {
+      await onSubmit({
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim() || undefined,
+        memberCode: memberCode.trim() || undefined,
+        amount: Number(amount),
+        paymentMethod,
+        category,
+        receiptDate,
+        note: note.trim() || undefined,
+      });
 
-    setCustomerName('');
-    setCustomerPhone('');
-    setMemberCode('');
-    setAmount('');
-    setNote('');
-    setErrors({});
+      setCustomerName('');
+      setCustomerPhone('');
+      setMemberCode('');
+      setAmount('');
+      setNote('');
+      setCategory('PACKAGE');
+      setPaymentMethod('Tiền mặt');
+      setReceiptDate(getLocalDateString());
+      setErrors({});
+    } catch {
+      // Giữ nguyên dữ liệu trên form khi có lỗi để người dùng sửa lại
+    }
   };
 
   return (

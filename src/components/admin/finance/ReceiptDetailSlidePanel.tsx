@@ -129,7 +129,7 @@ export function ReceiptDetailSlidePanel({
               <InfoItem
                 label="Chứng từ gốc liên kết"
                 value={
-                  <span className="font-mono text-[#064343]">
+                  <span className="font-medium text-[#064343]">
                     {invoice.referenceId
                       ? `HD-${invoice.referenceId.slice(0, 8).toUpperCase()}`
                       : invoice.invoiceNumber}

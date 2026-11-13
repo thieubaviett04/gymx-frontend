@@ -135,7 +135,7 @@ export function ExpenseDetailSlidePanel({
                 <InfoItem
                   label="Mã tham chiếu hệ thống"
                   value={
-                    <span className="font-mono text-[#064343]">
+                    <span className="font-medium text-[#064343]">
                       #{detail.id.slice(0, 8).toUpperCase()}
                     </span>
                   }
