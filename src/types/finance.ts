@@ -38,6 +38,17 @@ export interface CancelExpensePayload {
   cancellationReason: string;
 }
 
+export interface CreateInvoicePayload {
+  customerName: string;
+  customerPhone?: string;
+  memberCode?: string;
+  amount: number;
+  paymentMethod: string;
+  referenceType: string;
+  issuedDate: string;
+  note?: string;
+}
+
 export type InvoiceStatus = 'PENDING' | 'PAID' | 'CANCELLED';
 
 export type InvoiceReferenceType =

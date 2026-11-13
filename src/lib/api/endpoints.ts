@@ -161,6 +161,7 @@ export const ENDPOINTS = {
     },
     invoices: {
       list: `${V1}/admin/invoices`,
+      create: `${V1}/admin/invoices`,
     },
     analytics: {
       revenue: `${V1}/admin/analytics/revenue`,

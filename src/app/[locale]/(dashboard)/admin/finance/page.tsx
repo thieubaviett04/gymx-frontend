@@ -198,15 +198,32 @@ export default function AdminFinancePage() {
     },
   });
 
-  const handleCreateReceipt = async (payload: CreateReceiptPayload) => {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setIsCreateReceiptOpen(false);
-    queryClient.invalidateQueries({ queryKey: ['admin-finance-invoices'] });
-    showToast(
-      'success',
-      `Đã lập phiếu thu thành công cho khách hàng ${payload.customerName} (${formatVND(payload.amount)}).`
-    );
-  };
+  const createReceiptMutation = useMutation({
+    mutationFn: (payload: CreateReceiptPayload) => {
+      return financeService.createInvoice({
+        customerName: payload.customerName,
+        customerPhone: payload.customerPhone,
+        memberCode: payload.memberCode,
+        amount: payload.amount,
+        paymentMethod: payload.paymentMethod,
+        referenceType: payload.category,
+        issuedDate: payload.receiptDate,
+        note: payload.note,
+      });
+    },
+    onSuccess: (res, vars) => {
+      queryClient.invalidateQueries({ queryKey: ['admin-finance-invoices'] });
+      setIsCreateReceiptOpen(false);
+      showToast(
+        'success',
+        `Đã lập phiếu thu thành công cho khách hàng ${vars.customerName} (${formatVND(vars.amount)}).`
+      );
+    },
+    onError: (err) => {
+      const msg = getErrorMessage(err) || 'Không thể tạo phiếu thu. Vui lòng kiểm tra lại.';
+      showToast('error', msg);
+    },
+  });
 
   const handleExportExcel = () => {
     showToast('success', 'Đang kết xuất tệp dữ liệu ra Excel...');
@@ -422,7 +439,10 @@ export default function AdminFinancePage() {
       <CreateReceiptSlidePanel
         isOpen={isCreateReceiptOpen}
         onClose={() => setIsCreateReceiptOpen(false)}
-        onSubmit={handleCreateReceipt}
+        onSubmit={async (payload) => {
+          await createReceiptMutation.mutateAsync(payload);
+        }}
+        isSubmitting={createReceiptMutation.isPending}
       />
 
       <ReceiptDetailSlidePanel

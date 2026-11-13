@@ -4,6 +4,7 @@ import type { ApiResponse, PagedResult } from '@/types/api';
 import type {
   CancelExpensePayload,
   CreateExpensePayload,
+  CreateInvoicePayload,
   ExpenseCategory,
   ExpenseDetailDto,
   ExpenseQueryParams,
@@ -105,4 +106,10 @@ export const financeService = {
     }
     return res;
   },
+
+  createInvoice: (payload: CreateInvoicePayload) =>
+    apiClient.post<unknown, ApiResponse<InvoiceSummaryDto>>(
+      ENDPOINTS.adminFinance.invoices.create,
+      payload
+    ),
 };
