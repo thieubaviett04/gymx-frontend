@@ -3,7 +3,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { Badge } from '@/components/ui';
-import { formatDate, formatVND } from '@/lib/utils/formatters';
+import { formatDate, formatPhoneNumber, formatVND } from '@/lib/utils/formatters';
 import type { InvoiceSummaryDto } from '@/types/finance';
 import { getCustomerDisplayName, getReferenceTypeLabel } from './ReceiptsTable';
 
@@ -103,11 +103,14 @@ export function ReceiptDetailSlidePanel({
 
             <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
               <InfoItem label="Số phiếu thu" value={invoice.invoiceNumber} />
-              <InfoItem label="Người nộp / Khách hàng" value={getCustomerDisplayName(invoice)} />
-              <InfoItem label="Số điện thoại" value={invoice.customerPhone} />
-              <InfoItem label="Mã hội viên" value={invoice.memberCode} />
-              <InfoItem label="Người lập phiếu" value={invoice.creatorName || 'Hệ thống'} />
               <InfoItem label="Ngày lập phiếu" value={formatDate(invoice.issuedAt)} />
+              <InfoItem label="Người lập phiếu" value={invoice.creatorName || 'Hệ thống'} />
+              <InfoItem label="Người nộp / Khách hàng" value={getCustomerDisplayName(invoice)} />
+              <InfoItem label="Mã hội viên" value={invoice.memberCode} />
+              <InfoItem
+                label="Số điện thoại"
+                value={formatPhoneNumber(invoice.customerPhone) || invoice.customerPhone || '—'}
+              />
             </div>
           </div>
 
@@ -120,17 +123,8 @@ export function ReceiptDetailSlidePanel({
 
             <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
               <InfoItem
-                label="Số tiền thu"
-                value={
-                  <span className="font-semibold text-[#064343]">
-                    +{formatVND(invoice.totalAmount)}
-                  </span>
-                }
-              />
-              <InfoItem label="Phương thức thanh toán" value={invoice.paymentMethod || 'Tiền mặt'} />
-              <InfoItem
-                label="Ngày thanh toán"
-                value={invoice.paidAt ? formatDate(invoice.paidAt) : 'Chưa thu'}
+                label="Nguồn thu"
+                value={getReferenceTypeLabel(invoice.referenceType)}
               />
               <InfoItem
                 label="Chứng từ gốc liên kết"
@@ -142,9 +136,31 @@ export function ReceiptDetailSlidePanel({
                   </span>
                 }
               />
+              <InfoItem label="Phương thức thanh toán" value={invoice.paymentMethod || 'Tiền mặt'} />
               <InfoItem
-                label="Nguồn thu"
-                value={getReferenceTypeLabel(invoice.referenceType)}
+                label="Số tiền thu"
+                value={
+                  <span className="font-semibold text-[#064343]">
+                    +{formatVND(invoice.totalAmount)}
+                  </span>
+                }
+              />
+              <InfoItem
+                label="Tạm tính / Tiền gốc"
+                value={
+                  <span>
+                    {formatVND(invoice.subtotal)}
+                    {invoice.subtotal > invoice.totalAmount && (
+                      <span className="text-[12px] text-[#EE464C] ml-1.5 font-normal">
+                        (Giảm {formatVND(invoice.subtotal - invoice.totalAmount)})
+                      </span>
+                    )}
+                  </span>
+                }
+              />
+              <InfoItem
+                label="Ngày thanh toán"
+                value={invoice.paidAt ? formatDate(invoice.paidAt) : 'Chưa thu'}
               />
             </div>
           </div>
@@ -158,15 +174,20 @@ export function ReceiptDetailSlidePanel({
 
             <div className="px-5">
               <p className="text-[14px] text-[#011010] leading-relaxed whitespace-pre-wrap break-words">
-                {invoice.referenceType === 'PACKAGE'
-                  ? 'Ghi nhận khoản thu tiền thanh toán hợp đồng dịch vụ hội viên tập luyện tại trung tâm.'
-                  : invoice.referenceType === 'PT_SESSION' || invoice.referenceType === 'PT_PACKAGE'
-                  ? 'Ghi nhận khoản thu tiền thanh toán hợp đồng dịch vụ PT 1:1.'
-                  : invoice.referenceType === 'DAY_TICKET'
-                  ? 'Ghi nhận khoản thu từ bán vé tập lượt trong ngày cho khách vãng lai.'
-                  : invoice.referenceType === 'SERVICE_FEE'
-                  ? 'Ghi nhận khoản thu từ phí dịch vụ, bảo lưu, chuyển nhượng hoặc tiện ích hội viên.'
-                  : 'Ghi nhận thu tiền từ hoạt động bán lẻ quầy hoặc dịch vụ khác.'}
+                {(() => {
+                  const refCode = invoice.referenceId
+                    ? `HD-${invoice.referenceId.slice(0, 8).toUpperCase()}`
+                    : invoice.invoiceNumber;
+                  return invoice.referenceType === 'PACKAGE'
+                    ? `Ghi nhận khoản thu tiền thanh toán hợp đồng dịch vụ hội viên tập luyện tại trung tâm (${refCode}).`
+                    : invoice.referenceType === 'PT_SESSION' || invoice.referenceType === 'PT_PACKAGE'
+                    ? `Ghi nhận khoản thu tiền thanh toán hợp đồng dịch vụ PT 1:1 (${refCode}).`
+                    : invoice.referenceType === 'DAY_TICKET'
+                    ? `Ghi nhận khoản thu từ bán vé tập lượt trong ngày cho khách hàng (${refCode}).`
+                    : invoice.referenceType === 'SERVICE_FEE'
+                    ? `Ghi nhận khoản thu từ phí dịch vụ, bảo lưu, chuyển nhượng hoặc tiện ích hội viên (${refCode}).`
+                    : `Ghi nhận thu tiền từ hoạt động bán lẻ quầy hoặc dịch vụ khác (${refCode}).`;
+                })()}
               </p>
             </div>
           </div>

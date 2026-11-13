@@ -128,13 +128,18 @@ export function ExpenseDetailSlidePanel({
 
               <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
                 <InfoItem label="Số phiếu chi" value={detail.expenseCode} />
-                <InfoItem
-                  label="Danh mục chi phí"
-                  value={EXPENSE_CATEGORY_LABELS[detail.category] || detail.category}
-                />
+                <InfoItem label="Ngày chi" value={formatDate(detail.expenseDate)} />
                 <InfoItem label="Người lập phiếu" value={detail.recordedByName || 'Hệ thống'} />
-                <InfoItem label="Ngày phát sinh chi" value={formatDate(detail.expenseDate)} />
                 <InfoItem label="Thời điểm tạo phiếu" value={formatDateTime(detail.createdAt)} />
+                <InfoItem label="Đơn vị chi" value="GymX Fitness Center" />
+                <InfoItem
+                  label="Mã tham chiếu hệ thống"
+                  value={
+                    <span className="font-mono text-[#064343]">
+                      #{detail.id.slice(0, 8).toUpperCase()}
+                    </span>
+                  }
+                />
               </div>
             </div>
 
@@ -147,6 +152,12 @@ export function ExpenseDetailSlidePanel({
 
               <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
                 <InfoItem
+                  label="Danh mục chi phí"
+                  value={EXPENSE_CATEGORY_LABELS[detail.category] || detail.category}
+                />
+                <InfoItem label="Phân loại nghiệp vụ" value="Chi phí vận hành phòng gym" />
+                <InfoItem label="Phương thức chi trả" value="Chuyển khoản / Tiền mặt" />
+                <InfoItem
                   label="Số tiền chi trả"
                   value={
                     <span className="font-semibold text-[#EE464C]">
@@ -154,21 +165,28 @@ export function ExpenseDetailSlidePanel({
                     </span>
                   }
                 />
-                <InfoItem label="Phương thức chi trả" value="Tiền mặt / Chuyển khoản" />
-                <InfoItem label="Phân loại chi" value="Chi phí vận hành phòng gym" />
+                <InfoItem label="Ngày ghi nhận chi" value={formatDate(detail.expenseDate)} />
+                <InfoItem
+                  label="Trạng thái thanh toán"
+                  value={
+                    <span className={isConfirmed ? 'text-[#064343] font-medium' : 'text-[#EE464C] font-medium'}>
+                      {isConfirmed ? 'Đã chi hoàn tất' : 'Đã hủy phiếu chi'}
+                    </span>
+                  }
+                />
               </div>
             </div>
 
             <div className="bg-white rounded-xl">
               <div className="border-b border-[#F1F5F9] pb-2 mb-4">
                 <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                  NỘI DUNG CHI TRẢ CHI TIẾT
+                  NỘI DUNG & DIỄN GIẢI
                 </h4>
               </div>
 
               <div className="px-5">
                 <p className="text-[14px] text-[#011010] leading-relaxed whitespace-pre-wrap break-words">
-                  {detail.description || 'Không có mô tả chi tiết.'}
+                  {detail.description || 'Ghi nhận chi phí vận hành phòng gym theo chứng từ nội bộ.'}
                 </p>
               </div>
             </div>
@@ -178,7 +196,7 @@ export function ExpenseDetailSlidePanel({
                 <div className="border-b border-[#F1F5F9] pb-2 mb-4">
                   <h4 className="text-[13px] font-semibold text-[#EE464C] tracking-[-0.0074em] uppercase flex items-center gap-1.5">
                     <AlertTriangle className="w-4 h-4 text-[#EE464C]" />
-                    <span>THÔNG TIN BIÊN BẢN HỦY PHIẾU CHI</span>
+                    <span>THÔNG TIN HỦY PHIẾU CHI</span>
                   </h4>
                 </div>
 
