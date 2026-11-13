@@ -151,6 +151,23 @@ export const ENDPOINTS = {
     },
   },
 
+  adminFinance: {
+    expenses: {
+      list: `${V1}/admin/expenses`,
+      categories: `${V1}/admin/expenses/categories`,
+      byId: (id: string) => `${V1}/admin/expenses/${id}`,
+      create: `${V1}/admin/expenses`,
+      cancel: (id: string) => `${V1}/admin/expenses/${id}/cancel`,
+    },
+    invoices: {
+      list: `${V1}/admin/invoices`,
+    },
+    analytics: {
+      revenue: `${V1}/admin/analytics/revenue`,
+      export: `${V1}/admin/analytics/export`,
+    },
+  },
+
   staffPayroll: {
     myPayslips: `${V1}/staff/payroll/my-payslips`,
   },

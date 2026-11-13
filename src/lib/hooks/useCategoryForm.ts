@@ -67,6 +67,16 @@ export function useCategoryForm({ initialData, isEdit = false }: UseCategoryForm
     []
   );
 
+  const clearError = useCallback((field: keyof PackageCategoryFormErrors) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      return {
+        ...prev,
+        [field]: undefined,
+      };
+    });
+  }, []);
+
   const resetForm = useCallback(() => {
     if (initialData) {
       setFormData({
@@ -130,6 +140,7 @@ export function useCategoryForm({ initialData, isEdit = false }: UseCategoryForm
     formData,
     errors,
     setErrors,
+    clearError,
     handleChange,
     resetForm,
     validate,

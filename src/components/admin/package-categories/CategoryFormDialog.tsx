@@ -33,6 +33,7 @@ export function CategoryFormDialog({
   const {
     formData,
     errors,
+    clearError,
     handleChange,
     resetForm,
     getCreatePayload,
@@ -124,6 +125,7 @@ export function CategoryFormDialog({
               errors={errors}
               isEdit={isEdit}
               onChangeField={handleChange}
+              onClearError={clearError}
             />
             <CategoryDescriptionSection
               value={formData.description}

@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui';
+import { cn } from '@/lib/utils';
 import type {
   PackageCategoryFormData,
   PackageCategoryFormErrors,
@@ -19,6 +20,7 @@ interface CategoryInfoSectionProps {
   errors: PackageCategoryFormErrors;
   isEdit?: boolean;
   onChangeField: <K extends keyof PackageCategoryFormData>(field: K, value: PackageCategoryFormData[K]) => void;
+  onClearError?: (field: keyof PackageCategoryFormErrors) => void;
 }
 
 export function CategoryInfoSection({
@@ -26,8 +28,10 @@ export function CategoryInfoSection({
   errors,
   isEdit = false,
   onChangeField,
+  onClearError,
 }: CategoryInfoSectionProps) {
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onClearError?.('code');
     const rawVal = e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '');
     onChangeField('code', rawVal);
   };
@@ -41,18 +45,19 @@ export function CategoryInfoSection({
       </div>
 
       <div className={`px-5 grid grid-cols-1 ${isEdit ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-x-6 gap-y-5`}>
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError?.('code')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Mã danh mục <span className="text-[#EE0033]">*</span>
           </label>
           <div
-            className={`h-[42px] px-3.5 py-2 rounded-[8px] flex items-center transition-all ${
+            className={cn(
+              'h-[42px] px-3.5 py-2 rounded-[8px] flex items-center transition-colors border',
               isEdit
-                ? 'bg-slate-100 border border-slate-200'
+                ? 'bg-slate-100 border-slate-200'
                 : errors.code
-                ? 'border-red-400 bg-red-50/20 border'
-                : 'bg-slate-50 border border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
-            }`}
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+            )}
           >
             <input
               type="text"
@@ -60,6 +65,7 @@ export function CategoryInfoSection({
               maxLength={20}
               placeholder="Nhập mã danh mục"
               value={formData.code}
+              onFocus={() => onClearError?.('code')}
               onChange={handleCodeChange}
               className={`w-full bg-transparent text-[14px] outline-none placeholder:text-[#697586] ${
                 isEdit ? 'text-slate-600 cursor-not-allowed' : 'text-[#202939]'
@@ -67,36 +73,41 @@ export function CategoryInfoSection({
             />
           </div>
           {errors.code && (
-            <span className="text-[12px] text-red-500 font-normal leading-none mt-1">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.code}
-            </span>
+            </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError?.('name')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Tên danh mục <span className="text-[#EE0033]">*</span>
           </label>
           <div
-            className={`h-[42px] px-3.5 py-2 bg-slate-50 border rounded-[8px] flex items-center transition-all ${
+            className={cn(
+              'h-[42px] px-3.5 py-2 rounded-[8px] flex items-center transition-colors border',
               errors.name
-                ? 'border-red-400 bg-red-50/20'
-                : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
-            }`}
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
+                : 'border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
+            )}
           >
             <input
               type="text"
               maxLength={100}
               placeholder="Nhập tên danh mục"
               value={formData.name}
-              onChange={(e) => onChangeField('name', e.target.value)}
+              onFocus={() => onClearError?.('name')}
+              onChange={(e) => {
+                onClearError?.('name');
+                onChangeField('name', e.target.value);
+              }}
               className="w-full bg-transparent text-[14px] text-[#202939] outline-none placeholder:text-[#697586]"
             />
           </div>
           {errors.name && (
-            <span className="text-[12px] text-red-500 font-normal leading-none mt-1">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.name}
-            </span>
+            </p>
           )}
         </div>
 

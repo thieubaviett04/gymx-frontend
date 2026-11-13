@@ -113,15 +113,15 @@ export function FormulaConfigCard({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('name')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Tên công thức <span className="text-[#EE0033]">*</span>
           </label>
           <div
             className={cn(
-              'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center transition-all',
+              'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center transition-colors',
               errors.name
-                ? 'border-red-400 bg-red-50/20'
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
                 : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
             )}
           >
@@ -138,13 +138,13 @@ export function FormulaConfigCard({
             />
           </div>
           {errors.name && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.name}
             </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('targetRole')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Đối tượng áp dụng <span className="text-[#EE0033]">*</span>
           </label>
@@ -159,9 +159,12 @@ export function FormulaConfigCard({
             }}
           >
             <SelectTrigger
+              onFocus={() => onClearError('targetRole')}
               className={cn(
-                'h-[42px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] shadow-none data-[placeholder]:text-slate-400 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                errors.targetRole ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] text-[#202939] shadow-none data-[placeholder]:text-slate-400 cursor-pointer transition-colors',
+                errors.targetRole
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                  : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
               )}
             >
               <SelectValue placeholder="Chọn" />
@@ -173,13 +176,13 @@ export function FormulaConfigCard({
             </SelectContent>
           </Select>
           {errors.targetRole && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.targetRole}
             </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('baseRateType')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Hình thức lương <span className="text-[#EE0033]">*</span>
           </label>
@@ -191,9 +194,12 @@ export function FormulaConfigCard({
             }}
           >
             <SelectTrigger
+              onFocus={() => onClearError('baseRateType')}
               className={cn(
-                'h-[42px] w-full rounded-[8px] bg-slate-50 px-3.5 text-[14px] text-[#202939] shadow-none data-[placeholder]:text-slate-400 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]',
-                errors.baseRateType ? 'border-red-400 bg-red-50/20' : 'border-slate-200'
+                'h-[42px] w-full rounded-[8px] px-3.5 text-[14px] text-[#202939] shadow-none data-[placeholder]:text-slate-400 cursor-pointer transition-colors',
+                errors.baseRateType
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus:border-[#EE464C] focus:ring-1 focus:ring-[#EE464C]'
+                  : 'bg-slate-50 border-slate-200 focus:bg-white focus:border-[#064343] focus:ring-1 focus:ring-[#064343]'
               )}
             >
               <SelectValue placeholder="Chọn" />
@@ -205,7 +211,7 @@ export function FormulaConfigCard({
             </SelectContent>
           </Select>
           {errors.baseRateType && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.baseRateType}
             </p>
           )}
@@ -218,15 +224,15 @@ export function FormulaConfigCard({
           isTrainerDisabled ? 'md:grid-cols-2' : 'md:grid-cols-3'
         )}
       >
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('baseRate')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             {baseRateLabel} <span className="text-[#EE0033]">*</span>
           </label>
           <div
             className={cn(
-              'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between transition-all',
+              'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between transition-colors',
               errors.baseRate
-                ? 'border-red-400 bg-red-50/20'
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
                 : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
             )}
           >
@@ -249,21 +255,21 @@ export function FormulaConfigCard({
             </div>
           </div>
           {errors.baseRate && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.baseRate}
             </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('standardWorkDays')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             {workUnitLabel} <span className="text-[#EE0033]">*</span>
           </label>
           <div
             className={cn(
-              'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between transition-all',
+              'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between transition-colors',
               errors.standardWorkDays
-                ? 'border-red-400 bg-red-50/20'
+                ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
                 : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
             )}
           >
@@ -286,22 +292,22 @@ export function FormulaConfigCard({
             </div>
           </div>
           {errors.standardWorkDays && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.standardWorkDays}
             </p>
           )}
         </div>
 
         {!isTrainerDisabled && (
-          <div className="flex flex-col gap-1.5 min-w-0">
+          <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('pricePerPtSession')}>
             <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
               Thù lao PT <span className="text-[#EE0033]">*</span>
             </label>
             <div
               className={cn(
-                'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between transition-all',
+                'h-[42px] px-3.5 bg-slate-50 border rounded-[8px] flex items-center justify-between transition-colors',
                 errors.pricePerPtSession
-                  ? 'border-red-400 bg-red-50/20'
+                  ? 'border-[#EE464C] bg-[#FFF5F5] focus-within:border-[#EE464C]'
                   : 'border-slate-200 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]'
               )}
             >
@@ -324,7 +330,7 @@ export function FormulaConfigCard({
               </div>
             </div>
             {errors.pricePerPtSession && (
-              <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+              <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
                 {errors.pricePerPtSession}
               </p>
             )}
@@ -333,7 +339,7 @@ export function FormulaConfigCard({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="flex flex-col gap-1.5 min-w-0">
+        <div className="flex flex-col gap-1.5 min-w-0" onClick={() => onClearError('effectiveDate')}>
           <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
             Ngày hiệu lực <span className="text-[#EE0033]">*</span>
           </label>
@@ -348,7 +354,7 @@ export function FormulaConfigCard({
             className="h-[42px] rounded-[8px] bg-slate-50 border-slate-200"
           />
           {errors.effectiveDate && (
-            <p className="text-xs text-red-500 mt-0.5 animate-in fade-in duration-200">
+            <p className="text-[12px] text-[#EE464C] font-normal leading-none mt-1.5 animate-in fade-in duration-200">
               {errors.effectiveDate}
             </p>
           )}

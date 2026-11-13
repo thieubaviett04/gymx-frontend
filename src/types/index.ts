@@ -14,3 +14,4 @@ export type * from './penaltyRule';
 export type * from './violation';
 export type * from './payroll';
 export type * from './payrollBonus';
+export type * from './finance';
