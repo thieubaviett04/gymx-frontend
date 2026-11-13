@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2, X, AlertCircle } from 'lucide-react';
+import { FolderOpenIcon } from '@/components/ui';
 import { violationService } from '@/lib/api/modules/violationService';
 import { formatVND } from '@/lib/utils/formatters';
 import type {
@@ -428,11 +429,14 @@ export function ViolationFormDialog({ isOpen, onClose, onSuccess }: ViolationFor
           >
             {createMutation.isPending ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
                 <span>Đang lưu...</span>
               </>
             ) : (
-              <span>Lưu biên bản</span>
+              <>
+                <FolderOpenIcon className="w-4 h-4 text-white" />
+                <span>Lưu biên bản</span>
+              </>
             )}
           </button>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { X, AlertCircle, Loader2, User, Briefcase, Award } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Button, FolderOpenIcon } from "@/components/ui";
 import type {
   CreateEmployeePayload,
   EmployeeDetail,
@@ -598,7 +598,11 @@ export function EmployeeFormDialog({
               disabled={isLoading}
               className="min-w-[120px] h-10 px-5 bg-[#064343] hover:bg-[#053737] text-white text-sm font-semibold rounded-lg shadow-sm flex items-center justify-center gap-2 cursor-pointer transition-all"
             >
-              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
+              ) : (
+                <FolderOpenIcon className="w-4 h-4 text-white" />
+              )}
               <span>
                 {mode === "create" ? "Tạo nhân viên" : "Lưu thay đổi"}
               </span>

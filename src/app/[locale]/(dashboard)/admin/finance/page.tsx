@@ -203,7 +203,6 @@ export default function AdminFinancePage() {
       return financeService.createInvoice({
         customerName: payload.customerName,
         customerPhone: payload.customerPhone,
-        memberCode: payload.memberCode,
         amount: payload.amount,
         paymentMethod: payload.paymentMethod,
         referenceType: payload.category,

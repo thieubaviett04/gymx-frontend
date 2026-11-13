@@ -106,7 +106,7 @@ export function ReceiptDetailSlidePanel({
               <InfoItem label="Ngày lập phiếu" value={formatDate(invoice.issuedAt)} />
               <InfoItem label="Người lập phiếu" value={invoice.creatorName || 'Hệ thống'} />
               <InfoItem label="Người nộp / Khách hàng" value={getCustomerDisplayName(invoice)} />
-              <InfoItem label="Mã hội viên" value={invoice.memberCode} />
+              <InfoItem label="Mã hội viên" value={invoice.memberCode || '— (Khách vãng lai)'} />
               <InfoItem
                 label="Số điện thoại"
                 value={formatPhoneNumber(invoice.customerPhone) || invoice.customerPhone || '—'}
@@ -121,20 +121,10 @@ export function ReceiptDetailSlidePanel({
               </h4>
             </div>
 
-            <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
+            <div className="px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-6">
               <InfoItem
                 label="Nguồn thu"
                 value={getReferenceTypeLabel(invoice.referenceType)}
-              />
-              <InfoItem
-                label="Chứng từ gốc liên kết"
-                value={
-                  <span className="font-medium text-[#064343]">
-                    {invoice.referenceId
-                      ? `HD-${invoice.referenceId.slice(0, 8).toUpperCase()}`
-                      : invoice.invoiceNumber}
-                  </span>
-                }
               />
               <InfoItem label="Phương thức thanh toán" value={invoice.paymentMethod || 'Tiền mặt'} />
               <InfoItem
@@ -142,19 +132,6 @@ export function ReceiptDetailSlidePanel({
                 value={
                   <span className="font-semibold text-[#064343]">
                     +{formatVND(invoice.totalAmount)}
-                  </span>
-                }
-              />
-              <InfoItem
-                label="Tạm tính / Tiền gốc"
-                value={
-                  <span>
-                    {formatVND(invoice.subtotal)}
-                    {invoice.subtotal > invoice.totalAmount && (
-                      <span className="text-[12px] text-[#EE464C] ml-1.5 font-normal">
-                        (Giảm {formatVND(invoice.subtotal - invoice.totalAmount)})
-                      </span>
-                    )}
                   </span>
                 }
               />
@@ -175,31 +152,32 @@ export function ReceiptDetailSlidePanel({
             <div className="px-5">
               <p className="text-[14px] text-[#011010] leading-relaxed whitespace-pre-wrap break-words">
                 {(() => {
-                  const refCode = invoice.referenceId
-                    ? `HD-${invoice.referenceId.slice(0, 8).toUpperCase()}`
-                    : invoice.invoiceNumber;
-                  return invoice.referenceType === 'PACKAGE'
-                    ? `Ghi nhận khoản thu tiền thanh toán hợp đồng dịch vụ hội viên tập luyện tại trung tâm (${refCode}).`
-                    : invoice.referenceType === 'PT_SESSION' || invoice.referenceType === 'PT_PACKAGE'
-                    ? `Ghi nhận khoản thu tiền thanh toán hợp đồng dịch vụ PT 1:1 (${refCode}).`
-                    : invoice.referenceType === 'DAY_TICKET'
-                    ? `Ghi nhận khoản thu từ bán vé tập lượt trong ngày cho khách hàng (${refCode}).`
-                    : invoice.referenceType === 'SERVICE_FEE'
-                    ? `Ghi nhận khoản thu từ phí dịch vụ, bảo lưu, chuyển nhượng hoặc tiện ích hội viên (${refCode}).`
-                    : `Ghi nhận thu tiền từ hoạt động bán lẻ quầy hoặc dịch vụ khác (${refCode}).`;
+                  switch (invoice.referenceType) {
+                    case 'PACKAGE':
+                      return `Ghi nhận khoản thu tiền thanh toán gói tập hội viên theo phiếu thu ${invoice.invoiceNumber}.`;
+                    case 'PT_SESSION':
+                    case 'PT_PACKAGE':
+                      return `Ghi nhận khoản thu tiền thanh toán dịch vụ huấn luyện viên cá nhân (PT 1:1) theo phiếu thu ${invoice.invoiceNumber}.`;
+                    case 'DAY_TICKET':
+                      return `Ghi nhận khoản thu bán vé tập lượt trong ngày cho khách hàng theo phiếu thu ${invoice.invoiceNumber}.`;
+                    case 'SERVICE_FEE':
+                      return `Ghi nhận khoản thu phí dịch vụ & tiện ích hội viên theo phiếu thu ${invoice.invoiceNumber}.`;
+                    default:
+                      return `Ghi nhận khoản thu từ bán lẻ quầy (nước uống, thực phẩm bổ sung) hoặc dịch vụ khác theo phiếu thu ${invoice.invoiceNumber}.`;
+                  }
                 })()}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="px-6 py-4 bg-[#F8FAFC] border-t border-[#EAEDF2] flex items-center justify-end">
+        <div className="h-[68px] px-6 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-end shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="h-[40px] px-5 bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] font-medium text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer"
+            className="h-[40px] px-6 min-w-[90px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[14px] font-medium leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center"
           >
-            Đóng
+            <span>Đóng</span>
           </button>
         </div>
       </div>

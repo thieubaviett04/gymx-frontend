@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import {
   DatePicker,
+  FolderOpenIcon,
   Select,
   SelectContent,
   SelectItem,
@@ -277,7 +278,7 @@ export function CreateExpenseSlidePanel({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="h-[40px] px-5 rounded-[10px] text-[13px] font-medium leading-[20px] text-white bg-[#064343] hover:bg-[#053737] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center gap-2 disabled:opacity-50"
+            className="h-[40px] px-5 rounded-[10px] text-[13px] font-medium leading-[20px] text-white bg-[#064343] hover:bg-[#053737] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
@@ -285,7 +286,10 @@ export function CreateExpenseSlidePanel({
                 <span>Đang lưu...</span>
               </>
             ) : (
-              <span>Lập phiếu chi</span>
+              <>
+                <FolderOpenIcon className="w-4 h-4 text-white" />
+                <span>Lập phiếu chi</span>
+              </>
             )}
           </button>
         </div>

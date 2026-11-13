@@ -3,7 +3,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { X, Loader2, AlertTriangle } from 'lucide-react';
-import { Badge } from '@/components/ui';
+import { Badge, TrashBinIcon } from '@/components/ui';
 import { financeService } from '@/lib/api';
 import { formatDate, formatDateTime, formatVND } from '@/lib/utils/formatters';
 import { EXPENSE_CATEGORY_LABELS } from './ExpensesToolbar';
@@ -122,41 +122,18 @@ export function ExpenseDetailSlidePanel({
             <div className="bg-white rounded-xl">
               <div className="border-b border-[#F1F5F9] pb-2 mb-4">
                 <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                  THÔNG TIN CHUNG
+                  THÔNG TIN PHIẾU CHI
                 </h4>
               </div>
 
               <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
                 <InfoItem label="Số phiếu chi" value={detail.expenseCode} />
-                <InfoItem label="Ngày chi" value={formatDate(detail.expenseDate)} />
                 <InfoItem label="Người lập phiếu" value={detail.recordedByName || 'Hệ thống'} />
-                <InfoItem label="Thời điểm tạo phiếu" value={formatDateTime(detail.createdAt)} />
-                <InfoItem label="Đơn vị chi" value="GymX Fitness Center" />
-                <InfoItem
-                  label="Mã tham chiếu hệ thống"
-                  value={
-                    <span className="font-medium text-[#064343]">
-                      #{detail.id.slice(0, 8).toUpperCase()}
-                    </span>
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl">
-              <div className="border-b border-[#F1F5F9] pb-2 mb-4">
-                <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
-                  CHI TIẾT KHOẢN CHI & THANH TOÁN
-                </h4>
-              </div>
-
-              <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
+                <InfoItem label="Ngày chi" value={formatDate(detail.expenseDate)} />
                 <InfoItem
                   label="Danh mục chi phí"
                   value={EXPENSE_CATEGORY_LABELS[detail.category] || detail.category}
                 />
-                <InfoItem label="Phân loại nghiệp vụ" value="Chi phí vận hành phòng gym" />
-                <InfoItem label="Phương thức chi trả" value="Chuyển khoản / Tiền mặt" />
                 <InfoItem
                   label="Số tiền chi trả"
                   value={
@@ -165,15 +142,7 @@ export function ExpenseDetailSlidePanel({
                     </span>
                   }
                 />
-                <InfoItem label="Ngày ghi nhận chi" value={formatDate(detail.expenseDate)} />
-                <InfoItem
-                  label="Trạng thái thanh toán"
-                  value={
-                    <span className={isConfirmed ? 'text-[#064343] font-medium' : 'text-[#EE464C] font-medium'}>
-                      {isConfirmed ? 'Đã chi hoàn tất' : 'Đã hủy phiếu chi'}
-                    </span>
-                  }
-                />
+                <InfoItem label="Thời điểm tạo phiếu" value={formatDateTime(detail.createdAt)} />
               </div>
             </div>
 
@@ -186,7 +155,7 @@ export function ExpenseDetailSlidePanel({
 
               <div className="px-5">
                 <p className="text-[14px] text-[#011010] leading-relaxed whitespace-pre-wrap break-words">
-                  {detail.description || 'Ghi nhận chi phí vận hành phòng gym theo chứng từ nội bộ.'}
+                  {detail.description || 'Không có ghi chú diễn giải.'}
                 </p>
               </div>
             </div>
@@ -222,28 +191,27 @@ export function ExpenseDetailSlidePanel({
           </div>
         )}
 
-        <div className="px-6 py-4 bg-[#F8FAFC] border-t border-[#EAEDF2] flex items-center justify-between">
-          <div>
-            {detail && isConfirmed && onCancelRequest && (
-              <button
-                type="button"
-                onClick={() => {
-                  onClose();
-                  onCancelRequest(detail);
-                }}
-                className="h-[40px] px-5 rounded-[10px] bg-red-50 hover:bg-red-100 text-[#EE464C] text-[13px] font-medium transition-colors cursor-pointer"
-              >
-                Hủy phiếu chi này
-              </button>
-            )}
-          </div>
+        <div className="h-[68px] px-6 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-end gap-3 shrink-0">
+          {detail && isConfirmed && onCancelRequest && (
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onCancelRequest(detail);
+              }}
+              className="h-[40px] px-4 rounded-[10px] text-[13px] font-medium leading-[20px] text-[#EE0033] hover:bg-red-50 transition-colors cursor-pointer flex items-center gap-1.5 border border-red-200"
+            >
+              <TrashBinIcon className="w-4 h-4 text-[#EE0033]" color="#EE0033" />
+              <span>Hủy phiếu chi</span>
+            </button>
+          )}
 
           <button
             type="button"
             onClick={onClose}
-            className="h-[40px] px-5 bg-white border border-[#E2E8F0] rounded-[10px] text-[13px] font-medium text-[#202939] hover:bg-slate-50 transition-colors cursor-pointer"
+            className="h-[40px] px-6 min-w-[90px] bg-[#064343] hover:bg-[#053737] rounded-[10px] text-[14px] font-medium leading-[20px] text-white shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center"
           >
-            Đóng
+            <span>Đóng</span>
           </button>
         </div>
       </div>

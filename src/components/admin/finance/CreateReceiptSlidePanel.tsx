@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import {
   DatePicker,
+  FolderOpenIcon,
   Select,
   SelectContent,
   SelectItem,
@@ -15,7 +16,6 @@ import { cn } from '@/lib/utils';
 export interface CreateReceiptPayload {
   customerName: string;
   customerPhone?: string;
-  memberCode?: string;
   amount: number;
   paymentMethod: string;
   category: string;
@@ -61,7 +61,6 @@ export function CreateReceiptSlidePanel({
 
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
-  const [memberCode, setMemberCode] = useState('');
   const [amount, setAmount] = useState<number | ''>('');
   const [paymentMethod, setPaymentMethod] = useState('Tiền mặt');
   const [category, setCategory] = useState('PACKAGE');
@@ -94,7 +93,6 @@ export function CreateReceiptSlidePanel({
       await onSubmit({
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim() || undefined,
-        memberCode: memberCode.trim() || undefined,
         amount: Number(amount),
         paymentMethod,
         category,
@@ -104,7 +102,6 @@ export function CreateReceiptSlidePanel({
 
       setCustomerName('');
       setCustomerPhone('');
-      setMemberCode('');
       setAmount('');
       setNote('');
       setCategory('PACKAGE');
@@ -154,7 +151,7 @@ export function CreateReceiptSlidePanel({
               </h4>
             </div>
 
-            <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-5">
+            <div className="px-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5">
               <div
                 className="flex flex-col gap-1.5 min-w-0"
                 onClick={clearErrors}
@@ -182,7 +179,7 @@ export function CreateReceiptSlidePanel({
                       clearErrors();
                       setCustomerName(e.target.value);
                     }}
-                    placeholder="Nhập"
+                    placeholder="Nhập tên người nộp / hội viên"
                     className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed"
                   />
                 </div>
@@ -213,33 +210,7 @@ export function CreateReceiptSlidePanel({
                       clearErrors();
                       setCustomerPhone(e.target.value);
                     }}
-                    placeholder="Nhập"
-                    className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
-              <div
-                className="flex flex-col gap-1.5 min-w-0"
-                onClick={clearErrors}
-                onPointerDown={clearErrors}
-              >
-                <label className="text-[13px] font-medium text-[#202939]">
-                  Mã hội viên
-                </label>
-                <div className="h-[42px] px-3.5 rounded-[8px] flex items-center transition-colors border border-slate-200 bg-slate-50 focus-within:bg-white focus-within:border-[#064343] focus-within:ring-1 focus-within:ring-[#064343]">
-                  <input
-                    type="text"
-                    disabled={isSubmitting}
-                    value={memberCode}
-                    onPointerDown={clearErrors}
-                    onFocus={clearErrors}
-                    onClick={clearErrors}
-                    onChange={(e) => {
-                      clearErrors();
-                      setMemberCode(e.target.value);
-                    }}
-                    placeholder="Nhập"
+                    placeholder="Nhập số điện thoại (tự nhận diện hội viên)"
                     className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed"
                   />
                 </div>
@@ -414,7 +385,7 @@ export function CreateReceiptSlidePanel({
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="h-[40px] px-5 rounded-[10px] text-[13px] font-medium leading-[20px] text-white bg-[#064343] hover:bg-[#053737] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center gap-2 disabled:opacity-50"
+            className="h-[40px] px-5 rounded-[10px] text-[13px] font-medium leading-[20px] text-white bg-[#064343] hover:bg-[#053737] shadow-[0px_1px_2px_rgba(0,0,0,0.05)] transition-colors cursor-pointer flex items-center justify-center gap-1.5 disabled:opacity-50"
           >
             {isSubmitting ? (
               <>
@@ -422,7 +393,10 @@ export function CreateReceiptSlidePanel({
                 <span>Đang xử lý...</span>
               </>
             ) : (
-              <span>Lập phiếu thu</span>
+              <>
+                <FolderOpenIcon className="w-4 h-4 text-white" />
+                <span>Lập phiếu thu</span>
+              </>
             )}
           </button>
         </div>
