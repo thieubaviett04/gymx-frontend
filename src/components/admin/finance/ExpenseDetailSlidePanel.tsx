@@ -168,7 +168,7 @@ export function ExpenseDetailSlidePanel({
                   </h4>
                 </div>
 
-                <div className="px-5 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+                <div className="px-5 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-6">
                   <InfoItem label="Người thực hiện hủy" value={detail.cancelledByName || '—'} />
                   <InfoItem
                     label="Thời điểm hủy"
