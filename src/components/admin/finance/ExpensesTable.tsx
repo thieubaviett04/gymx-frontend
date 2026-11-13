@@ -115,7 +115,7 @@ export function ExpensesTable({
       width: 'w-[12%]',
       className: 'whitespace-nowrap',
       render: (item: ExpenseSummaryDto) => (
-        <span className="font-medium text-[#064343] text-[14px]">
+        <span className="font-medium text-[#EE464C] text-[14px]">
           -{formatVND(item.amount)}
         </span>
       ),
