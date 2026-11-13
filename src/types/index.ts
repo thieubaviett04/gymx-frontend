@@ -1,4 +1,3 @@
-// Barrel export – toàn bộ types trong một nơi
 export type * from './api';
 export type * from './auth';
 export type * from './user';
@@ -15,3 +14,4 @@ export type * from './violation';
 export type * from './payroll';
 export type * from './payrollBonus';
 export type * from './finance';
+export type * from './kpi';

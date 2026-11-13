@@ -317,3 +317,35 @@ export function LinkChainIcon({
     </svg>
   );
 }
+
+export function RewardGiftIcon({
+  className,
+  color = '#FFFFFF',
+  size = 18,
+  width,
+  height,
+  ...props
+}: IconProps) {
+  const iconWidth = width ?? size;
+  const iconHeight = height ?? size;
+
+  return (
+    <svg
+      width={iconWidth}
+      height={iconHeight}
+      viewBox="0 0 22 22"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      {...props}
+    >
+      <path
+        d="M2.15 5.84L11.02 10.93M11.02 10.93L19.88 5.84M11.02 10.93L11.02 21.12M20.19 6.85C20.19 6.5 20.09 6.15 19.92 5.84C19.74 5.53 19.48 5.27 19.17 5.09L12.04 1.02C11.73 0.84 11.38 0.74 11.02 0.74C10.66 0.74 10.31 0.84 10 1.02L2.87 5.09C2.56 5.27 2.3 5.53 2.12 5.84C1.94 6.15 1.85 6.5 1.85 6.85L1.85 15.01C1.85 15.36 1.94 15.71 2.12 16.02C2.3 16.33 2.56 16.59 2.87 16.77L10 20.84C10.31 21.02 10.66 21.12 11.02 21.12C11.38 21.12 11.73 21.02 12.04 20.84L19.17 16.77C19.48 16.59 19.74 16.33 19.92 16.02C20.09 15.71 20.19 15.36 20.19 15.01L20.19 6.85Z"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
