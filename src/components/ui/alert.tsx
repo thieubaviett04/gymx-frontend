@@ -101,7 +101,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
         </div>
 
         {/* Center Content / Message */}
-        <div className="flex-1 min-w-0 py-0.5 flex flex-col justify-center">
+        <div className="flex-1 min-w-0 py-0.5 pr-2 flex flex-col justify-center">
           {title && (
             <p className={cn("font-medium text-foreground leading-tight mb-0.5", isSm ? "text-xs" : "text-sm")}>
               {title}
@@ -119,7 +119,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
             onClick={onClose}
             aria-label="Đóng thông báo"
             className={cn(
-              "rounded-full text-muted-foreground hover:text-foreground hover:bg-[#F5F5F5] transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+              "rounded-full text-muted-foreground hover:text-foreground hover:bg-[#F5F5F5] transition-colors shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ml-2 mr-0.5",
               isSm ? "p-1" : "p-1.5"
             )}
           >

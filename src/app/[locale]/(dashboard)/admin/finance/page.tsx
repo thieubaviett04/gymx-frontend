@@ -215,7 +215,9 @@ export default function AdminFinancePage() {
       setIsCreateReceiptOpen(false);
       showToast(
         'success',
-        `Đã lập phiếu thu thành công cho khách hàng ${vars.customerName} (${formatVND(vars.amount)}).`
+        vars.customerName
+          ? `Đã lập phiếu thu thành công cho khách hàng ${vars.customerName}.`
+          : 'Đã lập phiếu thu tiền thành công.'
       );
     },
     onError: (err) => {
@@ -231,7 +233,7 @@ export default function AdminFinancePage() {
   return (
     <div className="w-full flex-1 flex flex-col space-y-6 sm:space-y-7">
       {toast && (
-        <div className="fixed top-3.5 md:top-4 left-1/2 lg:left-[calc(50%+130px)] -translate-x-1/2 z-[100] max-w-[500px] w-auto pointer-events-auto animate-in fade-in slide-in-from-top-3 duration-200">
+        <div className="fixed top-3.5 md:top-4 left-1/2 lg:left-[calc(50%+130px)] -translate-x-1/2 z-[100] max-w-[90vw] md:max-w-[620px] w-auto pointer-events-auto animate-in fade-in slide-in-from-top-3 duration-200">
           <Alert
             size="sm"
             variant={
@@ -242,9 +244,9 @@ export default function AdminFinancePage() {
                 : 'danger'
             }
             onClose={() => setToast(null)}
-            className="w-auto min-w-[280px] max-w-[500px] shadow-[0px_8px_24px_rgba(0,0,0,0.15)] border border-[#E5E5E5] bg-white"
+            className="w-auto min-w-[280px] max-w-[90vw] md:max-w-[620px] shadow-[0px_8px_24px_rgba(0,0,0,0.15)] border border-[#E5E5E5] bg-white pr-3"
           >
-            <p className="text-[13px] font-normal text-[#202939] leading-snug whitespace-nowrap">
+            <p className="text-[13px] font-normal text-[#202939] leading-snug break-words">
               {toast.message}
             </p>
           </Alert>
