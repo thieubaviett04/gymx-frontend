@@ -177,7 +177,7 @@ export function EditEmployeeKpiSlidePanel({
                     <div className="flex items-center gap-2 pl-2 select-none shrink-0">
                       <div className="w-[1px] h-4 bg-[#CDD5DF]" />
                       <span className="text-[13px] font-semibold text-[#064343]">
-                        VNĐ
+                        VND
                       </span>
                     </div>
                   </div>
@@ -223,7 +223,7 @@ export function EditEmployeeKpiSlidePanel({
                     <div className="flex items-center gap-2 pl-2 select-none shrink-0">
                       <div className="w-[1px] h-4 bg-[#CDD5DF]" />
                       <span className="text-[13px] font-semibold text-[#064343]">
-                        VNĐ
+                        VND
                       </span>
                     </div>
                   </div>
