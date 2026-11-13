@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   LucideIcon,
   Receipt,
+  Target,
   Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -65,6 +66,11 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     label: 'Quản lý bảng lương',
     href: '/admin/payroll',
     icon: Banknote,
+  },
+  {
+    label: 'Quản lý KPI',
+    href: '/admin/kpi',
+    icon: Target,
   },
   {
     label: 'Khen thưởng',
