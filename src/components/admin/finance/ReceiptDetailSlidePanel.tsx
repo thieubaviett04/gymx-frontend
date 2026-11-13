@@ -156,7 +156,7 @@ export function ReceiptDetailSlidePanel({
                       return `Ghi nhận khoản thu tiền thanh toán gói tập hội viên theo phiếu thu ${invoice.invoiceNumber}.`;
                     case 'PT_SESSION':
                     case 'PT_PACKAGE':
-                      return `Ghi nhận khoản thu tiền thanh toán dịch vụ huấn luyện viên cá nhân (PT 1:1) theo phiếu thu ${invoice.invoiceNumber}.`;
+                      return `Ghi nhận khoản thu tiền thanh toán gói tập PT theo phiếu thu ${invoice.invoiceNumber}.`;
                     case 'DAY_TICKET':
                       return `Ghi nhận khoản thu bán vé tập lượt trong ngày cho khách hàng theo phiếu thu ${invoice.invoiceNumber}.`;
                     case 'SERVICE_FEE':

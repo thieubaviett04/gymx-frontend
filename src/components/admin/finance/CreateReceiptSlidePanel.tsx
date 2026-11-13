@@ -31,10 +31,10 @@ interface CreateReceiptSlidePanelProps {
 }
 
 const RECEIPT_CATEGORIES = [
-  { value: 'SERVICE_FEE', label: 'Phí dịch vụ & Tiện ích (thẻ, tủ locker, phạt...)' },
+  { value: 'SERVICE_FEE', label: 'Phí dịch vụ & Tiện ích' },
   { value: 'DAY_TICKET', label: 'Thu bán vé tập ngày' },
-  { value: 'RETAIL', label: 'Thu bán lẻ quầy (nước, whey, phụ kiện...)' },
-  { value: 'OTHER', label: 'Thu khác (thanh lý tài sản, hoàn ứng, thuê sảnh...)' },
+  { value: 'RETAIL', label: 'Thu bán lẻ quầy' },
+  { value: 'OTHER', label: 'Thu khác' },
 ];
 
 const PAYMENT_METHODS = [

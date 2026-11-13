@@ -500,8 +500,9 @@ export function SalaryFormulaDetailDialog({
                         placeholder="Nhập"
                         className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed disabled:text-[#94A3B8] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
-                      <div className="flex items-center gap-2 pl-2.5 border-l border-[#CDD5DF] shrink-0">
-                        <span className="text-[13px] font-medium text-[#64748B]">VND</span>
+                      <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                        <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                        <span className="text-[13px] font-semibold text-[#064343]">VND</span>
                       </div>
                     </div>
                     {formErrors.baseRate && (
@@ -585,8 +586,9 @@ export function SalaryFormulaDetailDialog({
                           placeholder="Nhập"
                           className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-slate-400 outline-none disabled:cursor-not-allowed disabled:text-[#94A3B8] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                         />
-                        <div className="flex items-center gap-2 pl-2.5 border-l border-[#CDD5DF] shrink-0">
-                          <span className="text-[13px] font-medium text-[#64748B]">VND</span>
+                        <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                          <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                          <span className="text-[13px] font-semibold text-[#064343]">VND</span>
                         </div>
                       </div>
                       {formErrors.pricePerPtSession && (

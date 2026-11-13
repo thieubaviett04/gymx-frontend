@@ -315,9 +315,12 @@ export function GeneralInfoTab({
                   placeholder="Nhập mức lương"
                   className="w-full bg-transparent text-[14px] text-[#202939] placeholder:text-[#697586] outline-none"
                 />
-                <span className="text-[13px] text-[#064343] font-semibold pl-2 select-none">
-                  VND
-                </span>
+                <div className="flex items-center gap-2 pl-2 select-none shrink-0">
+                  <div className="w-[1px] h-4 bg-[#CDD5DF]" />
+                  <span className="text-[13px] text-[#064343] font-semibold">
+                    VND
+                  </span>
+                </div>
               </div>
             ) : (
               <div className="h-[42px] px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-[8px] flex items-center justify-between text-[14px]">

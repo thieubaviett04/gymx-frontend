@@ -18,18 +18,18 @@ interface ReceiptsTableProps {
 
 export const REFERENCE_TYPE_LABELS: Record<string, string> = {
   PACKAGE: 'Gói tập hội viên',
-  PT_SESSION: 'Dịch vụ PT 1:1',
+  PT_SESSION: 'Gói tập PT',
   DAY_TICKET: 'Vé tập theo ngày',
-  RETAIL: 'Bán lẻ quầy (nước, whey)',
+  RETAIL: 'Bán lẻ quầy',
   SERVICE_FEE: 'Phí dịch vụ & Tiện ích',
   OTHER: 'Thu khác',
   // Tương thích ngược
-  PT_PACKAGE: 'Dịch vụ PT 1:1',
+  PT_PACKAGE: 'Gói tập PT',
   GENERAL: 'Thu khác',
 };
 
 export function getReferenceTypeLabel(type?: string | null): string {
-  if (!type) return 'Bán lẻ & Thu khác';
+  if (!type) return 'Thu khác';
   return REFERENCE_TYPE_LABELS[type.toUpperCase()] || type;
 }
 
