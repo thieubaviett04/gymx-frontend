@@ -5,7 +5,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert } from '@/components/ui';
 import { financeService } from '@/lib/api';
 import { getErrorMessage } from '@/lib/utils/error-helper';
-import { formatVND } from '@/lib/utils/formatters';
 import {
   FinanceTopBar,
   ReceiptsToolbar,
@@ -19,6 +18,7 @@ import {
   ReceiptDetailSlidePanel,
   FinancePagination,
 } from '@/components/admin/finance';
+import type { FinanceTabType } from '@/components/admin/finance';
 import type {
   CreateExpensePayload,
   ExpenseSummaryDto,
@@ -57,7 +57,7 @@ function getDateRangeFromMonthYear(
 export default function AdminFinancePage() {
   const queryClient = useQueryClient();
 
-  const [activeTab, setActiveTab] = useState<'receipts' | 'expenses'>('receipts');
+  const [activeTab, setActiveTab] = useState<FinanceTabType>('receipts');
 
   const [receiptSearch, setReceiptSearch] = useState('');
   const [receiptStatus, setReceiptStatus] = useState('ALL');
@@ -175,6 +175,7 @@ export default function AdminFinancePage() {
     mutationFn: (payload: CreateExpensePayload) => financeService.createExpense(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-finance-expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-finance-revenue-analytics'] });
       setIsCreateExpenseOpen(false);
       showToast('success', 'Đã lập phiếu chi vận hành thành công.');
     },
@@ -189,6 +190,7 @@ export default function AdminFinancePage() {
       financeService.cancelExpense(id, { cancellationReason: reason }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-finance-expenses'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-finance-revenue-analytics'] });
       setCancellingExpense(null);
       showToast('success', 'Đã hủy phiếu chi thành công.');
     },
@@ -212,6 +214,7 @@ export default function AdminFinancePage() {
     },
     onSuccess: (res, vars) => {
       queryClient.invalidateQueries({ queryKey: ['admin-finance-invoices'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-finance-revenue-analytics'] });
       setIsCreateReceiptOpen(false);
       showToast(
         'success',
@@ -226,7 +229,7 @@ export default function AdminFinancePage() {
     },
   });
 
-  const handleExportExcel = () => {
+  const handleExportExcelReceiptsOrExpenses = () => {
     showToast('success', 'Đang kết xuất tệp dữ liệu ra Excel...');
   };
 
@@ -255,12 +258,10 @@ export default function AdminFinancePage() {
 
       <FinanceTopBar
         activeTab={activeTab}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-        }}
+        onTabChange={setActiveTab}
         onOpenCreateExpense={() => setIsCreateExpenseOpen(true)}
         onOpenCreateReceipt={() => setIsCreateReceiptOpen(true)}
-        onExportExcel={handleExportExcel}
+        onExportExcel={handleExportExcelReceiptsOrExpenses}
         totalAmount={activeTab === 'receipts' ? totalReceiptsAmount : totalExpensesAmount}
         totalCount={activeTab === 'receipts' ? (receiptsData?.totalCount || 0) : (expensesData?.totalCount || 0)}
       />

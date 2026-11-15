@@ -15,3 +15,4 @@ export type * from './payroll';
 export type * from './payrollBonus';
 export type * from './finance';
 export type * from './kpi';
+export type * from './revenue';

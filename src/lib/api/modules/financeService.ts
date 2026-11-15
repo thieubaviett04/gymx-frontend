@@ -12,6 +12,14 @@ import type {
   InvoiceQueryParams,
   InvoiceSummaryDto,
 } from '@/types/finance';
+import type {
+  CategoryBreakdownDto,
+  FinancialSummaryDto,
+  RevenueAnalyticsDto,
+  RevenueExportParams,
+  RevenueFilterParams,
+  RevenueSlotDto,
+} from '@/types/revenue';
 
 function normalizePagedResult<T>(
   data: PagedResult<T>,
@@ -20,13 +28,6 @@ function normalizePagedResult<T>(
 ): PagedResult<T> {
   if (!data) return data;
 
-  // Backend bug in InvoiceRepository.cs:
-  // `new PagedResult<InvoiceSummaryDto>(items, pageIndex, pageSize, totalCount)`
-  // passes arguments in wrong order for constructor `(items, totalCount, pageIndex, pageSize)`.
-  // As a result:
-  // - data.totalCount holds pageIndex
-  // - data.pageIndex holds pageSize
-  // - data.pageSize holds actual totalCount
   const isSwapped =
     (data.pageIndex !== requestedPageIndex && data.pageIndex === requestedPageSize) ||
     (data.items && data.items.length > 0 && data.totalCount < data.items.length) ||
@@ -112,4 +113,76 @@ export const financeService = {
       ENDPOINTS.adminFinance.invoices.create,
       payload
     ),
+
+  getRevenueAnalytics: async (params?: RevenueFilterParams) => {
+    const queryParams: Record<string, string | number | undefined> = {
+      period: params?.period ?? 'today',
+      fromDate: params?.fromDate,
+      toDate: params?.toDate,
+      metric: params?.metric ?? 'revenue',
+    };
+
+    return apiClient.get<unknown, ApiResponse<RevenueAnalyticsDto>>(
+      ENDPOINTS.adminFinance.analytics.revenue,
+      { params: queryParams }
+    );
+  },
+
+  downloadRevenueReport: async (params?: RevenueExportParams) => {
+    const queryParams: Record<string, string | undefined> = {
+      period: params?.period ?? 'today',
+      fromDate: params?.fromDate,
+      toDate: params?.toDate,
+      format: params?.format ?? 'excel',
+    };
+
+    const response = await apiClient.get(
+      ENDPOINTS.adminFinance.analytics.export,
+      {
+        params: queryParams,
+        responseType: 'blob',
+      }
+    );
+
+    const blob = new Blob([response as unknown as BlobPart], {
+      type: 'text/csv;charset=utf-8;',
+    });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    link.setAttribute('download', `Bao_Cao_Doanh_Thu_${timestamp}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  },
+
+  getRevenueSummary: async (params?: RevenueFilterParams) => {
+    const res = await financeService.getRevenueAnalytics(params);
+    return {
+      success: true,
+      data: res.data.summary,
+    } as ApiResponse<FinancialSummaryDto>;
+  },
+
+  getRevenueChart: async (params?: RevenueFilterParams) => {
+    const res = await financeService.getRevenueAnalytics(params);
+    return {
+      success: true,
+      data: res.data.chartData,
+    } as ApiResponse<RevenueSlotDto[]>;
+  },
+
+  getRevenueByCategory: async (params?: RevenueFilterParams) => {
+    const res = await financeService.getRevenueAnalytics(params);
+    return {
+      success: true,
+      data: res.data.categoryBreakdown,
+    } as ApiResponse<CategoryBreakdownDto[]>;
+  },
+
+  exportRevenueExcel: async (params?: RevenueExportParams) => {
+    return financeService.downloadRevenueReport(params);
+  },
 };

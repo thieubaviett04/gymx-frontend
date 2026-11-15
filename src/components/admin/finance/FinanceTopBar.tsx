@@ -2,12 +2,14 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Plus } from 'lucide-react';
+import { Plus, Receipt, Wallet } from 'lucide-react';
 import { formatVND } from '@/lib/utils/formatters';
 
+export type FinanceTabType = 'receipts' | 'expenses';
+
 interface FinanceTopBarProps {
-  activeTab: 'receipts' | 'expenses';
-  onTabChange: (tab: 'receipts' | 'expenses') => void;
+  activeTab: FinanceTabType;
+  onTabChange: (tab: FinanceTabType) => void;
   onOpenCreateExpense?: () => void;
   onOpenCreateReceipt?: () => void;
   onExportExcel?: () => void;
@@ -28,36 +30,35 @@ export function FinanceTopBar({
 
   return (
     <div className="w-full bg-white rounded-[12px] border border-[#EAEDF2] p-[16px_20px] shadow-[0px_6px_30px_0px_rgba(175,190,211,0.15)] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-      {/* Tab selectors */}
-      <div className="flex items-center gap-2 shrink-0">
+      <div className="flex items-center gap-2 shrink-0 flex-wrap">
         <button
           type="button"
           onClick={() => onTabChange('receipts')}
-          className={`h-[48px] px-5 rounded-[8px] text-[13px] font-medium leading-[20px] transition-all flex items-center justify-center cursor-pointer select-none ${
+          className={`h-[48px] px-4 sm:px-5 rounded-[8px] text-[13px] font-medium leading-[20px] transition-all flex items-center justify-center gap-2 cursor-pointer select-none ${
             activeTab === 'receipts'
-              ? 'bg-[#064343] text-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]'
+              ? 'bg-[#064343] text-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] font-semibold'
               : 'bg-[#F8FAFC] text-[#202939] border border-[#E2E8F0] hover:bg-slate-100'
           }`}
         >
+          <Receipt className="w-4 h-4" />
           <span>Dữ liệu phiếu thu</span>
         </button>
 
         <button
           type="button"
           onClick={() => onTabChange('expenses')}
-          className={`h-[48px] px-5 rounded-[8px] text-[13px] font-medium leading-[20px] transition-all flex items-center justify-center cursor-pointer select-none ${
+          className={`h-[48px] px-4 sm:px-5 rounded-[8px] text-[13px] font-medium leading-[20px] transition-all flex items-center justify-center gap-2 cursor-pointer select-none ${
             activeTab === 'expenses'
-              ? 'bg-[#064343] text-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]'
+              ? 'bg-[#064343] text-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] font-semibold'
               : 'bg-[#F8FAFC] text-[#202939] border border-[#E2E8F0] hover:bg-slate-100'
           }`}
         >
+          <Wallet className="w-4 h-4" />
           <span>Dữ liệu phiếu chi</span>
         </button>
       </div>
 
-      {/* Right side: Stats & Action Buttons */}
       <div className="flex flex-wrap items-center justify-between lg:justify-end gap-3 sm:gap-5">
-        {/* Stats group */}
         <div className="flex items-center gap-4 sm:gap-5 flex-wrap">
           <div className="flex items-center gap-2.5">
             <span className="text-[14px] sm:text-[15px] font-medium text-[#64748B] leading-none">
@@ -82,7 +83,6 @@ export function FinanceTopBar({
 
         <div className="hidden sm:block w-[1px] h-5 bg-[#E2E8F0] shrink-0" />
 
-        {/* Buttons group */}
         <div className="flex items-center gap-2 shrink-0">
           {onExportExcel && (
             <button

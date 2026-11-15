@@ -3,6 +3,9 @@ export type ExpenseCategory =
   | 'UTILITIES'
   | 'MAINTENANCE'
   | 'EQUIPMENT'
+  | 'SUPPLIES'
+  | 'MARKETING'
+  | 'SALARY'
   | 'OTHER';
 
 export type ExpenseStatus = 'CONFIRMED' | 'CANCELLED';
@@ -98,3 +101,4 @@ export interface InvoiceQueryParams {
   pageSize?: number;
 }
 
+export type * from './revenue';

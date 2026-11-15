@@ -105,6 +105,12 @@ function getRouteMetadata(pathname: string): { title: string; breadcrumbs: Bread
         : [{ label: 'Quản lý KPI' }],
     };
   }
+  if (cleanPath.includes('/admin/finance/analytics')) {
+    return {
+      title: 'Thống kê doanh thu',
+      breadcrumbs: [{ label: 'Thống kê doanh thu' }],
+    };
+  }
   if (cleanPath.includes('/admin/finance')) {
     const isDeep = segments.length > 2;
     return {

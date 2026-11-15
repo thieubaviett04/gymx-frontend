@@ -14,6 +14,7 @@ import {
   LucideIcon,
   Receipt,
   Target,
+  TrendingUp,
   Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -78,6 +79,11 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     icon: Award,
   },
   {
+    label: 'Thống kê doanh thu',
+    href: '/admin/finance/analytics',
+    icon: TrendingUp,
+  },
+  {
     label: 'Khoản thu & chi',
     href: '/admin/finance',
     icon: Receipt,
@@ -110,6 +116,9 @@ export function AdminNav({
     }
     if (href === '/admin/payroll') {
       return effectivePath === '/admin/payroll';
+    }
+    if (href === '/admin/finance') {
+      return effectivePath === '/admin/finance';
     }
     return effectivePath === href || effectivePath.startsWith(`${href}/`);
   };
