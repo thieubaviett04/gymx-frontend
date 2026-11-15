@@ -96,7 +96,7 @@ export function useCreateEmployeeForm(options: CreateEmployeeFormProps = {}) {
 
       setTimeout(() => {
         if (newEmployeeId) {
-          router.push(`/admin/employees/${newEmployeeId}`);
+          router.push(`/admin/employees/${newEmployeeId}?newlyCreated=true`);
         } else if (options.onSuccess) {
           options.onSuccess(newEmployeeId);
         } else {

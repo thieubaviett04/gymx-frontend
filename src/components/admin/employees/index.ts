@@ -10,3 +10,5 @@ export { ConnectionErrorState, EmptySearchState } from '@/components/shared';
 
 export * from './tabs';
 export * from './sections';
+export * from './face';
+

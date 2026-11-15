@@ -12,9 +12,23 @@ export const KPI_ERROR_MESSAGES: Record<string, string> = {
   'KpiTemplate.NameExists': 'Tên mẫu KPI đã tồn tại.',
 };
 
-/**
- * Trích xuất message thông báo lỗi thân thiện từ Error, AxiosError hoặc string
- */
+export const FACE_ERROR_MESSAGES: Record<string, string> = {
+  'FaceRecognition.NoFaceFound': 'Không tìm thấy khuôn mặt trong ảnh.',
+  'FaceRecognition.MultipleFacesDetected': 'Phát hiện nhiều khuôn mặt trong ảnh.',
+  'FaceRegistration.InvalidFileFormat': 'Định dạng ảnh không hợp lệ (JPG, PNG).',
+  'FaceRegistration.FileTooLarge': 'Dung lượng ảnh vượt quá 5MB.',
+  'FaceRegistration.FileEmpty': 'Vui lòng chọn ảnh khuôn mặt.',
+  'FaceRecognition.DetectFailed': 'Không thể nhận diện khuôn mặt.',
+  'FaceRecognition.AddFaceFailed': 'Lỗi lưu dữ liệu khuôn mặt.',
+  'FaceRecognition.ServiceUnavailable': 'Dịch vụ FaceID tạm thời không khả dụng.',
+  'FaceRecognition.FaceAlreadyEnrolledToAnother': 'Khuôn mặt đã được đăng ký cho nhân viên khác.',
+  'FaceRecognition.FaceImageBlurry': 'Ảnh bị mờ hoặc rung lắc. Vui lòng giữ yên.',
+  'FaceRecognition.FaceQualityLow': 'Chất lượng ảnh không đạt tiêu chuẩn.',
+  'FaceData.NotFound': 'Nhân viên chưa đăng ký FaceID.',
+  'Attendance.FaceNotRecognized': 'Không nhận diện được khuôn mặt.',
+  'Attendance.FaceNotRegistered': 'Khuôn mặt chưa liên kết nhân viên.',
+};
+
 export function getErrorMessage(err: unknown): string {
   if (typeof err === 'string') return err;
   if (err && typeof err === 'object') {
@@ -33,6 +47,23 @@ export function getErrorMessage(err: unknown): string {
     };
 
     const code = axiosErr.response?.data?.error?.code || axiosErr.response?.data?.code;
+    const rawDesc =
+      axiosErr.response?.data?.error?.description ??
+      axiosErr.response?.data?.error?.message ??
+      axiosErr.response?.data?.detail ??
+      axiosErr.response?.data?.message;
+
+    if (code === 'FaceRecognition.FaceAlreadyEnrolledToAnother' && rawDesc) {
+      return rawDesc
+        .replace('Khuôn mặt này đã được đăng ký cho nhân viên ', 'Khuôn mặt đã đăng ký cho ')
+        .replace('Khuôn mặt này đã được đăng ký cho ', 'Khuôn mặt đã đăng ký cho ')
+        .replace('. Mỗi nhân viên chỉ được sử dụng một khuôn mặt duy nhất.', '.');
+    }
+
+    if (code && FACE_ERROR_MESSAGES[code]) {
+      return FACE_ERROR_MESSAGES[code];
+    }
+
     if (code && KPI_ERROR_MESSAGES[code]) {
       return KPI_ERROR_MESSAGES[code];
     }
@@ -87,6 +118,14 @@ export function formatErrorMessage(msg: string): string {
   }
   if (lower.includes('status code 403') || lower.includes('forbidden')) {
     return 'Bạn không có quyền thực hiện thao tác này (403).';
+  }
+
+  if (lower.includes('mỗi nhân viên chỉ được sử dụng một khuôn mặt duy nhất')) {
+    const cleaned = trimmed
+      .replace('. Mỗi nhân viên chỉ được sử dụng một khuôn mặt duy nhất.', '.')
+      .replace('Khuôn mặt này đã được đăng ký cho nhân viên ', 'Khuôn mặt đã đăng ký cho ')
+      .replace('Khuôn mặt này đã được đăng ký cho ', 'Khuôn mặt đã đăng ký cho ');
+    return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
   }
 
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);

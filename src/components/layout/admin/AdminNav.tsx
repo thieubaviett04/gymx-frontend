@@ -7,6 +7,7 @@ import {
   Award,
   Banknote,
   Calculator,
+  Camera,
   Dumbbell,
   FileText,
   Layers,
@@ -32,6 +33,11 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
     label: 'Tổng quan',
     href: '/admin',
     icon: LayoutDashboard,
+  },
+  {
+    label: 'Lấy khuôn mặt',
+    href: '/admin/face-enrollment',
+    icon: Camera,
   },
   {
     label: 'Quản lý nhân viên',

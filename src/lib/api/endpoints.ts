@@ -74,14 +74,6 @@ export const ENDPOINTS = {
     delete:         (id: string) => `${V1}/admin/package-categories/${id}`,
   },
 
-  // ─── Attendance ───────────────────────────────────────────────────────────
-  attendance: {
-    list:           `${V1}/attendance`,
-    checkIn:        `${V1}/attendance/check-in`,
-    checkOut:       (id: string) => `${V1}/attendance/${id}/check-out`,
-    today:          `${V1}/attendance/today`,
-  },
-
   // ─── Branches ─────────────────────────────────────────────────────────────
   branches: {
     list:           `${V1}/branches`,
@@ -103,6 +95,8 @@ export const ENDPOINTS = {
     update:         (id: string) => `${V1}/admin/employees/${id}`,
     delete:         (id: string) => `${V1}/admin/employees/${id}`,
     me:             `${V1}/employees/me`,
+    face:           (id: string) => `${V1}/admin/employees/${id}/face`,
+    faceByCode:     (code: string) => `${V1}/admin/employees/code/${code}/face`,
   },
 
   adminPenaltyRules: {
