@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
-import { User, Scan } from "lucide-react";
 import { Badge, EyeViewIcon, EditPencilIcon, TrashBinIcon } from "@/components/ui";
 import { getMediaUrl } from "@/lib/utils/media-url";
 import type { EmployeeSummary } from "@/types/employee";
@@ -16,11 +14,9 @@ interface EmployeeTableProps {
   onView: (emp: EmployeeSummary) => void;
   onEdit: (emp: EmployeeSummary) => void;
   onDelete: (emp: EmployeeSummary) => void;
-  onEnrollFace?: (emp: EmployeeSummary) => void;
   onClearFilter?: () => void;
 }
 
-/** Chuyển đổi mã Role sang nhãn tiếng Việt hiển thị */
 function formatPosition(pos: string): string {
   const upper = (pos || "").toUpperCase().trim();
   switch (upper) {
@@ -47,7 +43,6 @@ export function EmployeeTable({
   onView,
   onEdit,
   onDelete,
-  onEnrollFace,
   onClearFilter,
 }: EmployeeTableProps) {
   if (isLoading) {
@@ -108,7 +103,6 @@ export function EmployeeTable({
             const stt = (pageIndex - 1) * pageSize + idx + 1;
             const isActive =
               (emp.employmentStatus || '').toUpperCase() === 'ACTIVE';
-            // Row background: #F0F5F5 (soft primary teal tint) đồng nhất cho tất cả các dòng
             const rowBg = 'bg-[#F0F5F5]';
 
             return (
@@ -116,17 +110,14 @@ export function EmployeeTable({
                 key={emp.id}
                 className={`${rowBg} transition-colors hover:bg-[#E3EDED] group h-[43px]`}
               >
-                {/* 1. STT */}
                 <td className="h-[43px] px-[10px] py-0 align-middle rounded-l-[6px] text-[#202939] font-normal">
                   {stt}
                 </td>
 
-                {/* 2. Mã NV tách riêng ngay sau STT theo chuẩn Figma */}
                 <td className="h-[43px] px-[10px] py-0 align-middle text-[#064343] font-normal">
                   {emp.employeeCode}
                 </td>
 
-                {/* 3. Họ & Tên kèm Avatar 28x28px */}
                 <td className="h-[43px] px-[10px] py-0 align-middle">
                   <div className="flex items-center gap-[10px]">
                     <div className="relative w-[28px] h-[28px] rounded-full overflow-hidden bg-slate-200 shrink-0 flex items-center justify-center">
@@ -134,7 +125,6 @@ export function EmployeeTable({
                         {emp.fullName?.charAt(0)?.toUpperCase() || 'U'}
                       </span>
                       {emp.avatarUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={getMediaUrl(emp.avatarUrl)}
                           alt={emp.fullName}
@@ -151,22 +141,18 @@ export function EmployeeTable({
                   </div>
                 </td>
 
-                {/* 4. Vai trò (Text chuẩn Figma 1346:6555) */}
                 <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {formatPosition(emp.position)}
                 </td>
 
-                {/* 5. Số điện thoại */}
                 <td className="h-[43px] px-[10px] py-0 align-middle text-[#202939] font-normal">
                   {emp.phoneNumber || '—'}
                 </td>
 
-                {/* 6. Email */}
                 <td className="h-[43px] px-[10px] py-0 align-middle text-[#353945] font-normal truncate max-w-[220px]">
                   {emp.email}
                 </td>
 
-                {/* 7. Trạng thái (Badge chuẩn GymX Figma Node 1437:1446) */}
                 <td className="h-[43px] px-[10px] py-0 align-middle">
                   {isActive ? (
                     <Badge variant="active">
@@ -179,23 +165,8 @@ export function EmployeeTable({
                   )}
                 </td>
 
-                {/* 8. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
                 <td className="h-[43px] px-[10px] py-0 align-middle rounded-r-[6px]">
                   <div className="flex items-center gap-[10px]">
-                    {/* Đăng ký / Quản lý khuôn mặt */}
-                    {onEnrollFace && (
-                      <button
-                        type="button"
-                        onClick={() => onEnrollFace(emp)}
-                        title="Đăng ký dữ liệu khuôn mặt"
-                        className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 text-[#064343] transition-colors cursor-pointer"
-                        aria-label="Đăng ký khuôn mặt"
-                      >
-                        <Scan className="w-4 h-4 stroke-[2]" />
-                      </button>
-                    )}
-
-                    {/* Xem chi tiết */}
                     <button
                       type="button"
                       onClick={() => onView(emp)}
@@ -206,7 +177,6 @@ export function EmployeeTable({
                       <EyeViewIcon className="w-[18px] h-[18px]" color="#FFB800" />
                     </button>
 
-                    {/* Chỉnh sửa */}
                     <button
                       type="button"
                       onClick={() => onEdit(emp)}
@@ -217,7 +187,6 @@ export function EmployeeTable({
                       <EditPencilIcon className="w-[18px] h-[18px]" color="#064343" />
                     </button>
 
-                    {/* Xóa nhân viên */}
                     <button
                       type="button"
                       onClick={() => onDelete(emp)}

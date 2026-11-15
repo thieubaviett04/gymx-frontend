@@ -6,7 +6,6 @@ export type * from './member';
 export type * from './trainer';
 export type { PackageCategoryLookup } from './packageCategory';
 export type * from './package';
-export type * from './attendance';
 export type * from './employee';
 export type * from './packageCategory';
 export type * from './penaltyRule';

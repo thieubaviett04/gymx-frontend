@@ -3,11 +3,13 @@
 import React from 'react';
 import { Link } from '@/i18n/routing';
 import {
+  Camera,
   CheckSquare,
   ClipboardList,
   Dumbbell,
   LayoutDashboard,
   LogOut,
+  Scan,
   Users,
   X,
 } from 'lucide-react';

@@ -1,8 +1,3 @@
-/**
- * Types cho module Quản lý nhân viên (Admin Module - P6.1)
- * Đối chiếu theo Backend GymX.Application.Modules.Employees.DTOs
- */
-
 export interface EmployeeSummary {
   id: string;
   userId: string;
@@ -20,6 +15,7 @@ export interface EmployeeSummary {
   trainerExperienceYears?: number | null;
   trainerPricePerSession?: number | null;
   createdDate: string;
+  hasFaceEnrolled?: boolean;
 }
 
 export interface TrainerDetailInfo {

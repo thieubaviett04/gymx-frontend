@@ -20,6 +20,7 @@ import { employeeService } from '@/lib/api';
 import type { EmployeeFaceDetail } from '@/types/employee';
 import { cn } from '@/lib/utils';
 import { getMediaUrl } from '@/lib/utils/media-url';
+import { getErrorMessage } from '@/lib/utils/error-helper';
 
 interface InitialEmployeeInfo {
   id: string;
@@ -57,6 +58,9 @@ export function EmployeeFaceEnrollmentModal({
   const [capturedBlob, setCapturedBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [capturedFileName, setCapturedFileName] = useState<string>('face-capture.jpg');
+
+  const [scanProgress, setScanProgress] = useState(0);
+  const [autoCaptureEnabled, setAutoCaptureEnabled] = useState(true);
 
   const [cameraLoading, setCameraLoading] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
@@ -204,7 +208,7 @@ export function EmployeeFaceEnrollmentModal({
     }
   };
 
-  const handleCaptureSnapshot = () => {
+  const handleCaptureSnapshot = useCallback(() => {
     if (!videoRef.current) return;
     const video = videoRef.current;
     const canvas = document.createElement('canvas');
@@ -231,7 +235,40 @@ export function EmployeeFaceEnrollmentModal({
       'image/jpeg',
       0.95
     );
-  };
+  }, [activeEmployee, previewUrl, stopCameraStream]);
+
+  useEffect(() => {
+    if (
+      step !== 'CAPTURE' ||
+      captureSource !== 'CAMERA' ||
+      cameraLoading ||
+      !!cameraError ||
+      !autoCaptureEnabled
+    ) {
+      setScanProgress(0);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setScanProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          handleCaptureSnapshot();
+          return 100;
+        }
+        return prev + 3;
+      });
+    }, 45);
+
+    return () => clearInterval(interval);
+  }, [
+    step,
+    captureSource,
+    cameraLoading,
+    cameraError,
+    autoCaptureEnabled,
+    handleCaptureSnapshot,
+  ]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -291,16 +328,7 @@ export function EmployeeFaceEnrollmentModal({
         setEnrollmentError('Thêm dữ liệu khuôn mặt không thành công. Vui lòng thử lại.');
       }
     } catch (err: unknown) {
-      let errorMessage = 'Thêm dữ liệu khuôn mặt không thành công. Vui lòng thử lại.';
-      if (typeof err === 'object' && err !== null && 'response' in err) {
-        const axiosErr = err as {
-          response?: { data?: { error?: { message?: string; code?: string } } };
-        };
-        const serverError = axiosErr.response?.data?.error;
-        if (serverError?.message) {
-          errorMessage = serverError.message;
-        }
-      }
+      const errorMessage = getErrorMessage(err) || 'Thêm dữ liệu khuôn mặt không thành công. Vui lòng thử lại.';
       setEnrollmentError(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -591,9 +619,24 @@ export function EmployeeFaceEnrollmentModal({
                           className="w-full h-full object-cover mirror -scale-x-100"
                         />
                         <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center z-10">
-                          <div className="w-[180px] h-[240px] sm:w-[220px] sm:h-[290px] border-2 border-dashed border-[#10B981]/90 rounded-[50%] shadow-[0_0_0_9999px_rgba(0,0,0,0.35)] transition-all animate-pulse" />
-                          <span className="mt-3 px-3 py-1 rounded-full bg-black/60 text-white text-[11px] font-medium backdrop-blur-xs">
-                            Căn chỉnh khuôn mặt vào giữa khung
+                          <div className="relative w-[190px] h-[250px] sm:w-[220px] sm:h-[290px] rounded-[50%] border-2 border-[#10B981] shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] transition-all flex items-center justify-center overflow-hidden">
+                            <div className="absolute inset-0 border-2 border-dashed border-[#10B981]/60 rounded-[50%] animate-spin duration-3000" />
+                            <div
+                              className="absolute bottom-0 left-0 right-0 bg-[#10B981]/25 transition-all duration-75"
+                              style={{ height: `${scanProgress}%` }}
+                            />
+                            <div className="absolute top-3 px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-xs text-[#10B981] text-[10px] font-semibold tracking-wide border border-[#10B981]/40 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                              <span>FaceID Scan {scanProgress}%</span>
+                            </div>
+                          </div>
+                          <span className="mt-3 px-3 py-1 rounded-full bg-black/70 text-white text-[11px] font-medium backdrop-blur-xs flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                            <span>
+                              {autoCaptureEnabled
+                                ? `Đang quét mẫu khuôn mặt (${scanProgress}%)... Vui lòng giữ thẳng mặt`
+                                : 'Căn chỉnh khuôn mặt vào giữa khung'}
+                            </span>
                           </span>
                         </div>
                       </>
@@ -601,15 +644,28 @@ export function EmployeeFaceEnrollmentModal({
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={startCameraStream}
-                      disabled={cameraLoading}
-                      className="text-[12px] text-[#64748B] hover:text-[#064343] flex items-center gap-1 font-medium cursor-pointer"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      <span>Làm mới camera</span>
-                    </button>
+                    <div className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        onClick={startCameraStream}
+                        disabled={cameraLoading}
+                        className="text-[12px] text-[#64748B] hover:text-[#064343] flex items-center gap-1 font-medium cursor-pointer"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        <span>Làm mới</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAutoCaptureEnabled((prev) => !prev)}
+                        className={`text-[12px] font-medium px-2 py-0.5 rounded border transition-colors cursor-pointer ${
+                          autoCaptureEnabled
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : 'bg-slate-100 text-slate-600 border-slate-200'
+                        }`}
+                      >
+                        {autoCaptureEnabled ? 'Tự chụp: BẬT' : 'Tự chụp: TẮT'}
+                      </button>
+                    </div>
 
                     <button
                       type="button"
@@ -618,7 +674,7 @@ export function EmployeeFaceEnrollmentModal({
                       className="h-[44px] px-6 bg-[#064343] hover:bg-[#053737] text-white text-[14px] font-medium rounded-[8px] shadow-sm transition-all cursor-pointer flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Camera className="w-4 h-4" />
-                      <span>Chụp ảnh ngay</span>
+                      <span>{autoCaptureEnabled ? `Chụp ngay (${scanProgress}%)` : 'Chụp ảnh ngay'}</span>
                     </button>
                   </div>
                 </div>

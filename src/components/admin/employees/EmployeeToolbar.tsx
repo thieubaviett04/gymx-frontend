@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, Plus, Filter, X, Scan } from "lucide-react";
+import { Search, Plus, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
 import { TrashBinIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -15,7 +15,6 @@ interface EmployeeToolbarProps {
   selectedStatus: string;
   onStatusChange: (status: string) => void;
   onAddNew: () => void;
-  onFaceEnrollment?: () => void;
 }
 
 export function EmployeeToolbar({
@@ -26,12 +25,10 @@ export function EmployeeToolbar({
   selectedStatus,
   onStatusChange,
   onAddNew,
-  onFaceEnrollment,
 }: EmployeeToolbarProps) {
   const [localSearch, setLocalSearch] = useState(searchValue);
   const [isFocused, setIsFocused] = useState(false);
 
-  // Debounce search 350ms
   useEffect(() => {
     const timer = setTimeout(() => {
       if (localSearch !== searchValue) {
@@ -41,7 +38,6 @@ export function EmployeeToolbar({
     return () => clearTimeout(timer);
   }, [localSearch, onSearchChange, searchValue]);
 
-  // Sync external search change
   useEffect(() => {
     setLocalSearch(searchValue);
   }, [searchValue]);
@@ -57,9 +53,7 @@ export function EmployeeToolbar({
 
   return (
     <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-3.5 mb-5">
-      {/* Search & Filters (Figma Container #1346:6501) */}
       <div className="flex flex-wrap items-center gap-3 flex-1">
-        {/* Search Input matching Figma Node 1346:6502 */}
         <div className="relative w-full sm:w-[380px] lg:w-[420px] h-[48px]">
           <Search
             className={cn(
@@ -95,7 +89,6 @@ export function EmployeeToolbar({
           )}
         </div>
 
-        {/* Dropdown Vai trò (Role Filter matching Figma #1346:6508 & #777:13666) */}
         <div className="min-w-[210px] sm:w-[245px]">
           <Select
             value={selectedPosition || "ALL"}
@@ -115,7 +108,6 @@ export function EmployeeToolbar({
           </Select>
         </div>
 
-        {/* Dropdown Trạng thái (Status Filter matching Figma #777:13666) */}
         <div className="min-w-[170px] sm:w-[195px]">
           <Select
             value={selectedStatus || "ALL"}
@@ -135,7 +127,6 @@ export function EmployeeToolbar({
           </Select>
         </div>
 
-        {/* Reset filter button (nền trắng chữ đỏ, font regular, icon thùng rác 20px) */}
         {hasFilter && (
           <button
             type="button"
@@ -150,17 +141,6 @@ export function EmployeeToolbar({
       </div>
 
       <div className="flex items-center gap-3 shrink-0">
-        {onFaceEnrollment && (
-          <button
-            type="button"
-            onClick={onFaceEnrollment}
-            className="h-[48px] px-5 bg-white border border-[#064343] text-[#064343] hover:bg-[#064343]/5 font-normal text-[14px] leading-[20px] rounded-[10px] inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-colors active:scale-[0.98]"
-          >
-            <Scan className="w-5 h-5 stroke-[2]" />
-            <span>Thêm dữ liệu khuôn mặt</span>
-          </button>
-        )}
-
         <button
           type="button"
           onClick={onAddNew}

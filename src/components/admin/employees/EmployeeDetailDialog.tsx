@@ -27,7 +27,6 @@ import {
 } from "@/components/ui";
 import type { EmployeeDetail, UpdateEmployeePayload } from "@/types/employee";
 import { SPECIALIZATION_OPTIONS } from "./CreateEmployeeForm";
-import { EmployeeFaceEnrollmentModal, EmployeeFaceStatusBadge } from "./face";
 
 interface EmployeeDetailDialogProps {
   isOpen: boolean;
@@ -36,9 +35,6 @@ interface EmployeeDetailDialogProps {
   onEdit?: (emp: EmployeeDetail) => void;
 }
 
-/**
- * Format chức vụ sang nhãn hiển thị chuẩn
- */
 function formatPosition(pos?: string | null): string {
   if (!pos) return "—";
   const upper = pos.toUpperCase().trim();
@@ -58,9 +54,6 @@ function formatPosition(pos?: string | null): string {
   }
 }
 
-/**
- * Format ngày DD/MM/YYYY chuẩn Figma
- */
 function formatDate(dateStr?: string | null): string {
   if (!dateStr) return "—";
   try {
@@ -75,9 +68,6 @@ function formatDate(dateStr?: string | null): string {
   }
 }
 
-/**
- * Format ngày giờ DD/MM/YYYY • HH:mm chuẩn Figma
- */
 function formatDateTime(dateStr?: string | null): string {
   if (!dateStr) return "—";
   try {
@@ -94,17 +84,11 @@ function formatDateTime(dateStr?: string | null): string {
   }
 }
 
-/**
- * Format mức lương theo định dạng 9.500.000 ₫ chuẩn Figma
- */
 function formatSalary(val?: number | null): string {
   if (val === undefined || val === null) return "—";
   return new Intl.NumberFormat("vi-VN").format(val) + " ₫";
 }
 
-/**
- * Component hiển thị cặp Label - Value chuẩn Typography Figma #1415:1955
- */
 function InfoItem({
   label,
   value,
@@ -132,9 +116,6 @@ function InfoItem({
   );
 }
 
-/**
- * EmployeeDetailDialog - Khung xem & sửa trực tiếp chi tiết nhân viên (Slide-over drawer chuẩn Figma #1415:1955)
- */
 export function EmployeeDetailDialog({
   isOpen,
   employee: initialEmployee,
@@ -142,22 +123,12 @@ export function EmployeeDetailDialog({
 }: EmployeeDetailDialogProps) {
   const queryClient = useQueryClient();
 
-  // Dữ liệu nhân viên hiển thị (cập nhật ngay khi sửa xong không cần reload trang)
   const [employee, setEmployee] = useState<EmployeeDetail | null>(initialEmployee);
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "general" | "trainer" | "schedule" | "notes"
   >("general");
 
-  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
-  const { data: faceRes, refetch: refetchFace } = useQuery({
-    queryKey: ['admin-employee-face', employee?.id],
-    queryFn: () => employeeService.getFaceDetail(employee!.id),
-    enabled: !!employee?.id && isOpen,
-  });
-  const hasFaceEnrolled = faceRes?.data?.hasFaceEnrolled ?? false;
-
-  // Form states phục vụ In-Place Edit
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
@@ -168,7 +139,6 @@ export function EmployeeDetailDialog({
   const [address, setAddress] = useState("");
   const [employmentStatus, setEmploymentStatus] = useState("ACTIVE");
 
-  // Trainer form states
   const [specializationId, setSpecializationId] = useState("");
   const [experienceYears, setExperienceYears] = useState<number | string>("");
   const [pricePerSession, setPricePerSession] = useState<number | string>("");
@@ -195,7 +165,6 @@ export function EmployeeDetailDialog({
     setAddress(emp.address || "");
     setEmploymentStatus((emp.employmentStatus || "ACTIVE").toUpperCase());
 
-    // Thông tin HLV
     setSpecializationId(emp.trainerInfo?.specializationId || "");
     setExperienceYears(
       emp.trainerInfo?.experienceYears !== undefined &&
@@ -212,7 +181,6 @@ export function EmployeeDetailDialog({
     setDescription(emp.trainerInfo?.description || "");
   };
 
-  // Đồng bộ hóa khi mở dialog hoặc khi `initialEmployee` thay đổi
   useEffect(() => {
     if (initialEmployee) {
       setEmployee(initialEmployee);
@@ -224,7 +192,6 @@ export function EmployeeDetailDialog({
     }
   }, [initialEmployee, isOpen]);
 
-  // Lắng nghe phím ESC để đóng drawer (chỉ đóng khi không bận pending)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -247,13 +214,12 @@ export function EmployeeDetailDialog({
     };
   }, [isOpen, isEditing, onClose]);
 
-  // Mutation cập nhật nhân viên trực tiếp ngay trên Slide Panel
   const updateMutation = useMutation({
     mutationFn: (payload: UpdateEmployeePayload) =>
       employeeService.update(employee!.id, payload),
     onSuccess: async (res) => {
       queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
-      // Lấy dữ liệu chi tiết mới nhất để hiển thị lại ở chế độ View
+
       try {
         const fresh = await employeeService.byId(employee!.id);
         setEmployee(fresh.data);
@@ -388,12 +354,12 @@ export function EmployeeDetailDialog({
         }
       }}
     >
-      {/* Slide-over Container chuẩn kích thước 880px và hiệu ứng shadow Figma #1415:1955 */}
+      {}
       <div
         onClick={(e) => e.stopPropagation()}
         className="w-full sm:w-[880px] max-w-full bg-white h-full shadow-[-12px_0px_40px_0px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden animate-in slide-in-from-right duration-300"
       >
-        {/* Toast thông báo tại chỗ khi lưu thành công / thất bại */}
+        {}
         {toast && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200 w-auto max-w-[90%]">
             <Alert
@@ -409,16 +375,16 @@ export function EmployeeDetailDialog({
           </div>
         )}
 
-        {/* 1. Header (#1415:1957) */}
+        {}
         <div className="pt-6 pb-2 pr-6 pl-0 flex items-center justify-between shrink-0">
-          {/* Thanh stroke 4px sát mép ngoài bên trái như thiết kế */}
+          {}
           <div className="flex items-center h-[26px] border-l-[4px] border-[#064343] pl-5">
             <h2 className="text-[20px] font-bold text-[#011010] leading-none tracking-[-0.025em]">
               {isEditing ? "Chỉnh sửa thông tin nhân viên" : "Chi tiết nhân viên"}
             </h2>
           </div>
 
-          {/* Nút đóng tròn 32x32px */}
+          {}
           <button
             type="button"
             onClick={() => {
@@ -433,7 +399,7 @@ export function EmployeeDetailDialog({
           </button>
         </div>
 
-        {/* 2. Dòng thông tin Metadata Tóm tắt (#1415:1976 - Khoảng cách phân khối rõ ràng) */}
+        {}
         <div className="px-6 mt-3.5 mb-2 flex items-center flex-wrap gap-x-5 gap-y-2 shrink-0 bg-white">
           <div className="flex items-center gap-1.5">
             <span className="text-[14px] font-medium text-[#64748B]">
@@ -488,21 +454,6 @@ export function EmployeeDetailDialog({
             </Badge>
           </div>
 
-          <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
-
-          <div className="flex items-center gap-2">
-            <span className="text-[14px] font-medium text-[#64748B]">
-              Khuôn mặt:
-            </span>
-            <EmployeeFaceStatusBadge hasFace={hasFaceEnrolled} size="sm" />
-            <button
-              type="button"
-              onClick={() => setIsFaceModalOpen(true)}
-              className="text-[12px] font-semibold text-[#064343] hover:underline cursor-pointer"
-            >
-              {hasFaceEnrolled ? "Cập nhật" : "Đăng ký"}
-            </button>
-          </div>
         </div>
 
         <div className="mx-6 h-[1px] bg-[#E2E8F0] my-4" />
@@ -527,7 +478,7 @@ export function EmployeeDetailDialog({
         <div className="flex-1 overflow-y-auto px-6 pt-5 pb-8 space-y-8">
           {activeTab === "general" && (
             <>
-              {/* KHỐI 1: THÔNG TIN CƠ BẢN (#1415:2021) */}
+              {}
               <div className="bg-white">
                 <div className="border-b border-[#F1F5F9] pb-2.5 mb-5">
                   <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
@@ -536,7 +487,7 @@ export function EmployeeDetailDialog({
                 </div>
 
                 {!isEditing ? (
-                  // ── Chế độ XEM ĐỌC (View Mode) ──
+
                   <div className="pl-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5">
                     <InfoItem
                       label="Họ và tên nhân viên"
@@ -576,9 +527,9 @@ export function EmployeeDetailDialog({
                     />
                   </div>
                 ) : (
-                  // ── Chế độ SỬA TRỰC TIẾP (In-Place Edit Mode) ──
+
                   <div className="pl-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5">
-                    {/* Họ và tên (*) */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                         Họ và tên nhân viên <span className="text-[#EE0033]">*</span>
@@ -606,7 +557,7 @@ export function EmployeeDetailDialog({
                       )}
                     </div>
 
-                    {/* Mã nhân viên (Khóa) */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Mã nhân viên (Hệ thống)
@@ -616,7 +567,7 @@ export function EmployeeDetailDialog({
                       </div>
                     </div>
 
-                    {/* Giới tính */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Giới tính
@@ -633,7 +584,7 @@ export function EmployeeDetailDialog({
                       </Select>
                     </div>
 
-                    {/* Ngày sinh */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Ngày sinh
@@ -645,7 +596,7 @@ export function EmployeeDetailDialog({
                       />
                     </div>
 
-                    {/* Trạng thái làm việc */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                         Trạng thái <span className="text-[#EE0033]">*</span>
@@ -664,7 +615,7 @@ export function EmployeeDetailDialog({
                       </Select>
                     </div>
 
-                    {/* Vai trò (*) */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                         Vai trò <span className="text-[#EE0033]">*</span>
@@ -696,7 +647,7 @@ export function EmployeeDetailDialog({
                 )}
               </div>
 
-              {/* KHỐI 2: THÔNG TIN LIÊN LẠC & LƯƠNG (#1415:2059) */}
+              {}
               <div className="bg-white">
                 <div className="border-b border-[#F1F5F9] pb-2.5 mb-5">
                   <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
@@ -705,7 +656,7 @@ export function EmployeeDetailDialog({
                 </div>
 
                 {!isEditing ? (
-                  // ── Chế độ XEM ĐỌC ──
+
                   <div className="pl-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5">
                     <InfoItem
                       label="Số điện thoại di động"
@@ -730,9 +681,9 @@ export function EmployeeDetailDialog({
                     />
                   </div>
                 ) : (
-                  // ── Chế độ SỬA TRỰC TIẾP ──
+
                   <div className="pl-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5">
-                    {/* Số điện thoại */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Số điện thoại di động
@@ -748,7 +699,7 @@ export function EmployeeDetailDialog({
                       </div>
                     </div>
 
-                    {/* Email công vụ (*) */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                         Email công vụ <span className="text-[#EE0033]">*</span>
@@ -776,7 +727,7 @@ export function EmployeeDetailDialog({
                       )}
                     </div>
 
-                    {/* Địa chỉ thường trú */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Địa chỉ thường trú
@@ -792,7 +743,7 @@ export function EmployeeDetailDialog({
                       </div>
                     </div>
 
-                    {/* Số CCCD (Khóa - Định danh pháp lý) */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Số CCCD (Cố định)
@@ -802,7 +753,7 @@ export function EmployeeDetailDialog({
                       </div>
                     </div>
 
-                    {/* Mức lương cơ bản (*) */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0">
                       <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                         Mức lương cơ bản <span className="text-[#EE0033]">*</span>
@@ -841,7 +792,7 @@ export function EmployeeDetailDialog({
                 )}
               </div>
 
-              {/* KHỐI 3: THÔNG TIN KHÁC (#1415:2097) */}
+              {}
               <div className="bg-white pb-2">
                 <div className="border-b border-[#F1F5F9] pb-2.5 mb-5">
                   <h4 className="text-[13px] font-semibold text-[#011010] tracking-[-0.0074em] uppercase">
@@ -886,7 +837,7 @@ export function EmployeeDetailDialog({
               </div>
 
               {!isEditing ? (
-                // ── Chế độ XEM ĐỌC HLV ──
+
                 isTrainer ? (
                   <div className="pl-5 space-y-6">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5">
@@ -952,11 +903,11 @@ export function EmployeeDetailDialog({
                   </div>
                 )
               ) : (
-                // ── Chế độ SỬA TRỰC TIẾP HLV ──
+
                 isTrainer ? (
                   <div className="pl-5 space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-5">
-                      {/* Chuyên môn (*) */}
+                      {}
                       <div className="flex flex-col gap-1.5 min-w-0">
                         <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                           Chuyên môn HLV <span className="text-[#EE0033]">*</span>
@@ -992,7 +943,7 @@ export function EmployeeDetailDialog({
                         )}
                       </div>
 
-                      {/* Số năm kinh nghiệm (*) */}
+                      {}
                       <div className="flex flex-col gap-1.5 min-w-0">
                         <label className="text-[13px] font-medium text-[#202939] flex items-center gap-1">
                           Số năm kinh nghiệm <span className="text-[#EE0033]">*</span>
@@ -1023,7 +974,7 @@ export function EmployeeDetailDialog({
                         )}
                       </div>
 
-                      {/* Giá buổi tập */}
+                      {}
                       <div className="flex flex-col gap-1.5 min-w-0">
                         <label className="text-[13px] font-medium text-[#202939]">
                           Giá buổi tập
@@ -1046,7 +997,7 @@ export function EmployeeDetailDialog({
                       </div>
                     </div>
 
-                    {/* Mô tả giới thiệu */}
+                    {}
                     <div className="flex flex-col gap-1.5 min-w-0 pt-2">
                       <label className="text-[13px] font-medium text-[#202939]">
                         Mô tả giới thiệu chuyên môn & Thành tích
@@ -1105,10 +1056,10 @@ export function EmployeeDetailDialog({
           )}
         </div>
 
-        {/* 5. Footer Actions: Chuyển đổi giữa View Mode và In-Place Edit Mode */}
+        {}
         <div className="h-[70px] px-6 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-end shrink-0">
           {!isEditing ? (
-            // ── Footer Chế độ Xem: [Đóng] & [Chỉnh sửa] ──
+
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -1128,7 +1079,7 @@ export function EmployeeDetailDialog({
               </button>
             </div>
           ) : (
-            // ── Footer Chế độ Sửa tại chỗ: [Hủy bỏ] & [Lưu thay đổi] ──
+
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -1162,25 +1113,6 @@ export function EmployeeDetailDialog({
         </div>
       </div>
 
-      <EmployeeFaceEnrollmentModal
-        isOpen={isFaceModalOpen}
-        onClose={() => setIsFaceModalOpen(false)}
-        initialEmployee={
-          employee
-            ? {
-                id: employee.id,
-                employeeCode: employee.employeeCode,
-                fullName: employee.fullName,
-                position: employee.position,
-                avatarUrl: employee.avatarUrl,
-              }
-            : null
-        }
-        onSuccess={() => {
-          refetchFace();
-          queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
-        }}
-      />
     </div>
   );
 }

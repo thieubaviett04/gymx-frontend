@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "@/i18n/routing";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert, ConfirmDialog } from "@/components/ui";
@@ -15,7 +15,6 @@ import {
   EmployeeTable,
   EmployeePagination,
   EmployeeDetailDialog,
-  EmployeeFaceEnrollmentModal,
 } from "@/components/admin/employees";
 import { ConnectionErrorState } from "@/components/shared";
 
@@ -23,14 +22,12 @@ export default function AdminEmployeesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // Search, Filter & Pagination states
   const [search, setSearch] = useState("");
   const [position, setPosition] = useState("");
   const [status, setStatus] = useState("");
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  // Dialogs state
   const [activeEmployee, setActiveEmployee] = useState<EmployeeDetail | null>(null);
   const [isFetchingDetail, setIsFetchingDetail] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -38,16 +35,6 @@ export default function AdminEmployeesPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deletingEmployee, setDeletingEmployee] = useState<EmployeeSummary | null>(null);
 
-  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
-  const [faceTargetEmployee, setFaceTargetEmployee] = useState<{
-    id: string;
-    employeeCode: string;
-    fullName: string;
-    position: string;
-    avatarUrl?: string;
-  } | null>(null);
-
-  // Toast notification state
   const [toast, setToast] = useState<{
     type: "success" | "error";
     message: string;
@@ -60,8 +47,7 @@ export default function AdminEmployeesPage() {
     }, 4000);
   };
 
-  // Đọc thông báo flash và tự động mở lại dialog xem chi tiết sau khi sửa thành công
-  React.useEffect(() => {
+  useEffect(() => {
     try {
       const flashMsg = sessionStorage.getItem("gymx_employee_flash");
       if (flashMsg) {
@@ -81,7 +67,6 @@ export default function AdminEmployeesPage() {
             setActiveEmployee(res.data);
             setIsDetailOpen(true);
           } catch {
-            // Bỏ qua nếu lỗi
           } finally {
             setIsFetchingDetail(false);
           }
@@ -90,7 +75,6 @@ export default function AdminEmployeesPage() {
     } catch {}
   }, []);
 
-  // ─── 1. Query danh sách nhân viên ──────────────────────────────────────────
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: [
       "admin-employees",
@@ -108,11 +92,9 @@ export default function AdminEmployeesPage() {
     },
   });
 
-  // ─── 2. Mutation Xóa nhân viên ─────────────────────────────────────────────
   const deleteMutation = useMutation({
     mutationFn: (id: string) => employeeService.delete(id),
     onSuccess: (res) => {
-      // Nếu item duy nhất của trang > 1 bị xóa, lùi về trang trước đó
       if (data?.items && data.items.length === 1 && pageIndex > 1) {
         setPageIndex((prev) => prev - 1);
       }
@@ -126,7 +108,6 @@ export default function AdminEmployeesPage() {
     },
   });
 
-  // ─── Handlers ──────────────────────────────────────────────────────────────
   const handleOpenCreate = () => {
     router.push("/admin/employees/create");
   };
@@ -144,33 +125,16 @@ export default function AdminEmployeesPage() {
     setIsDeleteOpen(true);
   };
 
-  const handleOpenFaceEnrollment = (emp?: EmployeeSummary) => {
-    if (emp) {
-      setFaceTargetEmployee({
-        id: emp.id,
-        employeeCode: emp.employeeCode,
-        fullName: emp.fullName,
-        position: emp.position,
-        avatarUrl: emp.avatarUrl || undefined,
-      });
-    } else {
-      setFaceTargetEmployee(null);
-    }
-    setIsFaceModalOpen(true);
-  };
-
   const handleConfirmDelete = async () => {
     if (!deletingEmployee) return;
     try {
       await deleteMutation.mutateAsync(deletingEmployee.id);
     } catch {
-      // Đã xử lý thông báo lỗi trong onError của deleteMutation
     }
   };
 
   return (
     <div className="w-full flex-1 flex flex-col space-y-6">
-      {/* Toast Alert – Top Center */}
       {toast && (
         <div className="fixed top-3.5 md:top-4 left-1/2 lg:left-[calc(50%+130px)] -translate-x-1/2 z-[100] max-w-[90vw] md:max-w-[620px] w-auto pointer-events-auto animate-in fade-in slide-in-from-top-3 duration-200">
           <Alert
@@ -186,7 +150,6 @@ export default function AdminEmployeesPage() {
         </div>
       )}
 
-      {/* Toolbar: Search, Role Filter, Status Filter & Add Button */}
       <EmployeeToolbar
         searchValue={search}
         onSearchChange={(val) => {
@@ -204,10 +167,8 @@ export default function AdminEmployeesPage() {
           setPageIndex(1);
         }}
         onAddNew={handleOpenCreate}
-        onFaceEnrollment={() => handleOpenFaceEnrollment()}
       />
 
-      {/* DataTable Container */}
       <div className="bg-white rounded-[8px] p-4 sm:p-[16px_24px] shadow-xs flex-1 flex flex-col justify-between">
         {isError ? (
           <ConnectionErrorState onRetry={() => refetch()} />
@@ -222,7 +183,6 @@ export default function AdminEmployeesPage() {
                 onView={handleOpenView}
                 onEdit={handleOpenEdit}
                 onDelete={handleOpenDelete}
-                onEnrollFace={(emp) => handleOpenFaceEnrollment(emp)}
                 onClearFilter={
                   search || position || status
                     ? () => {
@@ -236,7 +196,6 @@ export default function AdminEmployeesPage() {
               />
             </div>
 
-            {/* Pagination Controls */}
             {data && data.totalCount > 0 && (
               <EmployeePagination
                 pageIndex={data.pageIndex}
@@ -256,7 +215,6 @@ export default function AdminEmployeesPage() {
         )}
       </div>
 
-      {/* Detail Dialog Xem chi tiết (Slide-over drawer chuẩn Figma) */}
       <EmployeeDetailDialog
         isOpen={isDetailOpen}
         employee={activeEmployee}
@@ -267,20 +225,6 @@ export default function AdminEmployeesPage() {
         }}
       />
 
-      <EmployeeFaceEnrollmentModal
-        isOpen={isFaceModalOpen}
-        onClose={() => {
-          setIsFaceModalOpen(false);
-          setFaceTargetEmployee(null);
-        }}
-        initialEmployee={faceTargetEmployee}
-        onSuccess={(detail) => {
-          showToast("success", `Đã lưu dữ liệu khuôn mặt cho ${detail.fullName}.`);
-          queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
-        }}
-      />
-
-      {/* Confirm Delete Popup chuẩn Figma Node 51:375 */}
       <ConfirmDialog
         isOpen={isDeleteOpen}
         size="sm"

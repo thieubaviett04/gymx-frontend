@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useQuery } from '@tanstack/react-query';
@@ -19,7 +19,6 @@ import {
   HistoryTab,
   NotesTab,
 } from './tabs';
-import { EmployeeFaceEnrollmentModal, EmployeeFaceStatusBadge } from './face';
 
 export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
   const params = useParams();
@@ -28,7 +27,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
 
   const employeeId = propId || (params?.id as string);
 
-  // Fetch dữ liệu chi tiết nhân viên
   const {
     data: employeeRes,
     isLoading,
@@ -42,16 +40,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
 
   const employee: EmployeeDetail | undefined = employeeRes?.data;
 
-  const { data: faceRes, refetch: refetchFace } = useQuery({
-    queryKey: ['admin-employee-face', employeeId],
-    queryFn: () => employeeService.getFaceDetail(employeeId),
-    enabled: !!employeeId,
-  });
-
-  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
-  const hasFaceEnrolled = faceRes?.data?.hasFaceEnrolled ?? false;
-
-  // Custom hook đóng gói toàn bộ state, validation & logic in-place editing
   const {
     activeTab,
     isEditing,
@@ -78,12 +66,10 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
   const saveEditRef = useRef(saveEdit);
   saveEditRef.current = saveEdit;
 
-  // Cấu hình thanh hành động Header phía trên
   useEffect(() => {
     if (activeTab === 'history' || activeTab === 'notes') {
       setHeaderRightContent(
         <div className="flex items-center gap-3">
-          {/* Nút phụ: Quay lại (chỉ để text chuẩn UX, font regular) */}
           <button
             type="button"
             onClick={() => router.push('/admin/employees')}
@@ -96,7 +82,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     } else if (isEditing) {
       setHeaderRightContent(
         <div className="flex items-center gap-3">
-          {/* Nút phụ: Hủy (chỉ để text chuẩn UX, font regular) */}
           <button
             type="button"
             onClick={() => cancelEditRef.current()}
@@ -106,7 +91,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
             <span>Hủy</span>
           </button>
 
-          {/* CTA: Lưu thay đổi (icon lưu Figma, font regular) */}
           <button
             type="button"
             onClick={() => saveEditRef.current()}
@@ -125,7 +109,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     } else {
       setHeaderRightContent(
         <div className="flex items-center gap-3">
-          {/* Nút phụ: Quay lại (chỉ để text chuẩn UX, font regular) */}
           <button
             type="button"
             onClick={() => router.push('/admin/employees')}
@@ -134,7 +117,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
             <span>Quay lại</span>
           </button>
 
-          {/* CTA: Chỉnh sửa (icon cây bút chuẩn bảng data, font regular) */}
           <button
             type="button"
             onClick={() => startEditRef.current()}
@@ -152,7 +134,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     };
   }, [activeTab, isEditing, isSaving, router, setHeaderRightContent]);
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="w-full bg-white rounded-[12px] p-8 border border-[#E2E8F0] shadow-xs flex flex-col items-center justify-center min-h-[460px] gap-4">
@@ -162,7 +143,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
     );
   }
 
-  // Error state
   if (isError || !employee) {
     return (
       <div className="w-full bg-white rounded-[12px] p-8 border border-[#E2E8F0] shadow-xs min-h-[460px] flex flex-col justify-center">
@@ -177,7 +157,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
 
   return (
     <div className="w-full flex-1 flex flex-col min-h-full">
-      {/* Toast Alert – Canh giữa chính xác theo khung nhìn nội dung */}
       {toast && (
         <div className="fixed top-3.5 md:top-4 left-1/2 lg:left-[calc(50%+130px)] -translate-x-1/2 z-[100] max-w-[500px] w-auto pointer-events-auto animate-in fade-in slide-in-from-top-3 duration-200">
           <Alert
@@ -193,21 +172,16 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
         </div>
       )}
 
-      {/* ─── Card lớn Chi tiết nhân viên ─── */}
       <div className="relative w-full flex-1 bg-white rounded-[12px] p-6 sm:p-[28px_32px] border border-[#E2E8F0] shadow-xs overflow-hidden flex flex-col min-h-[calc(100vh-140px)]">
-        {/* Thanh stroke 4px sát mép ngoài bên trái vuông góc theo đúng thiết kế Figma */}
         <div className="absolute left-0 top-7 w-[4px] h-6 bg-[#064343] rounded-none" />
 
-        {/* 1. Header Title */}
         <div className="flex items-center">
           <h2 className="text-[20px] font-bold text-[#011010] leading-none tracking-[-0.025em]">
             {isEditing ? 'Chỉnh sửa thông tin nhân viên' : 'Chi tiết nhân viên'}
           </h2>
         </div>
 
-        {/* 2. Subheader Toolbar: Tabs bên trái & Metadata bên phải */}
         <div className="w-full flex flex-col xl:flex-row xl:items-center justify-between gap-4 my-6">
-          {/* Tabs bên trái */}
           <div className="flex items-center gap-2 overflow-x-auto shrink-0">
             <button
               type="button"
@@ -257,9 +231,7 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
             </button>
           </div>
 
-          {/* Metadata bên phải */}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] justify-start xl:justify-end shrink-0">
-            {/* Mã nhân viên */}
             <div className="flex items-center gap-1.5">
               <span className="text-[#64748B] font-medium text-[14px]">Mã nhân viên:</span>
               <span className="font-semibold text-[14px] text-[#064343]">
@@ -269,7 +241,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
 
             <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
-            {/* Ngày tạo */}
             <div className="flex items-center gap-1.5">
               <span className="text-[#64748B] font-medium text-[14px]">Ngày tạo:</span>
               <span className="text-[#202939] font-medium text-[14px]">
@@ -277,10 +248,8 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
               </span>
             </div>
 
-            {/* Divider */}
             <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
-            {/* Chức danh (Chỉ là text hiển thị không sửa ở đây) */}
             <div className="flex items-center gap-1.5">
               <span className="text-[#64748B] font-medium text-[14px]">Chức danh:</span>
               <span className="text-[14px] font-semibold text-[#064343]">
@@ -288,10 +257,8 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
               </span>
             </div>
 
-            {/* Divider */}
             <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
 
-            {/* Trạng thái */}
             <div className="flex items-center gap-2">
               <span className="text-[#64748B] font-medium text-[14px]">Trạng thái:</span>
               <Badge
@@ -301,25 +268,9 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
                 {isActive ? 'Đang làm việc' : 'Đã nghỉ việc'}
               </Badge>
             </div>
-
-            {/* Divider */}
-            <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
-
-            {/* Dữ liệu khuôn mặt */}
-            <div className="flex items-center gap-2">
-              <EmployeeFaceStatusBadge hasFace={hasFaceEnrolled} size="sm" />
-              <button
-                type="button"
-                onClick={() => setIsFaceModalOpen(true)}
-                className="text-[12px] font-semibold text-[#064343] hover:underline cursor-pointer"
-              >
-                {hasFaceEnrolled ? 'Cập nhật' : 'Đăng ký'}
-              </button>
-            </div>
           </div>
         </div>
 
-        {/* 3. Nội dung các Tab */}
         {activeTab === 'general' && (
           <GeneralInfoTab
             employee={employee}
@@ -346,25 +297,6 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
 
         {activeTab === 'notes' && <NotesTab />}
       </div>
-
-      <EmployeeFaceEnrollmentModal
-        isOpen={isFaceModalOpen}
-        onClose={() => setIsFaceModalOpen(false)}
-        initialEmployee={
-          employee
-            ? {
-                id: employee.id,
-                employeeCode: employee.employeeCode,
-                fullName: employee.fullName,
-                position: employee.position,
-                avatarUrl: employee.avatarUrl,
-              }
-            : null
-        }
-        onSuccess={() => {
-          refetchFace();
-        }}
-      />
     </div>
   );
 }
