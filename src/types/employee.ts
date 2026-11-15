@@ -188,3 +188,18 @@ export interface EmployeeDetailTabProps {
   onChangeField: <K extends keyof EmployeeFormData>(field: K, value: EmployeeFormData[K]) => void;
   onClearFieldError?: (field: keyof EmployeeFormData) => void;
 }
+
+export interface EmployeeFaceDetail {
+  employeeId: string;
+  userId: string;
+  employeeCode: string;
+  fullName: string;
+  position: string;
+  hasFaceEnrolled: boolean;
+  status: string;
+  provider?: string;
+  externalFaceId?: string;
+  enrolledAt?: string;
+  enrolledBy?: string;
+}
+

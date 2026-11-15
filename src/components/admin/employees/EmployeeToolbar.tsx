@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Search, Plus, Filter, X } from "lucide-react";
+import { Search, Plus, Filter, X, Scan } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
 import { TrashBinIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,7 @@ interface EmployeeToolbarProps {
   selectedStatus: string;
   onStatusChange: (status: string) => void;
   onAddNew: () => void;
+  onFaceEnrollment?: () => void;
 }
 
 export function EmployeeToolbar({
@@ -25,6 +26,7 @@ export function EmployeeToolbar({
   selectedStatus,
   onStatusChange,
   onAddNew,
+  onFaceEnrollment,
 }: EmployeeToolbarProps) {
   const [localSearch, setLocalSearch] = useState(searchValue);
   const [isFocused, setIsFocused] = useState(false);
@@ -147,15 +149,27 @@ export function EmployeeToolbar({
         )}
       </div>
 
-      {/* Primary Action Button - font regular, icon 20px */}
-      <button
-        type="button"
-        onClick={onAddNew}
-        className="h-[48px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
-      >
-        <Plus className="w-5 h-5 text-white stroke-[2]" />
-        <span>Thêm nhân viên</span>
-      </button>
+      <div className="flex items-center gap-3 shrink-0">
+        {onFaceEnrollment && (
+          <button
+            type="button"
+            onClick={onFaceEnrollment}
+            className="h-[48px] px-5 bg-white border border-[#064343] text-[#064343] hover:bg-[#064343]/5 font-normal text-[14px] leading-[20px] rounded-[10px] inline-flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer transition-colors active:scale-[0.98]"
+          >
+            <Scan className="w-5 h-5 stroke-[2]" />
+            <span>Thêm dữ liệu khuôn mặt</span>
+          </button>
+        )}
+
+        <button
+          type="button"
+          onClick={onAddNew}
+          className="h-[48px] px-6 min-w-[165px] bg-[#064343] text-white font-normal text-[14px] leading-[20px] tracking-[0.01em] rounded-[10px] inline-flex flex-row items-center justify-center gap-2 whitespace-nowrap cursor-pointer shrink-0 active:scale-[0.98]"
+        >
+          <Plus className="w-5 h-5 text-white stroke-[2]" />
+          <span>Thêm nhân viên</span>
+        </button>
+      </div>
     </div>
   );
 }

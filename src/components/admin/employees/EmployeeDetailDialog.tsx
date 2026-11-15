@@ -11,7 +11,7 @@ import {
   AlertCircle,
   Check,
 } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { EditPencilIcon, FolderOpenIcon } from "@/components/ui/icons";
 import { employeeService } from "@/lib/api";
 import {
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui";
 import type { EmployeeDetail, UpdateEmployeePayload } from "@/types/employee";
 import { SPECIALIZATION_OPTIONS } from "./CreateEmployeeForm";
+import { EmployeeFaceEnrollmentModal, EmployeeFaceStatusBadge } from "./face";
 
 interface EmployeeDetailDialogProps {
   isOpen: boolean;
@@ -147,6 +148,14 @@ export function EmployeeDetailDialog({
   const [activeTab, setActiveTab] = useState<
     "general" | "trainer" | "schedule" | "notes"
   >("general");
+
+  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
+  const { data: faceRes, refetch: refetchFace } = useQuery({
+    queryKey: ['admin-employee-face', employee?.id],
+    queryFn: () => employeeService.getFaceDetail(employee!.id),
+    enabled: !!employee?.id && isOpen,
+  });
+  const hasFaceEnrolled = faceRes?.data?.hasFaceEnrolled ?? false;
 
   // Form states phục vụ In-Place Edit
   const [fullName, setFullName] = useState("");
@@ -477,6 +486,22 @@ export function EmployeeDetailDialog({
                 ? "Đang làm việc"
                 : "Đã nghỉ việc"}
             </Badge>
+          </div>
+
+          <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
+
+          <div className="flex items-center gap-2">
+            <span className="text-[14px] font-medium text-[#64748B]">
+              Khuôn mặt:
+            </span>
+            <EmployeeFaceStatusBadge hasFace={hasFaceEnrolled} size="sm" />
+            <button
+              type="button"
+              onClick={() => setIsFaceModalOpen(true)}
+              className="text-[12px] font-semibold text-[#064343] hover:underline cursor-pointer"
+            >
+              {hasFaceEnrolled ? "Cập nhật" : "Đăng ký"}
+            </button>
           </div>
         </div>
 
@@ -1136,6 +1161,26 @@ export function EmployeeDetailDialog({
           )}
         </div>
       </div>
+
+      <EmployeeFaceEnrollmentModal
+        isOpen={isFaceModalOpen}
+        onClose={() => setIsFaceModalOpen(false)}
+        initialEmployee={
+          employee
+            ? {
+                id: employee.id,
+                employeeCode: employee.employeeCode,
+                fullName: employee.fullName,
+                position: employee.position,
+                avatarUrl: employee.avatarUrl,
+              }
+            : null
+        }
+        onSuccess={() => {
+          refetchFace();
+          queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
+        }}
+      />
     </div>
   );
 }

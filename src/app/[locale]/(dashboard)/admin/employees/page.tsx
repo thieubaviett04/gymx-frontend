@@ -15,6 +15,7 @@ import {
   EmployeeTable,
   EmployeePagination,
   EmployeeDetailDialog,
+  EmployeeFaceEnrollmentModal,
 } from "@/components/admin/employees";
 import { ConnectionErrorState } from "@/components/shared";
 
@@ -36,6 +37,15 @@ export default function AdminEmployeesPage() {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deletingEmployee, setDeletingEmployee] = useState<EmployeeSummary | null>(null);
+
+  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
+  const [faceTargetEmployee, setFaceTargetEmployee] = useState<{
+    id: string;
+    employeeCode: string;
+    fullName: string;
+    position: string;
+    avatarUrl?: string;
+  } | null>(null);
 
   // Toast notification state
   const [toast, setToast] = useState<{
@@ -134,6 +144,21 @@ export default function AdminEmployeesPage() {
     setIsDeleteOpen(true);
   };
 
+  const handleOpenFaceEnrollment = (emp?: EmployeeSummary) => {
+    if (emp) {
+      setFaceTargetEmployee({
+        id: emp.id,
+        employeeCode: emp.employeeCode,
+        fullName: emp.fullName,
+        position: emp.position,
+        avatarUrl: emp.avatarUrl || undefined,
+      });
+    } else {
+      setFaceTargetEmployee(null);
+    }
+    setIsFaceModalOpen(true);
+  };
+
   const handleConfirmDelete = async () => {
     if (!deletingEmployee) return;
     try {
@@ -179,6 +204,7 @@ export default function AdminEmployeesPage() {
           setPageIndex(1);
         }}
         onAddNew={handleOpenCreate}
+        onFaceEnrollment={() => handleOpenFaceEnrollment()}
       />
 
       {/* DataTable Container */}
@@ -196,6 +222,7 @@ export default function AdminEmployeesPage() {
                 onView={handleOpenView}
                 onEdit={handleOpenEdit}
                 onDelete={handleOpenDelete}
+                onEnrollFace={(emp) => handleOpenFaceEnrollment(emp)}
                 onClearFilter={
                   search || position || status
                     ? () => {
@@ -237,6 +264,19 @@ export default function AdminEmployeesPage() {
         onEdit={(emp) => {
           setIsDetailOpen(false);
           router.push(`/admin/employees/${emp.id}/edit`);
+        }}
+      />
+
+      <EmployeeFaceEnrollmentModal
+        isOpen={isFaceModalOpen}
+        onClose={() => {
+          setIsFaceModalOpen(false);
+          setFaceTargetEmployee(null);
+        }}
+        initialEmployee={faceTargetEmployee}
+        onSuccess={(detail) => {
+          showToast("success", `Đã lưu dữ liệu khuôn mặt cho ${detail.fullName}.`);
+          queryClient.invalidateQueries({ queryKey: ["admin-employees"] });
         }}
       />
 

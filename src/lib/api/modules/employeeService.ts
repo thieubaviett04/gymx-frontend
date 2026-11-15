@@ -4,37 +4,63 @@ import type { ApiResponse } from '@/types/api';
 import type {
   CreateEmployeePayload,
   EmployeeDetail,
+  EmployeeFaceDetail,
   EmployeeQueryParams,
   PagedEmployeeResult,
   UpdateEmployeePayload,
 } from '@/types/employee';
 
 export const employeeService = {
-  /** [Admin] Lấy danh sách nhân viên có phân trang, tìm kiếm & lọc */
   list: (params?: EmployeeQueryParams) =>
     apiClient.get<unknown, ApiResponse<PagedEmployeeResult>>(ENDPOINTS.employees.list, { params }),
 
-  /** [Admin] Lấy thông tin chi tiết một nhân viên */
   byId: (id: string) =>
     apiClient.get<unknown, ApiResponse<EmployeeDetail>>(ENDPOINTS.employees.byId(id)),
 
-  /** [Admin] Thêm mới nhân viên */
   create: (payload: CreateEmployeePayload) =>
     apiClient.post<unknown, ApiResponse<EmployeeDetail>>(ENDPOINTS.employees.create, payload),
 
-  /** [Admin] Cập nhật thông tin nhân viên */
   update: (id: string, payload: UpdateEmployeePayload) =>
     apiClient.put<unknown, ApiResponse<EmployeeDetail>>(ENDPOINTS.employees.update(id), payload),
 
-  /** [Admin] Xóa (Soft delete) nhân viên */
   delete: (id: string) =>
     apiClient.delete<unknown, { success: boolean; message?: string }>(
       ENDPOINTS.employees.delete(id)
     ),
 
-  /** [Employee] Lấy thông tin hồ sơ của chính mình */
   me: () =>
     apiClient.get<unknown, ApiResponse<EmployeeDetail>>(ENDPOINTS.employees.me),
+
+  getFaceDetail: (employeeId: string) =>
+    apiClient.get<unknown, ApiResponse<EmployeeFaceDetail>>(
+      ENDPOINTS.employees.face(employeeId)
+    ),
+
+  getFaceDetailByCode: (employeeCode: string) =>
+    apiClient.get<unknown, ApiResponse<EmployeeFaceDetail>>(
+      ENDPOINTS.employees.faceByCode(employeeCode)
+    ),
+
+  registerFace: (employeeId: string, file: File | Blob) => {
+    const formData = new FormData();
+    const fileName = file instanceof File ? file.name : 'camera-snapshot.jpg';
+    formData.append('file', file, fileName);
+
+    return apiClient.post<unknown, ApiResponse<EmployeeFaceDetail>>(
+      ENDPOINTS.employees.face(employeeId),
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+  },
+
+  removeFace: (employeeId: string) =>
+    apiClient.delete<unknown, { success: boolean; message?: string }>(
+      ENDPOINTS.employees.face(employeeId)
+    ),
 };
 
 export default employeeService;

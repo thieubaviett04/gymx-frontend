@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { User } from "lucide-react";
+import { User, Scan } from "lucide-react";
 import { Badge, EyeViewIcon, EditPencilIcon, TrashBinIcon } from "@/components/ui";
 import { getMediaUrl } from "@/lib/utils/media-url";
 import type { EmployeeSummary } from "@/types/employee";
@@ -16,6 +16,7 @@ interface EmployeeTableProps {
   onView: (emp: EmployeeSummary) => void;
   onEdit: (emp: EmployeeSummary) => void;
   onDelete: (emp: EmployeeSummary) => void;
+  onEnrollFace?: (emp: EmployeeSummary) => void;
   onClearFilter?: () => void;
 }
 
@@ -46,6 +47,7 @@ export function EmployeeTable({
   onView,
   onEdit,
   onDelete,
+  onEnrollFace,
   onClearFilter,
 }: EmployeeTableProps) {
   if (isLoading) {
@@ -180,6 +182,19 @@ export function EmployeeTable({
                 {/* 8. Hành động (căn lề trái thẳng hàng với icon đầu tiên) */}
                 <td className="h-[43px] px-[10px] py-0 align-middle rounded-r-[6px]">
                   <div className="flex items-center gap-[10px]">
+                    {/* Đăng ký / Quản lý khuôn mặt */}
+                    {onEnrollFace && (
+                      <button
+                        type="button"
+                        onClick={() => onEnrollFace(emp)}
+                        title="Đăng ký dữ liệu khuôn mặt"
+                        className="w-[28px] h-[28px] rounded-[6px] flex items-center justify-center hover:bg-[#064343]/10 text-[#064343] transition-colors cursor-pointer"
+                        aria-label="Đăng ký khuôn mặt"
+                      >
+                        <Scan className="w-4 h-4 stroke-[2]" />
+                      </button>
+                    )}
+
                     {/* Xem chi tiết */}
                     <button
                       type="button"

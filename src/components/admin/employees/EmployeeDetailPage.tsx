@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useQuery } from '@tanstack/react-query';
@@ -19,6 +19,7 @@ import {
   HistoryTab,
   NotesTab,
 } from './tabs';
+import { EmployeeFaceEnrollmentModal, EmployeeFaceStatusBadge } from './face';
 
 export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
   const params = useParams();
@@ -40,6 +41,15 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
   });
 
   const employee: EmployeeDetail | undefined = employeeRes?.data;
+
+  const { data: faceRes, refetch: refetchFace } = useQuery({
+    queryKey: ['admin-employee-face', employeeId],
+    queryFn: () => employeeService.getFaceDetail(employeeId),
+    enabled: !!employeeId,
+  });
+
+  const [isFaceModalOpen, setIsFaceModalOpen] = useState(false);
+  const hasFaceEnrolled = faceRes?.data?.hasFaceEnrolled ?? false;
 
   // Custom hook đóng gói toàn bộ state, validation & logic in-place editing
   const {
@@ -291,6 +301,21 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
                 {isActive ? 'Đang làm việc' : 'Đã nghỉ việc'}
               </Badge>
             </div>
+
+            {/* Divider */}
+            <div className="hidden sm:block w-[1px] h-4 bg-[#E2E8F0]" />
+
+            {/* Dữ liệu khuôn mặt */}
+            <div className="flex items-center gap-2">
+              <EmployeeFaceStatusBadge hasFace={hasFaceEnrolled} size="sm" />
+              <button
+                type="button"
+                onClick={() => setIsFaceModalOpen(true)}
+                className="text-[12px] font-semibold text-[#064343] hover:underline cursor-pointer"
+              >
+                {hasFaceEnrolled ? 'Cập nhật' : 'Đăng ký'}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -321,6 +346,25 @@ export function EmployeeDetailPage({ id: propId }: EmployeeDetailPageProps) {
 
         {activeTab === 'notes' && <NotesTab />}
       </div>
+
+      <EmployeeFaceEnrollmentModal
+        isOpen={isFaceModalOpen}
+        onClose={() => setIsFaceModalOpen(false)}
+        initialEmployee={
+          employee
+            ? {
+                id: employee.id,
+                employeeCode: employee.employeeCode,
+                fullName: employee.fullName,
+                position: employee.position,
+                avatarUrl: employee.avatarUrl,
+              }
+            : null
+        }
+        onSuccess={() => {
+          refetchFace();
+        }}
+      />
     </div>
   );
 }

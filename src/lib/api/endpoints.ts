@@ -103,6 +103,8 @@ export const ENDPOINTS = {
     update:         (id: string) => `${V1}/admin/employees/${id}`,
     delete:         (id: string) => `${V1}/admin/employees/${id}`,
     me:             `${V1}/employees/me`,
+    face:           (id: string) => `${V1}/admin/employees/${id}/face`,
+    faceByCode:     (code: string) => `${V1}/admin/employees/code/${code}/face`,
   },
 
   adminPenaltyRules: {
